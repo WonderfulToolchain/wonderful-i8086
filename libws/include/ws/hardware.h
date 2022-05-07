@@ -76,8 +76,8 @@
 #define IO_SPR_COUNT 0x06
 
 #define IO_SCR_BASE 0x07
-#define SCR1_BASE(x) (((x) >> 12))
-#define SCR2_BASE(x) (((x) >> 12) << 4)
+#define SCR1_BASE(x) (((x) >> 11))
+#define SCR2_BASE(x) (((x) >> 11) << 4)
 
 #define IO_SCR2_WIN_X1 0x08
 #define IO_SCR2_WIN_Y1 0x09

@@ -20,8 +20,31 @@
  * 3. This notice may not be removed or altered from any source distribution.
 */
 
+// ws/system.h - system control functions
+
 #pragma once
-#include <ws/util.h>
-#include <ws/hardware.h>
-#include <ws/system.h>
-#include <ws/keypad.h>
+#include <stdbool.h>
+#include <stdint.h>
+#include "util.h"
+#include "hardware.h"
+
+typedef enum {
+	MODEL_WONDERSWAN,
+	MODEL_WONDERSWAN_COLOR,
+	MODEL_SWANCRYSTAL
+} ws_system_model_t;
+
+typedef enum {
+	MODE_MONO,
+	MODE_COLOR,
+	MODE_COLOR_4BPP,
+	MODE_COLOR_4BPP_PACKED
+} ws_system_mode_t;
+
+inline bool system_is_color(void) {
+	return inportb(IO_SYSTEM_CTRL1) & SYSTEM_CTRL1_COLOR;
+}
+
+ws_system_model_t system_get_model(void);
+bool system_set_mode(ws_system_mode_t mode);
+

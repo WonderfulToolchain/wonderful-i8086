@@ -20,8 +20,17 @@
  * 3. This notice may not be removed or altered from any source distribution.
 */
 
-#pragma once
-#include <ws/util.h>
-#include <ws/hardware.h>
-#include <ws/system.h>
-#include <ws/keypad.h>
+#include <stdint.h>
+#include "ws/system.h"
+
+ws_system_model_t system_get_model(void) {
+	if (inportb(IO_SYSTEM_CTRL1) & SYSTEM_CTRL1_COLOR) {
+		if (inportb(IO_SYSTEM_CTRL3) & SYSTEM_CTRL3_SWANCRYSTAL) {
+			return MODEL_SWANCRYSTAL;
+		} else {
+			return MODEL_WONDERSWAN_COLOR;
+		}
+	} else {
+		return MODEL_WONDERSWAN;
+	}
+}

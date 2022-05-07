@@ -23,7 +23,19 @@
 // ws/video.h - video functions
 
 #pragma once
+#include <stdbool.h>
 #include <stdint.h>
+
+typedef struct {
+	uint16_t tile : 9;
+	uint8_t palette : 3;
+	bool inside : 1;
+	bool priority : 1;
+	bool flip_h : 1;
+	bool flip_v : 1;
+	uint8_t y : 8;
+	uint8_t x : 8;
+} ws_sprite_t;
 
 #define RGB(r, g, b) (((r) << 8) | ((g) << 4) | (b))
 

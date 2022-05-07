@@ -2,7 +2,7 @@ TOOLCHAIN_PREFIX := /opt/wonderful/i8086
 include $(TOOLCHAIN_PREFIX)/ws/lib/swan.mk
 
 OBJDIR := obj
-SRCDIRS := src src/keypad src/system src/util
+SRCDIRS := src src/keypad src/system src/util src/video
 MKDIRS := $(OBJDIR)
 
 CSOURCES := $(foreach dir,$(SRCDIRS),$(notdir $(wildcard $(dir)/*.c)))

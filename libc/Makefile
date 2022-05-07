@@ -1,23 +1,23 @@
 TOOLCHAIN_PREFIX := /opt/wonderful/i8086
 include $(TOOLCHAIN_PREFIX)/ws/lib/swan.mk
 
-TARGET := $(notdir $(shell pwd)).ws
 OBJDIR := obj
-SRCDIRS := src
+SRCDIRS := src src/string
 MKDIRS := $(OBJDIR)
-LIBS := -lws -lc
 
 CSOURCES := $(foreach dir,$(SRCDIRS),$(notdir $(wildcard $(dir)/*.c)))
 ASMSOURCES := $(foreach dir,$(SRCDIRS),$(notdir $(wildcard $(dir)/*.S)))
 OBJECTS := $(CSOURCES:%.c=$(OBJDIR)/%.o) $(ASMSOURCES:%.S=$(OBJDIR)/%.o)
 
+CFLAGS += -Iinclude
+
 vpath %.c $(SRCDIRS)
 vpath %.S $(SRCDIRS)
 
-all: $(TARGET)
+all: libc.a
 
-$(TARGET): $(OBJECTS)
-	$(SWANLINK) -v -o $@ --output-elf $@.elf --linker-args $(LDFLAGS) $(WS_CRT0) $(OBJECTS) $(LIBS)
+libc.a: $(OBJECTS)
+	$(AR) rcs $@ $(OBJECTS)
 
 $(OBJDIR)/%.o: %.c $(OBJDIR)
 	$(CC) $(CFLAGS) -c -o $@ $<
@@ -29,4 +29,8 @@ $(OBJDIR):
 	$(info $(shell mkdir -p $(MKDIRS)))
 
 clean:
-	rm $(TARGET) $(OBJECTS)
+	rm libc.a $(OBJECTS)
+
+install:
+	cp -r include/* $(TOOLCHAIN_PREFIX)/ws/include/
+	install -m 644 libc.a $(TOOLCHAIN_PREFIX)/ws/lib

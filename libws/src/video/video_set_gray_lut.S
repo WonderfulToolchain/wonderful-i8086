@@ -20,9 +20,17 @@
  * 3. This notice may not be removed or altered from any source distribution.
 */
 
-#pragma once
-#include <ws/util.h>
-#include <ws/hardware.h>
-#include <ws/system.h>
-#include <ws/video.h>
-#include <ws/keypad.h>
+	.arch	i8086
+	.code16
+	.intel_syntax noprefix
+
+	.global video_set_gray_lut
+video_set_gray_lut:
+	out	0x1C, al
+	mov	al, ah
+	out	0x1D, al
+	mov	al, dl
+	out	0x1E, al
+	mov	al, dh
+	out	0x1F, al
+	retf

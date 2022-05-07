@@ -35,10 +35,10 @@ typedef enum {
 } ws_system_model_t;
 
 typedef enum {
-	MODE_MONO,
-	MODE_COLOR,
-	MODE_COLOR_4BPP,
-	MODE_COLOR_4BPP_PACKED
+	MODE_MONO = 0x00,
+	MODE_COLOR = 0x80,
+	MODE_COLOR_4BPP = 0xA0,
+	MODE_COLOR_4BPP_PACKED = 0xE0
 } ws_system_mode_t;
 
 inline bool system_is_color(void) {
@@ -46,5 +46,8 @@ inline bool system_is_color(void) {
 }
 
 ws_system_model_t system_get_model(void);
-bool system_set_mode(ws_system_mode_t mode);
 
+inline ws_system_mode_t system_get_mode(void) {
+	return inportb(IO_SYSTEM_CTRL2) & 0xE0;
+}
+bool system_set_mode(ws_system_mode_t mode);

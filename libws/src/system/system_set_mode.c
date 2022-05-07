@@ -24,12 +24,10 @@
 #include <stdint.h>
 #include "ws/system.h"
 
-static const uint8_t __far modes_to_value[] = {0x00, 0x80, 0xC0, 0xE0};
-
 bool system_set_mode(ws_system_mode_t mode) {
 	if (mode > 0 && !system_is_color()) {
 		return false;
 	}
-	outportb(IO_SYSTEM_CTRL2, (inportb(IO_SYSTEM_CTRL2) & 0x1F) | modes_to_value[mode]);
+	outportb(IO_SYSTEM_CTRL2, (inportb(IO_SYSTEM_CTRL2) & 0x1F) | mode);
 }
 

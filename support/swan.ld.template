@@ -1,0 +1,112 @@
+OUTPUT_FORMAT("elf32-i386")
+ENTRY(_start)
+MEMORY
+{
+	ROM (rx) : ORIGIN = %ROM_AREA_START%, LENGTH = 0x10000
+	RAM (wx) : ORIGIN = 0x00000, LENGTH = 0x2000
+	HEADER (rx) : ORIGIN = 0x00000, LENGTH = 0x1000000
+}
+SECTIONS
+{
+	/* segelf segment start markers for target text section. */
+	".text!" %ROM_AREA_START% (NOLOAD) :
+	{
+		"__stext!" = .;
+		*(".text!*" ".text.*!")
+		"__etext!" = .;
+	} >ROM
+
+	/* Target text section. */
+	.text . :
+	{
+		__stext = .;
+		*(.text ".text.*[^&]")
+		__etext = .;
+		. = ALIGN (16);
+	}
+
+	/* segelf segment end markers for target text section. */
+	".text&" . (NOLOAD) :
+	{
+		"__stext&" = .;
+		*(".text&*" ".text.*&")
+		"__etext&" = .;
+	}
+
+	.fartext ALIGN (0x10) : SUBALIGN (0x10) {
+		*(SORT (".fartext!*"))
+		*(SORT (".fartext$*"))
+		*(SORT (".fartext&*"))
+		*(SORT (".fartext.*"))
+		. = .;
+	}
+
+	.farrodata ALIGN (0x10) : SUBALIGN (0x10) {
+		*(SORT (".farrodata!*"))
+		*(SORT (".farrodata$*"))
+		*(SORT (".farrodata&*"))
+		*(SORT (".farrodata.*"))
+		. = .;
+	}
+
+	.erom . (NOLOAD) :
+	{
+		. = ALIGN (16);
+		"__erom" = .;
+		"__erom!" = .;
+		"__erom&" = .;
+		. = .;
+	}
+
+	/* segelf segment start markers for target data section. */
+	".data!" 0x00000 (NOLOAD) : AT(ADDR(".erom") + SIZEOF(".erom"))
+	{
+		"__sdata!" = .;
+		*(".rodata!*" ".rodata.*!")
+		*(".data!*" ".data.*!")
+		"__edata!" = .;
+		"__ebss!" = .;
+	} >RAM
+
+	/* Target data section. */
+	".data" 0x00000: AT(ADDR(".erom") + SIZEOF(".erom"))
+	{
+		__sdata = .;
+		*(.rodata ".rodata.*[^&]")
+		*(.data ".data.*[^&]")
+		__edata = .;
+	}
+	"__ldata!" = 0;
+	__ldata = SIZEOF(.data);
+	"__ldata_words!" = 0;
+	__ldata_words = (__ldata + 1) / 2;
+
+	/* Target BSS section, with same segment bases as data section. */
+	.bss . (NOLOAD) :
+	{
+		*(.bss ".bss.*[^&]")
+		__ebss = .;
+	}
+	"__lbss!" = 0;
+	__lbss = SIZEOF(.bss);
+	"__lbss_words!" = 0;
+	__lbss_words = (__lbss + 1) / 2;
+
+	/* segelf segment end markers for target data section. */
+	".data&" . (NOLOAD) :
+	{
+		"__sdata&" = .;
+		*(".rodata&*" ".rodata.*&")
+		*(".data&*" ".data.*&")
+		*(".bss&*" ".bss.*&")
+		"__edata&" = .;
+		"__ebss& " = .;
+	}
+
+	.swan_header : {
+		/* Far call instruction. */
+		BYTE (0xEA)
+		SHORT (_start)
+		SHORT (ADDR(".text!") / 16)
+	}
+}

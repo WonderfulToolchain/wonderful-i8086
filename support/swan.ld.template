@@ -12,6 +12,7 @@ SECTIONS
 	".text!" %ROM_AREA_START% (NOLOAD) :
 	{
 		"__stext!" = .;
+		*("_start!")
 		*(".text!*" ".text.*!")
 		"__etext!" = .;
 	} >ROM
@@ -20,6 +21,7 @@ SECTIONS
 	.text . :
 	{
 		__stext = .;
+		*("_start")
 		*(.text ".text.*[^&]")
 		__etext = .;
 		. = ALIGN (16);
@@ -29,6 +31,7 @@ SECTIONS
 	".text&" . (NOLOAD) :
 	{
 		"__stext&" = .;
+		*("_start&")
 		*(".text&*" ".text.*&")
 		"__etext&" = .;
 	}
@@ -64,6 +67,7 @@ SECTIONS
 		"__sdata!" = .;
 		*(".rodata!*" ".rodata.*!")
 		*(".data!*" ".data.*!")
+		*(".bss!*" ".bss.*!")
 		"__edata!" = .;
 		"__ebss!" = .;
 	} >RAM
@@ -101,12 +105,5 @@ SECTIONS
 		*(".bss&*" ".bss.*&")
 		"__edata&" = .;
 		"__ebss& " = .;
-	}
-
-	.swan_header : {
-		/* Far call instruction. */
-		BYTE (0xEA)
-		SHORT (_start)
-		SHORT (ADDR(".text!") / 16)
 	}
 }

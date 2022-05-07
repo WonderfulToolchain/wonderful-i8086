@@ -193,24 +193,20 @@ def add_to_rom_layout(position: int, data, data_name: str = None):
 	print_verbose("Laying out '%s' at 0x%X, size %d bytes" % (data_name, position, len(data)))
 	rom_layout[position] = data
 
-def call_linker(temp_dir: Path, template_file: Path, output_file: Path, rom_offset: int, args: list[str]):
+def call_linker(temp_dir: Path, template_file: Path, output_elf: Path, output_file: Path, rom_offset: int, args: list[str]):
 	template_out_file = temp_dir / 'link.ld'
 	with open(template_out_file, 'w') as outf:
 		result = subprocess.run(["sed", "-e", f"s/%ROM_AREA_START%/{rom_offset}/g", str(template_file.absolute())], stdout=outf)
 		if result.returncode != 0:
 			raise Exception(f'sed exited with error code {result.returncode}')
-	ld_args = [str(ld_path), "-T", str(template_out_file), "-o", str(output_file.absolute())]
+	ld_args = [str(ld_path), "-T", str(template_out_file), "-o", str(output_elf.absolute())]
 	ld_args.extend(args)
 	result = subprocess.run(ld_args)
 	if result.returncode != 0:
 		raise Exception(f'ld exited with error code {result.returncode}')
-
-def get_elf_size(elf_file: Path) -> int:
-	result = subprocess.run([str(size_path), '-t', str(elf_file.absolute())], stdout=subprocess.PIPE)
-	if result.returncode != 0:
-		raise Exception(f'size exited with error code {result.returncode}')
-	totals_line = list(filter(lambda x: len(x) > 0, result.stdout.decode('utf-8').splitlines()))[-1].split("\t")
-	return int(totals_line[3])
+	objcopy_result = subprocess.run([str(objcopy_path), "-O", "binary", str(output_elf.absolute()), str(output_file.absolute())])
+	if objcopy_result.returncode != 0:
+		raise Exception(f'objcopy exited with error code {objcopy_result.returncode}')
 
 def byte_to_bcd(i: int) -> int:
 	return (int(i / 10) << 4) | int(i % 10)
@@ -239,27 +235,24 @@ with tempfile.TemporaryDirectory() as temp_dir:
 	if final_rom_offset is None:
 		# Step 1: Create ELF.
 		temporary_elf = temp_path / "stage1.elf"
-		call_linker(temp_path, ld_template_path, temporary_elf, 0x40000, linker_args)
-		# Step 2: Measure ELF size, minus five bytes (call footer), rounded up to 0x10.
+		temporary_bin = temp_path / "stage1.bin"
+		call_linker(temp_path, ld_template_path, temporary_elf, temporary_bin, 0x40000, linker_args)
+		# Step 2: Measure ELF size, rounded up to 0x10.
 		# Use this information to calculate the minimum ROM size.
 		# Use that to calculate the new ELF location.
-		bin_size = align_up_to(get_elf_size(temporary_elf) - 5, 0x10)
+		bin_size = align_up_to(temporary_bin.stat().st_size, 0x10)
 		final_rom_offset = 0x100000 - HEADER_SIZE - bin_size
 		print_verbose("Program size is %d bytes, load at %04X:0000" % (bin_size, final_rom_offset >> 4))
 	# Step 3: Create ELF and BIN at final ROM location.
 	target_elf = output_elf_path or (temp_path / "stage2.elf")
 	target_bin = temp_path / "stage2.bin"
-	call_linker(temp_path, ld_template_path, target_elf, final_rom_offset, linker_args)
-	objcopy_result = subprocess.run([str(objcopy_path), "-O", "binary", str(target_elf), str(target_bin)])
-	if objcopy_result.returncode != 0:
-		raise Exception(f'objcopy exited with error code {objcopy_result.returncode}')
+	call_linker(temp_path, ld_template_path, target_elf, target_bin, final_rom_offset, linker_args)
 	# Step 4: Build ROM.
 	# The final five bytes of the BIN file have to go to FFFF:0000.
 	# Step 4a: Import BIN file.
 	with open(target_bin, "rb") as f:
 		bin_data = f.read()
-	bin_call_routine = bin_data[-5:]
-	bin_data = align_up_to(bin_data[:-5], 16)
+	bin_data = align_up_to(bin_data, 16)
 	bin_size = len(bin_data)
 	if (bin_size + HEADER_SIZE) > (MAX_BIN_BANKS * 0x10000):
 		raise Exception(f"bin too large: {bin_size} bytes > {MAX_BIN_BANKS} banks")
@@ -298,6 +291,7 @@ with tempfile.TemporaryDirectory() as temp_dir:
 		hdr_flags |= (1 << 1)
 	if program_args.orientation == 'vertical':
 		hdr_flags |= (1 << 0)
+	bin_call_routine = struct.pack("<BHH", 0xEA, 0x0000, final_rom_offset >> 4)
 	rom_header = bin_call_routine + struct.pack("<BBBBBBBHH",
 		hdr_maintenance, hdr_publisher, hdr_color, hdr_game_id,
 		hdr_game_version, hdr_rom_size, hdr_save_type, hdr_flags, 0x0000)

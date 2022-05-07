@@ -14,10 +14,10 @@ vpath %.S $(SRCDIRS)
 all: $(OBJECTS)
 
 $(OBJDIR)/%.o: %.c $(OBJDIR)
-	ia16-elf-gcc $(CFLAGS) -c -o $@ $<
+	$(CC) $(CFLAGS) -c -o $@ $<
 
 $(OBJDIR)/%.o: %.S $(OBJDIR)
-	ia16-elf-as $(ASFLAGS) -o $@ $<
+	$(AS) $(ASFLAGS) -o $@ $<
 
 $(OBJDIR):
 	$(info $(shell mkdir -p $(MKDIRS)))

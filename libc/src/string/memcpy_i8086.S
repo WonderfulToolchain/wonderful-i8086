@@ -9,18 +9,27 @@
  * work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-#include <stddef.h>
-#include "string.h"
+	.arch	i8086
+	.code16
+	.intel_syntax noprefix
 
-#if 0
-void __far* memcpy(void __far* restrict s1, const void __far* restrict s2, size_t n) {
-	char __far* dest = (char __far*) s1;
-	const char __far* src = (const char __far*) s2;
-
-	while (n--) {
-		*dest++ = *src++;
-	}
-
-	return s1;
-}
-#endif
+	.global memcpy
+memcpy:
+	push	si
+	push	di
+	push	ds
+	push	es
+	push	bp
+	mov	bp, sp
+	mov	es, dx
+	mov	di, ax
+	lds	si, [bp + 14]
+	mov	cx, [bp + 18]
+	cld
+	rep	movsb
+	pop	bp
+	pop	es
+	pop	ds
+	pop	di
+	pop	si
+	retf	0x6

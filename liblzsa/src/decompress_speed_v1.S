@@ -58,9 +58,7 @@ lzsa1_decompress:
    push bp
    mov bp, sp
    mov di, ax
-   mov ax, [bp+16]
-   mov ds, ax
-   mov si, [bp+14]
+   lds si, [bp+14]
    mov es, dx
 
         push    di              //remember decompression offset

@@ -12,6 +12,8 @@
 #include <stddef.h>
 #include "string.h"
 
+#if 0
+
 void __far* memset(void __far* s, int c, size_t n) {
 	unsigned char __far* p = (unsigned char __far*) s;
 	while (n--) {
@@ -19,3 +21,5 @@ void __far* memset(void __far* s, int c, size_t n) {
 	}
 	return s;
 }
+
+#endif

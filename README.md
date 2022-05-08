@@ -2,9 +2,13 @@
 
 Experimental C toolchain for the WonderSwan. Early development.
 
+## Known limitations
+
+* Read-only data (const arrays, etc.) will only end up in ROM if declared as __far.
+
 ## Rough build instructions
 
-Only Linux supported. Use WSL2 on Windows. Tested on Arch Linux, YMMV.
+Only Linux is officially supported at this time. Using WSL2 on Windows is recommended. The scripts have been tested on Arch Linux.
 
     # create directory
     $ mkdir -p /opt/wonderful/i8086
@@ -22,6 +26,11 @@ Only Linux supported. Use WSL2 on Windows. Tested on Arch Linux, YMMV.
     $ cd ../libws
     $ make install
 
-## Known limitations
+## Licensing information
 
-* Read-only data (const arrays, etc.) will only end up in ROM if declared as __far.
+All source files have their licensing terms stated in the file itself. Crucially, for runtime components linked with a compiled binary, the licenses are as follows:
+
+* libgcc runtime library: [GPLv3 w/ Runtime Library Exception](https://www.fsf.org/news/2009-01-gcc-exception)
+* `support/src/crt0.S`: [zlib license](docs/COPYING.ZLIB)
+* `libc/`: [CC0/public domain-like](docs/COPYING.CC0)
+* `libws/`: [zlib license](docs/COPYING.ZLIB)

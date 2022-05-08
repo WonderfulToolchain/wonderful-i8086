@@ -37,7 +37,39 @@ typedef struct {
 	uint8_t x : 8;
 } ws_sprite_t;
 
+typedef struct {
+	uint16_t tile : 9;
+	uint8_t palette : 4;
+	uint8_t bank : 1;
+	bool flip_h : 1;
+	bool flip_v : 1;
+} ws_screen_entry_t;
+
 #define RGB(r, g, b) (((r) << 8) | ((g) << 4) | (b))
+
+#define TILE_WIDTH 8
+#define TILE_HEIGHT 8
+#define TILE_DATA_SIZE 16
+#define TILE_4BPP_DATA_SIZE 32
+
+#define SCR_WIDTH 32
+#define SCR_HEIGHT 32
+#define SCR_WIDTH_PX (SCR_WIDTH * TILE_WIDTH)
+#define SCR_HEIGHT_PX (SCR_HEIGHT * TILE_HEIGHT)
+
+#define DISPLAY_WIDTH 28
+#define DISPLAY_HEIGHT 18
+#define DISPLAY_WIDTH_PX (DISPLAY_WIDTH * TILE_WIDTH)
+#define DISPLAY_HEIGHT_PX (DISPLAY_HEIGHT * TILE_HEIGHT)
+
+#define MEM_TILE(i) ((uint8_t*) (0x2000 + ((i) << 4)))
+#define MEM_TILE_4BPP_BANK0(i) ((uint8_t*) (0x4000 + ((i) << 5)))
+#define MEM_TILE_4BPP_BANK1(i) ((uint8_t*) (0x8000 + ((i) << 5)))
+#define MEM_TILE_4BPP(i) MEM_TILE_4BPP_BANK0(i)
+
+#define MEM_COLOR_PALETTE ((uint16_t*) 0xFE00)
+#define MEM_SCR_PALETTE COLOR_PALETTE
+#define MEM_SPR_PALETTE ((uint16_t*) 0xFF00)
 
 #define GRAY_LUT(c0, c1, c2, c3, c4, c5, c6, c7) \
 	(((uint32_t)(c0)) | (((uint32_t)(c1)) << 4) | (((uint32_t)(c2)) << 8) | (((uint32_t)(c3)) << 12) | \
@@ -45,3 +77,4 @@ typedef struct {
 #define GRAY_LUT_DEFAULT GRAY_LUT(0, 2, 4, 6, 9, 11, 13, 15)
 void video_set_gray_lut(uint32_t lut);
 
+void video_put_screen_map(void *dest, const void __far* src, uint8_t x, uint8_t y, uint8_t width, uint8_t height);

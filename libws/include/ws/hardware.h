@@ -29,6 +29,10 @@
 #define ELEMENT_FLIPH 0x4000
 #define ELEMENT_FLIPV 0x8000
 
+// Limits.
+
+#define MAX_SPR_COUNT 128
+
 // Interrupt definitions.
 
 #define INTR_CPU_DIV    0
@@ -46,10 +50,6 @@
 #define INTR_HW_VBLANK_TIMER 5
 #define INTR_HW_VBLANK       6
 #define INTR_HW_HBLANK_TIMER 7
-
-// Limits.
-
-#define MAX_SPR_COUNT 128
 
 // I/O port definitions.
 

@@ -14,8 +14,6 @@
 #include "image.h"
 #include "logo.h"
 
-#define IMAGE_HEIGHT_TILES (image_map_bin_size / 56)
-
 ws_sprite_t sprites[12] __attribute__((aligned(0x200)));
 uint16_t screen[0x400] __attribute__((aligned(0x800)));
 
@@ -32,22 +30,17 @@ void main() {
 	outportw(IO_SPR_PAL_5, LCD_PAL_COLORS(0, 0, 0, 6));
 
 	// Copy tiles (image)
-	memcpy((uint8_t*)0x2000, image_tiles_bin, sizeof(image_tiles_bin));
+	memcpy(MEM_TILE(0), image_tiles_bin, sizeof(image_tiles_bin));
 
-	// Copy map to screen, adjusting for the width difference.
-	const uint8_t __far *src_ptr = image_map_bin;
-	uint8_t *dst_ptr = ((uint8_t*) screen);
-
-	for (int i = 0; i < IMAGE_HEIGHT_TILES; i++, src_ptr += (28 * 2), dst_ptr += (32 * 2)) {
-		memcpy(dst_ptr, src_ptr, (28 * 2));
-	}
+	// Copy screen map (image)
+	video_put_screen_map(screen, image_map_bin, 0, 0, 28, 28);
 
 	// Configure SCR1 memory location and initial Y scroll.
 	outportb(IO_SCR_BASE, SCR1_BASE((uint16_t)screen));
 	outportb(IO_SCR1_SCRL_Y, sin_table[0]);
 
 	// Copy tiles (logo)
-	memcpy((uint8_t*) (0x4000 - sizeof(logo_tiles_bin)), logo_tiles_bin, sizeof(logo_tiles_bin));
+	memcpy(MEM_TILE(512 - (sizeof(logo_tiles_bin) / TILE_DATA_SIZE)), logo_tiles_bin, sizeof(logo_tiles_bin));
 
 	// Configure sprites.
 	for (int i = 0; i < 12; i++) {

@@ -38,7 +38,7 @@ clean:
 	rm $(TARGET) $(OBJECTS)
 
 doc:
-	@ mkdir -p doc
+	@ mkdir -p build/doc
 	doxygen
 
 install:

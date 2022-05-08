@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2022 Adrian "asie" Siekierka
  *
  * This software is provided 'as-is', without any express or implied
@@ -18,15 +18,23 @@
  *    misrepresented as being the original software.
  *
  * 3. This notice may not be removed or altered from any source distribution.
-*/
+ */
+
+/** \file hardware.h
+ * Hardware and port defines.
+ */
 
 #pragma once
 
-// Limits.
+/**
+ * @brief The maximum number of sprites that can be passed to #IO_SPR_COUNT.
+ */
+#define SPR_COUNT_MAX 128
 
-#define MAX_SPR_COUNT 128
-
-// Interrupt definitions.
+/**
+ * @addtogroup DefinesCPUInt Defines - CPU interrupt IDs
+ * @{
+ */
 
 #define INTR_CPU_DIV    0
 #define INTR_CPU_STEP   1
@@ -35,6 +43,13 @@
 #define INTR_CPU_INTO   4
 #define INTR_CPU_BOUNDS 5
 
+/**@}*/
+
+/**
+ * @addtogroup DefinesHWInt Defines - Hardware interrupt IDs
+ * @{
+ */
+ 
 #define INTR_HW_SERIAL_TX    0
 #define INTR_HW_KEY          1
 #define INTR_HW_CARTRIDGE    2
@@ -44,7 +59,12 @@
 #define INTR_HW_VBLANK       6
 #define INTR_HW_HBLANK_TIMER 7
 
-// I/O port definitions.
+/**@}*/
+
+/**
+ * @addtogroup DefinesIOPorts Defines - I/O ports
+ * @{
+ */
 
 #define IO_DISPLAY_CTRL 0x00
 
@@ -272,3 +292,5 @@
 
 #define IO_GPO_CTRL 0xCC
 #define IO_GPO_SCAN 0xCD
+
+/**@}*/

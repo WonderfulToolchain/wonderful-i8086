@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2022 Adrian "asie" Siekierka
  *
  * This software is provided 'as-is', without any express or implied
@@ -18,16 +18,50 @@
  *    misrepresented as being the original software.
  *
  * 3. This notice may not be removed or altered from any source distribution.
-*/
-
-// ws/util.h - utility functions
+ */
 
 #pragma once
 #include <stdint.h>
 
-// Port I/O functions.
+/** \file util.h
+ * Various utility functions for working with the WonderSwan hardware.
+ */
 
+/**
+ * @addtogroup PortIO Functions - Port I/O
+ * @{
+ */
+ 
+ /**
+  * @brief Read a byte from the given port.
+  * 
+  * @param port Port ID. For more information, see @ref DefinesIOPorts
+  * @return uint8_t The value read.
+  */
 uint8_t inportb(uint16_t port);
+
+ /**
+  * @brief Read a word from the given port.
+  * 
+  * @param port Port ID. For more information, see @ref DefinesIOPorts
+  * @return uint8_t The value read.
+  */
 uint16_t inportw(uint16_t port);
+
+ /**
+  * @brief Write a byte to the given port.
+  * 
+  * @param port Port ID. For more information, see @ref DefinesIOPorts
+  * @param value The value to write.
+  */
 void outportb(uint16_t port, uint8_t value);
+
+ /**
+  * @brief Write a word to the given port.
+  * 
+  * @param port Port ID. For more information, see @ref DefinesIOPorts
+  * @param value The value to write.
+  */
 void outportw(uint16_t port, uint16_t value);
+
+/**@}*/

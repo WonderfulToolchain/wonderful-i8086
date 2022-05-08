@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2022 Adrian "asie" Siekierka
  *
  * This software is provided 'as-is', without any express or implied
@@ -18,13 +18,15 @@
  *    misrepresented as being the original software.
  *
  * 3. This notice may not be removed or altered from any source distribution.
-*/
-
-// ws/video.h - video functions
+ */
 
 #pragma once
 #include <stdbool.h>
 #include <stdint.h>
+
+/** \file video.h
+ * Functionality related to video.
+ */
 
 typedef struct {
 	uint16_t tile : 9;
@@ -51,8 +53,6 @@ typedef struct {
 #define SCR_ENTRY_FLIPH 0x4000
 #define SCR_ENTRY_FLIPV 0x8000
 
-#define RGB(r, g, b) (((r) << 8) | ((g) << 4) | (b))
-
 #define TILE_WIDTH 8
 #define TILE_HEIGHT 8
 #define TILE_DATA_SIZE 16
@@ -68,23 +68,125 @@ typedef struct {
 #define DISPLAY_WIDTH_PX (DISPLAY_WIDTH * TILE_WIDTH)
 #define DISPLAY_HEIGHT_PX (DISPLAY_HEIGHT * TILE_HEIGHT)
 
+/**
+ * @addtogroup DefinesVideoMem Defines - Video memory
+ * @{
+ */
+
+/**
+ * @brief Pointer to tile.
+ *
+ * @param i Tile index (0-511).
+ */
 #define MEM_TILE(i) ((uint8_t*) (0x2000 + ((i) << 4)))
-#define MEM_TILE_4BPP_BANK0(i) ((uint8_t*) (0x4000 + ((i) << 5)))
-#define MEM_TILE_4BPP_BANK1(i) ((uint8_t*) (0x8000 + ((i) << 5)))
+
+/**
+ * @brief Pointer to 4bpp tile.
+ *
+ * @param i Tile index (0-1023).
+ */
 #define MEM_TILE_4BPP(i) MEM_TILE_4BPP_BANK0(i)
 
+/**
+ * @brief Pointer to 4bpp tile in bank 0 (0-511).
+ *
+ * @param i Tile index (0-511).
+ */
+#define MEM_TILE_4BPP_BANK0(i) ((uint8_t*) (0x4000 + ((i) << 5)))
+
+/**
+ * @brief Pointer to 4bpp tile in bank 1 (512-1023).
+ *
+ * @param i Tile index (0-511).
+ */
+#define MEM_TILE_4BPP_BANK1(i) ((uint8_t*) (0x8000 + ((i) << 5)))
+
+/**
+ * @brief Pointer to color palette.
+ *
+ * @param i Color palette (0-15).
+ */
 #define MEM_COLOR_PALETTE(i) ((uint16_t*) (0xFE00 + ((i) << 5)))
+
+/**
+ * @brief Pointer to screen color palette.
+ *
+ * @param i Color palette (0-15).
+ */
 #define MEM_SCR_PALETTE MEM_COLOR_PALETTE
+
+/**
+ * @brief Pointer to sprite color palette.
+ *
+ * @param i Color palette (0-7).
+ */
 #define MEM_SPR_PALETTE(i) ((uint16_t*) (0xFF00 + ((i) << 5)))
+
+/**@}*/
 
 #define GRAY_LUT(c0, c1, c2, c3, c4, c5, c6, c7) \
 	(((uint32_t)(c0)) | (((uint32_t)(c1)) << 4) | (((uint32_t)(c2)) << 8) | (((uint32_t)(c3)) << 12) | \
 	(((uint32_t)(c4)) << 16) | (((uint32_t)(c5)) << 20) | (((uint32_t)(c6)) << 24) | (((uint32_t)(c7)) << 28))
 #define GRAY_LUT_DEFAULT GRAY_LUT(0, 2, 4, 6, 9, 11, 13, 15)
+
+/**
+ * @addtogroup Video Functions - Video
+ * @{
+ */
+
+/**
+ * @brief Create an RGB color.
+ *
+ * @param r The red component (0-15).
+ * @param g The red component (0-15).
+ * @param b The red component (0-15).
+ */
+#define RGB(r, g, b) (((r) << 8) | ((g) << 4) | (b))
+
+ /**
+  * @brief Configure the shade LUT.
+  *
+  * To learn more about the shade LUT, see @ref video_pipeline.
+  *
+  * @param lut The shade LUT configuration. Usage of the #GRAY_LUT macro is recommended. A default configuration is provided via #GRAY_LUT_DEFAULT .
+  */
 void video_set_gray_lut(uint32_t lut);
 
+/**
+ * @brief Put a map of tiles on the screen.
+ * 
+ * Upon overflow, the X and Y positions will be wrapped automatically.
+ *
+ * @param dest Pointer to the destination screen.
+ * @param src Pointer to the source map.
+ * @param x Destination X position, in tiles.
+ * @param y Destination Y position, in tiles.
+ * @param width Width, in tiles.
+ * @param height Height, in tiles.
+ */
 void video_put_screen_map(void *dest, const void __far* src, uint8_t x, uint8_t y, uint8_t width, uint8_t height);
+
+/**
+ * @brief Fill an area on the screen with a given tile.
+ * 
+ * @param dest Pointer to the destination screen.
+ * @param src The tile to fill the area with.
+ * @param x Destination X position, in tiles.
+ * @param y Destination Y position, in tiles.
+ * @param width Width, in tiles.
+ * @param height Height, in tiles.
+ */
 void video_fill_screen(void *dest, uint16_t src, uint8_t x, uint8_t y, uint8_t width, uint8_t height);
+
+/**
+ * @brief Put a tile on the screen.
+ * 
+ * @param dest Pointer to the destination screen.
+ * @param src The tile to put.
+ * @param x Destination X position, in tiles.
+ * @param y Destination Y position, in tiles.
+ */
 static inline void video_put_screen(void *dest, uint16_t src, uint8_t x, uint8_t y) {
 	((uint16_t*) dest)[((y & 0x1F) << 5) | (x & 0x1F)] = src;
 }
+/**@}*/

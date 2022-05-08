@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2022 Adrian "asie" Siekierka
  *
  * This software is provided 'as-is', without any express or implied
@@ -18,14 +18,27 @@
  *    misrepresented as being the original software.
  *
  * 3. This notice may not be removed or altered from any source distribution.
-*/
+ */
 
-// ws/keypad.h - keypad functions
+/** \file keypad.h
+ * Functionality related to the keypad.
+ */
 
 #pragma once
 #include <stdint.h>
 
+/**
+ * @addtogroup Keypad Functions - Keypad
+ * @{
+ */
+ 
+/**
+ * @brief Query the current state of the keypad.
+ * 
+ * @return uint16_t A bitfield representing currently pressed keys.
+ */
 uint16_t keypad_scan(void);
+
 #define KEY_Y4    0x0800
 #define KEY_Y3    0x0400
 #define KEY_Y2    0x0200
@@ -37,3 +50,5 @@ uint16_t keypad_scan(void);
 #define KEY_B     0x0008
 #define KEY_A     0x0004
 #define KEY_START 0x0002
+
+/**@}*/

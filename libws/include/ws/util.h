@@ -38,7 +38,7 @@
   * @param port Port ID. For more information, see @ref DefinesIOPorts
   * @return uint8_t The value read.
   */
-uint8_t inportb(uint16_t port);
+uint8_t inportb(uint8_t port);
 
  /**
   * @brief Read a word from the given port.
@@ -46,7 +46,7 @@ uint8_t inportb(uint16_t port);
   * @param port Port ID. For more information, see @ref DefinesIOPorts
   * @return uint8_t The value read.
   */
-uint16_t inportw(uint16_t port);
+uint16_t inportw(uint8_t port);
 
  /**
   * @brief Write a byte to the given port.
@@ -54,7 +54,7 @@ uint16_t inportw(uint16_t port);
   * @param port Port ID. For more information, see @ref DefinesIOPorts
   * @param value The value to write.
   */
-void outportb(uint16_t port, uint8_t value);
+void outportb(uint8_t port, uint8_t value);
 
  /**
   * @brief Write a word to the given port.
@@ -62,6 +62,6 @@ void outportb(uint16_t port, uint8_t value);
   * @param port Port ID. For more information, see @ref DefinesIOPorts
   * @param value The value to write.
   */
-void outportw(uint16_t port, uint16_t value);
+void outportw(uint8_t port, uint16_t value);
 
 /**@}*/

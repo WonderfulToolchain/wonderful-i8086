@@ -26,6 +26,7 @@
 
 	.global inportw
 inportw:
+	xor	ah, ah
 	mov	dx, ax
 	in	ax, dx
 	retf

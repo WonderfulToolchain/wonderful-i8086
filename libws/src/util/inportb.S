@@ -26,7 +26,8 @@
 
 	.global inportb
 inportb:
+	xor	ah, ah
 	mov	dx, ax
 	in	al, dx
-	xor	ah, ah
+	// xor	ah, ah - cleared above
 	retf

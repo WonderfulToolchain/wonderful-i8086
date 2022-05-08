@@ -26,6 +26,7 @@
 
 	.global outportb
 outportb:
+	xor	ah, ah
 	xchg	ax, dx
 	out	dx, al
 	retf

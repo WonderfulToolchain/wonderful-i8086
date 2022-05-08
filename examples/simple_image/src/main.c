@@ -27,7 +27,7 @@ void main() {
 	// Configure shade LUT
 	video_set_gray_lut(GRAY_LUT_DEFAULT);
 	// Configure palettes
-	outportw(IO_SCR_PAL_0, ((uint16_t __far*)image_pal_bin)[0]);
+	outportw(IO_SCR_PAL_0, image_pal_bin);
 	outportw(IO_SPR_PAL_4, LCD_PAL_COLORS(0, 0, 0, 1));
 	outportw(IO_SPR_PAL_5, LCD_PAL_COLORS(0, 0, 0, 6));
 

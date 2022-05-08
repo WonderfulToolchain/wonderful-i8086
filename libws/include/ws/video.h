@@ -45,6 +45,12 @@ typedef struct {
 	bool flip_v : 1;
 } ws_screen_entry_t;
 
+#define SCR_ENTRY_TILE(x) (x)
+#define SCR_ENTRY_PALETTE(x) ((x) << 9)
+#define SCR_ENTRY_BANK(x) ((x) << 13)
+#define SCR_ENTRY_FLIPH 0x4000
+#define SCR_ENTRY_FLIPV 0x8000
+
 #define RGB(r, g, b) (((r) << 8) | ((g) << 4) | (b))
 
 #define TILE_WIDTH 8
@@ -67,9 +73,9 @@ typedef struct {
 #define MEM_TILE_4BPP_BANK1(i) ((uint8_t*) (0x8000 + ((i) << 5)))
 #define MEM_TILE_4BPP(i) MEM_TILE_4BPP_BANK0(i)
 
-#define MEM_COLOR_PALETTE ((uint16_t*) 0xFE00)
-#define MEM_SCR_PALETTE COLOR_PALETTE
-#define MEM_SPR_PALETTE ((uint16_t*) 0xFF00)
+#define MEM_COLOR_PALETTE(i) ((uint16_t*) (0xFE00 + ((i) << 5)))
+#define MEM_SCR_PALETTE MEM_COLOR_PALETTE
+#define MEM_SPR_PALETTE(i) ((uint16_t*) (0xFF00 + ((i) << 5)))
 
 #define GRAY_LUT(c0, c1, c2, c3, c4, c5, c6, c7) \
 	(((uint32_t)(c0)) | (((uint32_t)(c1)) << 4) | (((uint32_t)(c2)) << 8) | (((uint32_t)(c3)) << 12) | \
@@ -78,3 +84,7 @@ typedef struct {
 void video_set_gray_lut(uint32_t lut);
 
 void video_put_screen_map(void *dest, const void __far* src, uint8_t x, uint8_t y, uint8_t width, uint8_t height);
+void video_fill_screen(void *dest, uint16_t src, uint8_t x, uint8_t y, uint8_t width, uint8_t height);
+static inline void video_put_screen(void *dest, uint16_t src, uint8_t x, uint8_t y) {
+	((uint16_t*) dest)[((y & 0x1F) << 5) | (x & 0x1F)] = src;
+}

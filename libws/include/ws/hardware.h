@@ -22,13 +22,6 @@
 
 #pragma once
 
-// Basic definitions.
-
-#define ELEMENT_PALETTE(x) ((x) << 9)
-#define ELEMENT_BANK(x) ((x) << 13)
-#define ELEMENT_FLIPH 0x4000
-#define ELEMENT_FLIPV 0x8000
-
 // Limits.
 
 #define MAX_SPR_COUNT 128
@@ -58,9 +51,9 @@
 #define DISPLAY_SCR1_ENABLE  0x0001
 #define DISPLAY_SCR2_ENABLE  0x0002
 #define DISPLAY_SPR_ENABLE   0x0004
-#define DISPLAY_SPRW_ENABLE  0x0008
-#define DISPLAY_SCR2W_ENABLE 0x0010
-#define DISPLAY_SCR2W_INSIDE 0x0020
+#define DISPLAY_SPR_WIN_ENABLE  0x0008
+#define DISPLAY_SCR2_WIN_INSIDE 0x0020
+#define DISPLAY_SCR2_WIN_OUTSIDE 0x0030
 
 #define DISPLAY_BORDER(x) ((x) << 8)
 #define DISPLAY_COLOR(x) ((x) << 8)

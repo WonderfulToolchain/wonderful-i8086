@@ -4,7 +4,8 @@ Experimental C toolchain for the WonderSwan. Early development.
 
 ## Known limitations
 
-* Read-only data (const arrays, etc.) will only end up in ROM if declared as __far.
+* Read-only data (const arrays, etc.) will only end up in ROM if declared as `__far`.
+    * To be more precise, by default, pointers are near pointers. In wonderful-i8086, this means they can only point to the console RAM. To point to SRAM or the console ROM, far pointers must be utilized.
 
 ## Rough build instructions
 

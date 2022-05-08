@@ -12,12 +12,10 @@
 #pragma once
 #include <stddef.h>
 
-#define NULL ((void*) 0)
-
 int abs(int j);
 long int labs(long int j);
 long long int llabs(long long int j);
 
+#define RAND_MAX 32767
 int rand(void);
 void srand(unsigned int seed);
-#define RAND_MAX 32767

@@ -14,6 +14,9 @@ EARLY_OBJECTS := $(OBJDIR)/image.o $(OBJDIR)/logo.o
 OBJECTS := $(CSOURCES:%.c=$(OBJDIR)/%.o) $(ASMSOURCES:%.S=$(OBJDIR)/%.o) $(EARLY_OBJECTS)
 CFLAGS += -I$(OBJDIR)
 
+DEPS := $(OBJECTS:.o=.d)
+CFLAGS += -MMD -MP
+
 vpath %.c $(SRCDIRS)
 vpath %.S $(SRCDIRS)
 
@@ -31,10 +34,10 @@ $(OBJDIR)/logo.c: $(RESDIR)/logo.png
 	$(SUPERFAMICONV) tiles -i $< -M ws -D -F -p $(RESDIR)/image.pal.bin -d $(OBJDIR)/logo.tiles.bin
 	$(BIN2C) $@ $(OBJDIR)/logo.tiles.bin
 
-$(OBJDIR)/%.o: %.c $(OBJDIR) $(EARLY_OBJECTS)
+$(OBJDIR)/%.o: %.c $(EARLY_OBJECTS) | $(OBJDIR)
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-$(OBJDIR)/%.o: %.S $(OBJDIR) $(EARLY_OBJECTS)
+$(OBJDIR)/%.o: %.S $(EARLY_OBJECTS) | $(OBJDIR)
 	$(AS) $(ASFLAGS) -o $@ $<
 
 $(OBJDIR):
@@ -42,3 +45,5 @@ $(OBJDIR):
 
 clean:
 	rm $(TARGET) $(OBJECTS) $(OBJDIR)/*.bin $(OBJDIR)/image.c $(OBJDIR)/logo.c
+
+-include $(DEPS)

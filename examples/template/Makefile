@@ -11,6 +11,9 @@ CSOURCES := $(foreach dir,$(SRCDIRS),$(notdir $(wildcard $(dir)/*.c)))
 ASMSOURCES := $(foreach dir,$(SRCDIRS),$(notdir $(wildcard $(dir)/*.S)))
 OBJECTS := $(CSOURCES:%.c=$(OBJDIR)/%.o) $(ASMSOURCES:%.S=$(OBJDIR)/%.o)
 
+DEPS := $(OBJECTS:.o=.d)
+CFLAGS += -MMD -MP
+
 vpath %.c $(SRCDIRS)
 vpath %.S $(SRCDIRS)
 
@@ -19,10 +22,10 @@ all: $(TARGET)
 $(TARGET): $(OBJECTS)
 	$(SWANLINK) -v -o $@ --output-elf $@.elf --linker-args $(LDFLAGS) $(WS_CRT0) $(OBJECTS) $(LIBS)
 
-$(OBJDIR)/%.o: %.c $(OBJDIR)
+$(OBJDIR)/%.o: %.c | $(OBJDIR)
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-$(OBJDIR)/%.o: %.S $(OBJDIR)
+$(OBJDIR)/%.o: %.S | $(OBJDIR)
 	$(AS) $(ASFLAGS) -o $@ $<
 
 $(OBJDIR):
@@ -30,3 +33,5 @@ $(OBJDIR):
 
 clean:
 	rm $(TARGET) $(OBJECTS)
+
+-include $(DEPS)

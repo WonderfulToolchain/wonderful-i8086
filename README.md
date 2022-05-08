@@ -23,6 +23,9 @@ Only Linux is officially supported at this time. Using WSL2 on Windows is recomm
     # build libc
     $ cd ../libc
     $ make install
+    # build liblzsa
+    $ cd ../liblzsa
+    $ make install
     # build libws
     $ cd ../libws
     $ make install
@@ -31,7 +34,13 @@ Only Linux is officially supported at this time. Using WSL2 on Windows is recomm
 
 All source files have their licensing terms stated in the file itself. Crucially, for runtime components linked with a compiled binary, the licenses are as follows:
 
+### Core libraries
+
 * libgcc runtime library: [GPLv3 w/ Runtime Library Exception](https://www.fsf.org/news/2009-01-gcc-exception)
-* `support/src/crt0.S`: [zlib license](docs/COPYING.ZLIB)
-* `libc/`: [CC0/public domain-like](docs/COPYING.CC0)
-* `libws/`: [zlib license](docs/COPYING.ZLIB)
+* startup/support code (`support/src/`): [zlib license](docs/COPYING.ZLIB)
+* wonderful-i8086 C library (`libc/`): [CC0/public domain-like](docs/COPYING.CC0)
+* wonderful-i8086 platform library (`libws/`): [zlib license](docs/COPYING.ZLIB)
+
+### Additional libraries
+
+* lzsa decompression library (`liblzsa/`): [zlib license](liblzsa/README.md)

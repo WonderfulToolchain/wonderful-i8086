@@ -6,7 +6,7 @@ OBJDIR := obj
 RESDIR := res
 SRCDIRS := src
 MKDIRS := $(OBJDIR)
-LIBS := -lws -lc
+LIBS := -llzma_fast -lws -lc
 
 CSOURCES := $(foreach dir,$(SRCDIRS),$(notdir $(wildcard $(dir)/*.c)))
 ASMSOURCES := $(foreach dir,$(SRCDIRS),$(notdir $(wildcard $(dir)/*.S)))
@@ -28,7 +28,8 @@ $(TARGET): $(OBJECTS)
 $(OBJDIR)/image.c: $(RESDIR)/image.png
 	$(SUPERFAMICONV) tiles -i $< -M ws -p $(RESDIR)/image.pal.bin -d $(OBJDIR)/image.tiles.bin
 	$(SUPERFAMICONV) map -i $< -M ws -p $(RESDIR)/image.pal.bin -t $(OBJDIR)/image.tiles.bin -d $(OBJDIR)/image.map.bin
-	$(BIN2C) $@ $(RESDIR)/image.pal.bin:int16 $(OBJDIR)/image.tiles.bin $(OBJDIR)/image.map.bin
+	$(LZSA) -r -f 2 $(OBJDIR)/image.tiles.bin $(OBJDIR)/image.tiles.bin.lzsa2
+	$(BIN2C) $@ $(RESDIR)/image.pal.bin:int16 $(OBJDIR)/image.tiles.bin.lzsa2 $(OBJDIR)/image.map.bin
 
 $(OBJDIR)/logo.c: $(RESDIR)/logo.png
 	$(SUPERFAMICONV) tiles -i $< -M ws -D -F -p $(RESDIR)/image.pal.bin -d $(OBJDIR)/logo.tiles.bin

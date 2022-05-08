@@ -94,6 +94,15 @@ fi
 
 ## utilities
 
+if component_requested lzsa $@; then
+	echo "=== Building lzsa ==="
+	pushd lzsa
+	make -j1 clean
+	make
+	cp -a lzsa $PREFIX/bin/
+	popd
+fi
+
 if component_requested SuperFamiconv $@; then
 	echo "=== Building SuperFamiconv ==="
 	pushd SuperFamiconv

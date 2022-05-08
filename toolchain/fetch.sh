@@ -69,6 +69,7 @@ fetch_git_shallow () {
 
 fetch_git_shallow binutils-ia16 https://github.com/WonderfulToolchain/binutils-ia16
 fetch_git_shallow gcc-ia16 https://github.com/WonderfulToolchain/gcc-ia16
+fetch_git lzsa https://github.com/WonderfulToolchain/lzsa
 fetch_git SuperFamiconv https://github.com/WonderfulToolchain/SuperFamiconv
 fetch_http_tar gmp-$GMP_VERSION.tar.bz2 gmp-$GMP_VERSION https://gmplib.org/download/gmp/gmp-$GMP_VERSION.tar.bz2
 fetch_http_tar mpfr-$MPFR_VERSION.tar.bz2 mpfr-$MPFR_VERSION https://www.mpfr.org/mpfr-$MPFR_VERSION/mpfr-$MPFR_VERSION.tar.bz2

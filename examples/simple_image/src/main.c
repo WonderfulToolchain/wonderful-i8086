@@ -10,6 +10,7 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
+#include <lzsa.h>
 #include <ws.h>
 #include "image.h"
 #include "logo.h"
@@ -30,7 +31,8 @@ void main() {
 	outportw(IO_SPR_PAL_5, LCD_PAL_COLORS(0, 0, 0, 6));
 
 	// Copy tiles (image)
-	memcpy(MEM_TILE(0), image_tiles_bin, sizeof(image_tiles_bin));
+	// memcpy(MEM_TILE(0), image_tiles_bin, sizeof(image_tiles_bin));
+	lzsa2_decompress(MEM_TILE(0), image_tiles_bin_lzsa2);
 
 	// Copy screen map (image)
 	video_put_screen_map(screen, image_map_bin, 0, 0, 28, 28);

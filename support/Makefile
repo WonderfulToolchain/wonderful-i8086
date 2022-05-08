@@ -11,6 +11,8 @@ OBJECTS := $(CSOURCES:%.c=$(OBJDIR)/%.o) $(ASMSOURCES:%.S=$(OBJDIR)/%.o)
 vpath %.c $(SRCDIRS)
 vpath %.S $(SRCDIRS)
 
+.PHONY: all clean install
+
 all: $(OBJECTS)
 
 $(OBJDIR)/%.o: %.c $(OBJDIR)

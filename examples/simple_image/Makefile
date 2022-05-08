@@ -20,6 +20,8 @@ CFLAGS += -MMD -MP
 vpath %.c $(SRCDIRS)
 vpath %.S $(SRCDIRS)
 
+.PHONY: all clean install
+
 all: $(TARGET)
 
 $(TARGET): $(OBJECTS)

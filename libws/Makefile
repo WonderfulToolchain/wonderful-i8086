@@ -18,6 +18,8 @@ CFLAGS += -Iinclude
 vpath %.c $(SRCDIRS)
 vpath %.S $(SRCDIRS)
 
+.PHONY: all clean doc install
+
 all: $(TARGET)
 
 $(TARGET): $(OBJECTS)
@@ -34,6 +36,10 @@ $(OBJDIR):
 
 clean:
 	rm $(TARGET) $(OBJECTS)
+
+doc:
+	@ mkdir -p doc
+	doxygen
 
 install:
 	cp -r include/* $(TOOLCHAIN_PREFIX)/ws/include/

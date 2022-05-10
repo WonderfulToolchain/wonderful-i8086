@@ -33,5 +33,5 @@ install: $(OBJECTS)
 	install -m 644 $(OBJDIR)/crt0.o $(TOOLCHAIN_PREFIX)/ws/lib
 	install -m 644 swan.ld.template $(TOOLCHAIN_PREFIX)/ws/lib
 	install -m 644 swan.mk $(TOOLCHAIN_PREFIX)/ws/lib
-	install -m 755 bin2c.py $(TOOLCHAIN_PREFIX)/bin/bin2c
-	install -m 755 swanlink.py $(TOOLCHAIN_PREFIX)/bin/swanlink
+	install -m 755 bin2c.py $(TOOLCHAIN_PREFIX)/bin/wf-bin2c
+	install -m 755 swanlink.py $(TOOLCHAIN_PREFIX)/bin/wf-swanlink

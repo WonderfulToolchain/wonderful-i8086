@@ -47,6 +47,7 @@ $(OBJDIR):
 	$(info $(shell mkdir -p $(MKDIRS)))
 
 clean:
-	rm $(TARGET) $(OBJECTS) $(OBJDIR)/*.bin $(OBJDIR)/image.c $(OBJDIR)/logo.c
+	rm -r $(OBJDIR)/*
+	rm $(TARGET) $(TARGET).elf
 
 -include $(DEPS)

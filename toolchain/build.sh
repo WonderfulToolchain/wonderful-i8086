@@ -99,16 +99,16 @@ if component_requested lzsa $@; then
 	pushd lzsa
 	make -j1 clean
 	make
-	cp -a lzsa $PREFIX/bin/
+	cp -a lzsa $PREFIX/bin/wf-lzsa
 	popd
 fi
 
-if component_requested SuperFamiconv $@; then
+if component_requested superfamiconv $@; then
 	echo "=== Building SuperFamiconv ==="
 	pushd SuperFamiconv
 	make -j1 clean
 	make
-	cp -a bin/superfamiconv $PREFIX/bin/
+	cp -a bin/superfamiconv $PREFIX/bin/wf-superfamiconv
 	popd
 fi
 

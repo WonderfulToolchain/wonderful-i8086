@@ -12,9 +12,9 @@ LD := $(TOOLCHAIN_PREFIX)/bin/ia16-elf-ld
 NM := $(TOOLCHAIN_PREFIX)/bin/ia16-elf-nm
 OBJCOPY := $(TOOLCHAIN_PREFIX)/bin/ia16-elf-objcopy
 RANLIB := $(TOOLCHAIN_PREFIX)/bin/ia16-elf-ranlib
-SUPERFAMICONV := $(TOOLCHAIN_PREFIX)/bin/superfamiconv
-BIN2C := $(TOOLCHAIN_PREFIX)/bin/bin2c
-LZSA := $(TOOLCHAIN_PREFIX)/bin/lzsa
-SWANLINK := $(TOOLCHAIN_PREFIX)/bin/swanlink
+SUPERFAMICONV := $(TOOLCHAIN_PREFIX)/bin/wf-superfamiconv
+BIN2C := $(TOOLCHAIN_PREFIX)/bin/wf-bin2c
+LZSA := $(TOOLCHAIN_PREFIX)/bin/wf-lzsa
+SWANLINK := $(TOOLCHAIN_PREFIX)/bin/wf-swanlink
 
 WS_CRT0 := $(TOOLCHAIN_PREFIX)/ws/lib/crt0.o

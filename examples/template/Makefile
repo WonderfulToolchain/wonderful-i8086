@@ -34,6 +34,7 @@ $(OBJDIR):
 	$(info $(shell mkdir -p $(MKDIRS)))
 
 clean:
-	rm $(TARGET) $(OBJECTS)
+	rm -r $(OBJDIR)/*
+	rm $(TARGET) $(TARGET).elf
 
 -include $(DEPS)

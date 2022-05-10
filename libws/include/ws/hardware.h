@@ -291,6 +291,6 @@
 #define IO_RTC_DATA 0xCB
 
 #define IO_GPO_CTRL 0xCC
-#define IO_GPO_SCAN 0xCD
+#define IO_GPO_DATA 0xCD
 
 /**@}*/

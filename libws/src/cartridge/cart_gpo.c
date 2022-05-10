@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (c) 2022 Adrian "asie" Siekierka
  *
  * This software is provided 'as-is', without any express or implied
@@ -18,12 +18,20 @@
  *    misrepresented as being the original software.
  *
  * 3. This notice may not be removed or altered from any source distribution.
- */
+*/
 
-#pragma once
-#include <ws/util.h>
-#include <ws/hardware.h>
-#include <ws/system.h>
-#include <ws/video.h>
-#include <ws/keypad.h>
-#include <ws/cartridge.h>
+#include <stdbool.h>
+#include <stdint.h>
+#include "ws/cartridge.h"
+
+void enable_cart_gpo(uint8_t id) {
+	outportb(IO_GPO_CTRL, inportb(IO_GPO_CTRL) | (1 << id));
+}
+
+void disable_cart_gpo(uint8_t id) {
+	outportb(IO_GPO_CTRL, inportb(IO_GPO_CTRL) & (~(1 << id)));
+}
+
+void set_cart_gpo(uint8_t id, bool val) {
+	outportb(IO_GPO_DATA, inportb(IO_GPO_DATA) & (~(1 << id)) | ((val & 1) << id));
+}

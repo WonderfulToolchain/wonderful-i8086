@@ -26,8 +26,8 @@ The following function signature:
 results in the following calling convention:
 
  * `DX:AX` = `s1`,
- * stack (+4 bytes) = `s2`,
- * stack (+2 bytes) = `n`,
+ * stack (4 bytes allocated) = `s2`,
+ * stack (2 bytes allocated) = `n`,
  * return in `DX:AX`.
 
 ## Function call register allocation

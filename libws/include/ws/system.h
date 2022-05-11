@@ -36,26 +36,6 @@
  */
  
 /**
- * @brief The model of the current device.
- */
-typedef enum {
-	/**
-	 * @brief This device represents a WonderSwan.
-	 */
-	MODEL_WONDERSWAN,
-
-	/**
-	 * @brief This device represents a WonderSwan Color.
-	 */
-	MODEL_WONDERSWAN_COLOR,
-
-	/**
-	 * @brief This device represents a SwanCrystal.
-	 */
-	MODEL_SWANCRYSTAL
-} ws_system_model_t;
-
-/**
  * @brief Check if this device is a WonderSwan Color or above.
  *
  * This is useful for gating functionality specific to Color mode - see @ref ws_system_mode_t for more information.
@@ -68,11 +48,19 @@ static inline bool system_is_color(void) {
 }
 
 /**
- * @brief Get the current device's model.
+ * @brief Check if this device is a SwanCrystal.
+ *
+ * While the SwanCrystal doesn't provide additional official functionality, this can be used
+ * for different color palette sets adapted to the respective models' display panel technology.
+ *
+ * This function must be used only if @ref system_is_color is true.
  * 
- * @return ws_system_model_t The current device's model. 
+ * @return true This device is a SwanCrystal.
+ * @return false This device is not a SwanCrystal.
  */
-ws_system_model_t system_get_model(void);
+static inline bool system_is_swancrystal(void) {
+	return inportb(IO_SYSTEM_CTRL3) & SYSTEM_CTRL3_SWANCRYSTAL;
+}
 
 /**
  * @brief WonderSwan system mode. 
@@ -120,6 +108,8 @@ static inline ws_system_mode_t system_get_mode(void) {
 
 /**
  * @brief Set the new system mode.
+ *
+ * Note that any non-Mono modes require a WonderSwan Color or above - see @ref system_is_color
  * 
  * @param mode The new system mode.
  * @return true If the operation was successful.

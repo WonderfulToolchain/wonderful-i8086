@@ -149,11 +149,12 @@
 #define LCD_PAL_COLOR_2(x) ((x) << 8)
 #define LCD_PAL_COLOR_3(x) ((x) << 12)
 
-#define IO_GDMA_SOURCE_L 0x40
-#define IO_GDMA_SOURCE_H 0x42
-#define IO_GDMA_DESTINATION 0x44
-#define IO_GDMA_COUNTER 0x46
-#define IO_GDMA_CTRL 0x48
+#define IO_DMA_SOURCE_L 0x40
+#define IO_DMA_SOURCE_H 0x42
+#define IO_DMA_DEST 0x44
+#define IO_DMA_COUNTER 0x46
+#define IO_DMA_LENGTH IO_DMA_COUNTER
+#define IO_DMA_CTRL 0x48
 
 #define IO_SDMA_SOURCE_L 0x4A
 #define IO_SDMA_SOURCE_H 0x4C
@@ -161,7 +162,7 @@
 #define IO_SDMA_COUNTER_H 0x50
 #define IO_SDMA_CTRL 0x52
 
-#define DMA_TRANSFER 0x80
+#define DMA_TRANSFER_ENABLE 0x80
 #define DMA_ADDRESS_INC 0x00
 #define DMA_ADDRESS_DEC 0x40
 

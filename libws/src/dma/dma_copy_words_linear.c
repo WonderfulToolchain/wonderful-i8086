@@ -21,16 +21,14 @@
 */
 
 #include <stdint.h>
-#include "ws/system.h"
+#include "ws/util.h"
+#include "ws/hardware.h"
+#include "ws/dma.h"
 
-ws_system_model_t system_get_model(void) {
-	if (inportb(IO_SYSTEM_CTRL1) & SYSTEM_CTRL1_COLOR) {
-		if (inportb(IO_SYSTEM_CTRL3) & SYSTEM_CTRL3_SWANCRYSTAL) {
-			return MODEL_SWANCRYSTAL;
-		} else {
-			return MODEL_WONDERSWAN_COLOR;
-		}
-	} else {
-		return MODEL_WONDERSWAN;
-	}
+void dma_copy_words_linear(void *dest, uint32_t src, uint16_t length) {
+	outportw(IO_DMA_SOURCE_L, src);
+	outportb(IO_DMA_SOURCE_H, src >> 16);
+	outportw(IO_DMA_DEST, (uint16_t) dest);
+	outportw(IO_DMA_LENGTH, length);
+	outportb(IO_DMA_CTRL, DMA_TRANSFER_ENABLE);
 }

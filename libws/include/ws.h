@@ -26,4 +26,5 @@
 #include <ws/system.h>
 #include <ws/video.h>
 #include <ws/keypad.h>
+#include <ws/dma.h>
 #include <ws/cartridge.h>

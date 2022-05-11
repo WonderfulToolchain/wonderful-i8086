@@ -3,7 +3,7 @@ include $(TOOLCHAIN_PREFIX)/ws/lib/swan.mk
 
 TARGET := libws.a
 OBJDIR := obj
-SRCDIRS := src src/cartridge src/keypad src/system src/util src/video
+SRCDIRS := src src/cartridge src/dma src/keypad src/system src/util src/video
 MKDIRS := $(OBJDIR)
 
 CSOURCES := $(foreach dir,$(SRCDIRS),$(notdir $(wildcard $(dir)/*.c)))

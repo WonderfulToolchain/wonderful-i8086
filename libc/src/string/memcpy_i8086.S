@@ -25,8 +25,14 @@ memcpy:
 	mov	di, ax
 	lds	si, [bp + 14]
 	mov	cx, [bp + 18]
+	shr	cx, 1
 	cld
-	rep	movsb
+	rep	movsw
+	jnc	memcpy_no_byte
+	movsb
+memcpy_no_byte:
+	mov	dx, ds
+	mov	ax, [bp + 14]
 	pop	bp
 	pop	es
 	pop	ds

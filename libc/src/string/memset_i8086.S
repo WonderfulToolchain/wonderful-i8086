@@ -17,15 +17,21 @@
 memset:
 	push	di
 	push	es
+	push	ax
 	push	bp
 	mov	bp, sp
 	mov	es, dx
 	mov	di, ax
 	mov	al, cl
-	mov	cx, [bp + 10]
+	mov	cx, [bp + 12]
+	shr	cx, 1
 	cld
-	rep	stosb
+	rep	stosw
+	jnc	memset_no_byte
+	stosb
+memset_no_byte:
 	pop	bp
+	pop	ax
 	pop	es
 	pop	di
 	retf	0x2

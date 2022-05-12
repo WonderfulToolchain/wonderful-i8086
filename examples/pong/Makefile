@@ -7,6 +7,7 @@ RESDIR := res
 SRCDIRS := src
 MKDIRS := $(OBJDIR)
 LIBS := -lws -lc
+CFLAGS += -O2
 
 CSOURCES := $(foreach dir,$(SRCDIRS),$(notdir $(wildcard $(dir)/*.c)))
 ASMSOURCES := $(foreach dir,$(SRCDIRS),$(notdir $(wildcard $(dir)/*.S)))

@@ -5,6 +5,7 @@ TARGET := libc.a
 OBJDIR := obj
 SRCDIRS := src src/stdlib src/string
 MKDIRS := $(OBJDIR)
+CFLAGS += -O2
 
 CSOURCES := $(foreach dir,$(SRCDIRS),$(notdir $(wildcard $(dir)/*.c)))
 ASMSOURCES := $(foreach dir,$(SRCDIRS),$(notdir $(wildcard $(dir)/*.S)))

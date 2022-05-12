@@ -3,6 +3,7 @@ include $(TOOLCHAIN_PREFIX)/ws/lib/swan.mk
 
 OBJDIR := obj
 MKDIRS := $(OBJDIR)
+CFLAGS += -O2
 
 SOURCES_SMALL := decompress_small_v1.S decompress_small_v2.S
 OBJECTS_SMALL := $(SOURCES_SMALL:%.S=$(OBJDIR)/%.o)

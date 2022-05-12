@@ -1,6 +1,6 @@
 TOOLCHAIN_PREFIX ?= /opt/wonderful/i8086
 
-CFLAGS := -Os -ffunction-sections -march=i80186 -mtune=v30 -mregparmcall -mcmodel=medium -ffreestanding -msegelf
+CFLAGS := -ffunction-sections -march=v30mz -mtune=v30mz -mregparmcall -mcmodel=medium -ffreestanding -msegelf
 CFLAGS += -isystem $(TOOLCHAIN_PREFIX)/ws/include
 LDFLAGS := -L$(TOOLCHAIN_PREFIX)/ws/lib
 ASFLAGS := --32-segelf

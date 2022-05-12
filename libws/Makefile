@@ -5,6 +5,7 @@ TARGET := libws.a
 OBJDIR := obj
 SRCDIRS := src src/cartridge src/dma src/keypad src/system src/util src/video
 MKDIRS := $(OBJDIR)
+CFLAGS += -O2
 
 CSOURCES := $(foreach dir,$(SRCDIRS),$(notdir $(wildcard $(dir)/*.c)))
 ASMSOURCES := $(foreach dir,$(SRCDIRS),$(notdir $(wildcard $(dir)/*.S)))

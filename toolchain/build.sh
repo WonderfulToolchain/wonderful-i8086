@@ -100,7 +100,7 @@ if component_requested gcc $@; then
 
 	# Build libgcc for WWitch target.
 	make clean-target-libgcc
-	make all-target-libgcc CFLAGS_FOR_TARGET="-Os -march=v30mz -mtune=v30mz -mregparmcall -mcmodel=small -msegelf"
+	make all-target-libgcc CFLAGS_FOR_TARGET="-Os -march=v30mz -mtune=v30mz -mregparmcall -mcmodel=small -msegelf -mno-callee-assume-ss-data-segment"
 	mkdir -p "$PREFIX"/wwitch/lib
 	install -m 644 ia16-elf/libgcc/libgcc.a "$PREFIX"/wwitch/lib
 

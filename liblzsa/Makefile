@@ -1,5 +1,7 @@
-TOOLCHAIN_PREFIX := /opt/wonderful/i8086
-include $(TOOLCHAIN_PREFIX)/wswan.mk
+ifndef WONDERFUL_TOOLCHAIN
+$(error Please define WONDERFUL_TOOLCHAIN to point to the location of the Wonderful toolchain.)
+endif
+include $(WONDERFUL_TOOLCHAIN)/i8086/wswan.mk
 
 OBJDIR := obj
 MKDIRS := $(OBJDIR)
@@ -40,8 +42,8 @@ clean:
 	rm $(TARGET) $(OBJECTS_SMALL) $(OBJECTS_FAST)
 
 install:
-	cp -r include/* $(TOOLCHAIN_PREFIX)/wswan/include/
-	install -m 644 liblzsa_small.a $(TOOLCHAIN_PREFIX)/wswan/lib
-	install -m 644 liblzsa.a $(TOOLCHAIN_PREFIX)/wswan/lib
+	cp -r include/* $(WONDERFUL_TOOLCHAIN)/i8086/wswan/include/
+	install -m 644 liblzsa_small.a $(WONDERFUL_TOOLCHAIN)/i8086/wswan/lib
+	install -m 644 liblzsa.a $(WONDERFUL_TOOLCHAIN)/i8086/wswan/lib
 
 -include $(DEPS)

@@ -11,8 +11,9 @@ Experimental C toolchain for the WonderSwan. Early development.
 
 Only Linux is officially supported at this time. Using WSL2 on Windows is recommended. The scripts have been tested on Arch Linux.
 
+    $ export WONDERFUL_TOOLCHAIN=/opt/wonderful
     # create directory
-    $ mkdir -p /opt/wonderful/i8086
+    $ mkdir -p "$WONDERFUL_TOOLCHAIN"/i8086
     # build tools
     $ cd toolchain
     $ ./fetch.sh

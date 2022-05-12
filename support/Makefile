@@ -1,3 +1,6 @@
+ifndef WONDERFUL_TOOLCHAIN
+$(error Please define WONDERFUL_TOOLCHAIN to point to the location of the Wonderful toolchain.)
+endif
 include wswan.mk
 
 OBJDIR := obj
@@ -28,10 +31,10 @@ clean:
 	rm $(OBJECTS)
 
 install: $(OBJECTS)
-	install -d $(TOOLCHAIN_PREFIX)/wswan/include
-	install -d $(TOOLCHAIN_PREFIX)/wswan/lib
-	install -m 644 $(OBJDIR)/crt0.o $(TOOLCHAIN_PREFIX)/wswan/lib
-	install -m 644 wswan.ld.template $(TOOLCHAIN_PREFIX)/wswan/lib
-	install -m 644 wswan.mk $(TOOLCHAIN_PREFIX)
-	install -m 755 bin2c.py $(TOOLCHAIN_PREFIX)/bin/wf-bin2c
-	install -m 755 swanlink.py $(TOOLCHAIN_PREFIX)/bin/wf-swanlink
+	install -d $(WONDERFUL_TOOLCHAIN)/i8086/wswan/include
+	install -d $(WONDERFUL_TOOLCHAIN)/i8086/wswan/lib
+	install -m 644 $(OBJDIR)/crt0.o $(WONDERFUL_TOOLCHAIN)/i8086/wswan/lib
+	install -m 644 wswan.ld.template $(WONDERFUL_TOOLCHAIN)/i8086/wswan/lib
+	install -m 644 wswan.mk $(WONDERFUL_TOOLCHAIN)/i8086
+	install -m 755 bin2c.py $(WONDERFUL_TOOLCHAIN)/i8086/bin/wf-bin2c
+	install -m 755 swanlink.py $(WONDERFUL_TOOLCHAIN)/i8086/bin/wf-swanlink

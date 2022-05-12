@@ -153,7 +153,7 @@ output_elf_path = None
 if program_args.output_elf:
 	output_elf_path = Path(program_args.output_elf).absolute()
 
-ld_template_path = toolchain_prefix / 'ws/lib/swan.ld.template'
+ld_template_path = toolchain_prefix / 'wswan/lib/wswan.ld.template'
 if program_args.ld_template is not None:
 	ld_template_path = Path(ld_template).absolute()
 ld_path = toolchain_prefix / ("bin/ia16-elf-ld%s" % executable_extension)

@@ -1,13 +1,13 @@
 TOOLCHAIN_PREFIX := /opt/wonderful/i8086
-include $(TOOLCHAIN_PREFIX)/ws/lib/swan.mk
+include $(TOOLCHAIN_PREFIX)/wswan.mk
 
 TARGET := $(notdir $(shell pwd)).ws
 OBJDIR := obj
 RESDIR := res
 SRCDIRS := src
 MKDIRS := $(OBJDIR)
-LIBS := -lws -lc
-CFLAGS += -O2
+LIBS := -lws -lc -lgcc
+CFLAGS += -O0
 
 CSOURCES := $(foreach dir,$(SRCDIRS),$(notdir $(wildcard $(dir)/*.c)))
 ASMSOURCES := $(foreach dir,$(SRCDIRS),$(notdir $(wildcard $(dir)/*.S)))

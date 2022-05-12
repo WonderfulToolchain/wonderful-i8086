@@ -1,5 +1,5 @@
 TOOLCHAIN_PREFIX := /opt/wonderful/i8086
-include $(TOOLCHAIN_PREFIX)/ws/lib/swan.mk
+include $(TOOLCHAIN_PREFIX)/wswan.mk
 
 TARGET := libc.a
 OBJDIR := obj
@@ -39,7 +39,7 @@ clean:
 	rm $(TARGET) $(OBJECTS)
 
 install:
-	cp -r include/* $(TOOLCHAIN_PREFIX)/ws/include/
-	install -m 644 $(TARGET) $(TOOLCHAIN_PREFIX)/ws/lib
+	cp -r include/* $(TOOLCHAIN_PREFIX)/wswan/include/
+	install -m 644 $(TARGET) $(TOOLCHAIN_PREFIX)/wswan/lib
 
 -include $(DEPS)

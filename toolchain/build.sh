@@ -20,7 +20,7 @@ component_requested() {
 
 if component_requested binutils $@; then
 	echo "=== Building binutils ==="
-	rm -r build-binutils
+	rm -rf build-binutils
 	mkdir build-binutils
 	pushd build-binutils
 	../binutils-ia16/configure \
@@ -29,6 +29,7 @@ if component_requested binutils $@; then
 		--enable-targets=ia16-elf \
 		--enable-x86-hpa-segelf=yes \
 		--disable-gdb \
+		--disable-gprof \
 		--disable-libdecnumber \
 		--disable-readline \
 		--disable-sim \
@@ -48,7 +49,7 @@ if component_requested gcc-deps $@; then
 	echo "=== Building GCC dependencies ==="
 	for i in build-gmp build-gmp-out build-mpfr build-mpfr-out build-mpc build-mpc-out build-isl build-isl-out; do
 		if [ -d "$i" ]; then
-			rm -r "$i"
+			rm -rf "$i"
 		fi
 		mkdir "$i"
 	done
@@ -76,7 +77,7 @@ fi
 
 if component_requested gcc $@; then
 	echo "=== Building GCC ==="
-	rm -r build-gcc
+	rm -rf build-gcc
 	mkdir build-gcc
 	pushd build-gcc
 	../gcc-ia16/configure \
@@ -86,9 +87,23 @@ if component_requested gcc $@; then
 		--disable-libssp \
 		--disable-libquadmath \
 		--disable-libstdcxx \
+		--disable-multilib \
 		--with-gmp="$GMP_PREFIX" --with-mpfr="$MPFR_PREFIX" --with-mpc="$MPC_PREFIX" --with-isl="$ISL_PREFIX"
 	make
 	make -j1 install
+
+	# Build libgcc for WSwan target.
+	make clean-target-libgcc
+	make all-target-libgcc CFLAGS_FOR_TARGET="-O2 -march=v30mz -mtune=v30mz -mregparmcall -mcmodel=medium -msegelf"
+	mkdir -p "$PREFIX"/wswan/lib
+	install -m 644 ia16-elf/libgcc/libgcc.a "$PREFIX"/wswan/lib
+
+	# Build libgcc for WWitch target.
+	make clean-target-libgcc
+	make all-target-libgcc CFLAGS_FOR_TARGET="-Os -march=v30mz -mtune=v30mz -mregparmcall -mcmodel=small -msegelf"
+	mkdir -p "$PREFIX"/wwitch/lib
+	install -m 644 ia16-elf/libgcc/libgcc.a "$PREFIX"/wwitch/lib
+
 	popd
 fi
 

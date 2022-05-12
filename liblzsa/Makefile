@@ -1,5 +1,5 @@
 TOOLCHAIN_PREFIX := /opt/wonderful/i8086
-include $(TOOLCHAIN_PREFIX)/ws/lib/swan.mk
+include $(TOOLCHAIN_PREFIX)/wswan.mk
 
 OBJDIR := obj
 MKDIRS := $(OBJDIR)
@@ -40,8 +40,8 @@ clean:
 	rm $(TARGET) $(OBJECTS_SMALL) $(OBJECTS_FAST)
 
 install:
-	cp -r include/* $(TOOLCHAIN_PREFIX)/ws/include/
-	install -m 644 liblzsa_small.a $(TOOLCHAIN_PREFIX)/ws/lib
-	install -m 644 liblzsa.a $(TOOLCHAIN_PREFIX)/ws/lib
+	cp -r include/* $(TOOLCHAIN_PREFIX)/wswan/include/
+	install -m 644 liblzsa_small.a $(TOOLCHAIN_PREFIX)/wswan/lib
+	install -m 644 liblzsa.a $(TOOLCHAIN_PREFIX)/wswan/lib
 
 -include $(DEPS)

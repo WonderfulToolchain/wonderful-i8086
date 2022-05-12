@@ -25,7 +25,7 @@
 //     misrepresented as being the original software.
 //  3. This notice may not be removed or altered from any source distribution.
 
-   .arch i8086
+   .arch i186
    .code16
    .intel_syntax noprefix
    .global lzsa2_decompress
@@ -53,8 +53,12 @@
         lodsb                   //load two nybbles
         xchg    bx,ax
 has_nybble_\@:
+#ifdef __IA16_FEATURE_SHIFT_IMM
+        ror     bl,4
+#else
         mov     cl,4            //swap 4 high and low bits of nybble
         ror     bl,cl
+#endif
         mov     cl,0xF
         and     cl,bl
 .endm
@@ -89,8 +93,12 @@ lzsa2_decompress:
         jb      .lit1b         //LZSA2 output 1-byte more often, so test first
         je      .lit2b
 
+#ifdef __IA16_FEATURE_SHIFT_IMM
+        shr     al,3            //shift literals length into place
+#else
         mov     cl,3
         shr     al,cl           //shift literals length into place
+#endif
         get_nybble              //cl := get extra literals length nybble
         add     al,cl           //add len from token to nybble
         cmp     al,0x12         //LITERALS_RUN_LEN_V2 + 15 ?
@@ -205,13 +213,13 @@ lzsa2_decompress:
         xchg    si,ax           //dx:ax = old ds:si
         mov     si,di           //ds:si now points at back reference in output data
         add     si,bp
-.ifdef HANDLE_WORD_RUN
+#ifdef HANDLE_WORD_RUN
         cmp     bp,-2           //do we have a byte/word run to optimize?
         jae     .do_run        //perform a run
-.else
+#else
         cmp     bp,-1           //do we have a byte run to optimize?
         je      .do_run_1      //perform a byte run
-.endif
+#endif
 //You may be tempted to change "jae" to "jge" because DX is a signed number.
 //Don't!  The total window is 64k, so if you treat this as a signed comparison,
 //you will get incorrect results for offsets over 32K.
@@ -252,10 +260,10 @@ lzsa2_decompress:
    pop ds
         retf 0x4                //done
 
-.ifdef HANDLE_WORD_RUN
+#ifdef HANDLE_WORD_RUN
 .do_run:
         je      .do_run_2      //fall through to byte (common) if not word run
-.endif
+#endif
 
 .do_run_1:
         push    ax
@@ -269,7 +277,7 @@ lzsa2_decompress:
         mov     ds,dx
         jmp     .decode_token  //go decode another token
 
-.ifdef HANDLE_WORD_RUN
+#ifdef HANDLE_WORD_RUN
 .do_run_2:
         push    ax
         lodsw                   //load first word of run
@@ -280,7 +288,7 @@ lzsa2_decompress:
         pop     si
         mov     ds,dx
         jmp     .decode_token  //go decode another token
-.endif
+#endif
 
 //Speed optimization history (decompression times in microseconds @ 4.77 MHz):
 //Compression corpus:shuttle alice robotro rletest largetx linewar ...... ..

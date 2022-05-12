@@ -25,7 +25,7 @@
 //     misrepresented as being the original software.
 //  3. This notice may not be removed or altered from any source distribution.
 
-   .arch i8086
+   .arch i186
    .code16
    .intel_syntax noprefix
    .global lzsa1_decompress
@@ -40,6 +40,7 @@
 //  ---------------------------------------------------------------------------
 
 // Must declare this in the code segment:
+#ifndef __IA16_TUNE_NEC_V30MZ
 SHR4table:
         .byte 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
         .byte 0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01
@@ -49,6 +50,7 @@ SHR4table:
         .byte 0x05,0x05,0x05,0x05,0x05,0x05,0x05,0x05,0x05,0x05,0x05,0x05,0x05,0x05,0x05,0x05
         .byte 0x06,0x06,0x06,0x06,0x06,0x06,0x06,0x06,0x06,0x06,0x06,0x06,0x06,0x06,0x06,0x06
         .byte 0x07,0x07,0x07,0x07,0x07,0x07,0x07,0x07,0x07,0x07,0x07,0x07,0x07,0x07,0x07,0x07
+#endif
 
 lzsa1_decompress:
    push si
@@ -63,7 +65,9 @@ lzsa1_decompress:
 
         push    di              //remember decompression offset
         cld                     //ensure string ops move forward
+#ifndef __IA16_TUNE_NEC_V30MZ
         mov     bx,offset SHR4table
+#endif
         xor     cx,cx
 
 .decode_token:
@@ -101,7 +105,13 @@ lzsa1_decompress:
         jmp     .check_offset_size
 
 .got_literals:
+#ifndef __IA16_TUNE_NEC_V30MZ
         cs   xlat               //shift literals length into place
+#else
+	// On the NEC V30MZ, XLAT takes 5 cycles, but an immediate shift
+	// always takes 3 cycles.
+	shr	al, 4
+#endif
 .got_literals_exact:
         xchg    cx,ax
         rep     movsb           //copy cx literals from ds:si to es:di

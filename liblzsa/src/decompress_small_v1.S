@@ -18,7 +18,7 @@
 //     misrepresented as being the original software.
 //  3. This notice may not be removed or altered from any source distribution.
 
-   .arch i8086
+   .arch i186
    .code16
    .intel_syntax noprefix
    .global lzsa1_decompress
@@ -52,11 +52,14 @@ lzsa1_decompress:
    mov ax,cx               // clear ah - cx is zero from above or from after rep movsb in .copy_match
    lodsb                   // read token byte: O|LLL|MMMM
    mov dx,ax               // keep token in dl
-   
+
    and al,0x70              // isolate literals length in token (LLL)
+#ifdef __IA16_FEATURE_SHIFT_IMM
+   shr al,4                // shift literals length into place
+#else
    mov cl,4
    shr al,cl               // shift literals length into place
-
+#endif
    cmp al,0x07              // LITERALS_RUN_LEN?
    jne .got_literals       // no, we have the full literals count from the token, go copy
 

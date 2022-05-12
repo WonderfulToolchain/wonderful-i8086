@@ -18,7 +18,7 @@
 //     misrepresented as being the original software.
 //  3. This notice may not be removed or altered from any source distribution.
 
-   .arch i8086
+   .arch i186
    .code16
    .intel_syntax noprefix
    .global lzsa2_decompress
@@ -56,9 +56,12 @@ lzsa2_decompress:
    mov dx,ax               // keep token in dl
    
    and al,0x18             // isolate literals length in token (LL)
+#ifdef __IA16_FEATURE_SHIFT_IMM
+   shr al,3                // shift literals length into place
+#else
    mov cl,3
    shr al,cl               // shift literals length into place
-
+#endif
    cmp al,0x03              // LITERALS_RUN_LEN_V2?
    jne .got_literals       // no, we have the full literals count from the token, go copy
 
@@ -186,8 +189,12 @@ lzsa2_decompress:
    xchg bx,ax
 
 .has_nibble:
+#ifdef __IA16_FEATURE_SHIFT_IMM
+   ror bl,4
+#else
    mov cl,4                // swap 4 high and low bits of nibble
    ror bl,cl
+#endif
    mov cl,0x0F
    and cl,bl
    ret

@@ -32,6 +32,7 @@ void main() {
 
 	// Copy tiles (image)
 	// memcpy(MEM_TILE(0), image_tiles_bin, sizeof(image_tiles_bin));
+	// lzsa1_decompress(MEM_TILE(0), image_tiles_bin_lzsa1);
 	lzsa2_decompress(MEM_TILE(0), image_tiles_bin_lzsa2);
 
 	// Copy screen map (image)

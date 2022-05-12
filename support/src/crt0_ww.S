@@ -49,6 +49,9 @@ _start:
 	xor	ax, ax
 	rep	stosw
 
+	mov	di, [es:0x58] // end of program data
+	mov	di, [es:0x5e] // TODO: end of program data?
+
 	mov	ax, offset "_premain"
 
 	pop	cx
@@ -64,4 +67,4 @@ _premain:
 	mov	ds, ax
 	mov	es, ax
 	call	main
-	retf
+	int	0x10

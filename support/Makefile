@@ -22,7 +22,7 @@ $(OBJDIR)/%.o: %.c $(OBJDIR)
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 $(OBJDIR)/%.o: %.S $(OBJDIR)
-	$(AS) $(ASFLAGS) -o $@ $<
+	$(CC) $(CFLAGS) -c -o $@ $<
 
 $(OBJDIR):
 	$(info $(shell mkdir -p $(MKDIRS)))
@@ -33,8 +33,13 @@ clean:
 install: $(OBJECTS)
 	install -d $(WONDERFUL_TOOLCHAIN)/i8086/wswan/include
 	install -d $(WONDERFUL_TOOLCHAIN)/i8086/wswan/lib
-	install -m 644 $(OBJDIR)/crt0.o $(WONDERFUL_TOOLCHAIN)/i8086/wswan/lib
+	install -m 644 $(OBJDIR)/crt0.o $(WONDERFUL_TOOLCHAIN)/i8086/wswan/lib/crt0.o
+	install -m 644 $(OBJDIR)/crt0_ww.o $(WONDERFUL_TOOLCHAIN)/i8086/wwitch/lib/crt0.o
 	install -m 644 wswan.ld.template $(WONDERFUL_TOOLCHAIN)/i8086/wswan/lib
+	install -m 644 wonderful-i8086.mk $(WONDERFUL_TOOLCHAIN)/i8086
 	install -m 644 wswan.mk $(WONDERFUL_TOOLCHAIN)/i8086
+	install -m 644 wwitch.mk $(WONDERFUL_TOOLCHAIN)/i8086
+	install -m 644 wwitch.ld $(WONDERFUL_TOOLCHAIN)/i8086/wwitch/lib
 	install -m 755 bin2c.py $(WONDERFUL_TOOLCHAIN)/i8086/bin/wf-bin2c
 	install -m 755 swanlink.py $(WONDERFUL_TOOLCHAIN)/i8086/bin/wf-swanlink
+	install -m 755 mkfent.py $(WONDERFUL_TOOLCHAIN)/i8086/bin/wf-mkfent

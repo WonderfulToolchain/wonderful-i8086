@@ -1,13 +1,21 @@
 ifndef WONDERFUL_TOOLCHAIN
 $(error Please define WONDERFUL_TOOLCHAIN to point to the location of the Wonderful toolchain.)
 endif
-include $(WONDERFUL_TOOLCHAIN)/i8086/wswan.mk
 
-TARGET := libc.a
-OBJDIR := obj
+WONDERFUL_TARGET ?= wswan
+include $(WONDERFUL_TOOLCHAIN)/i8086/$(WONDERFUL_TARGET).mk
+
+OBJDIR := obj/$(WONDERFUL_TARGET)
+TARGETDIR := build/$(WONDERFUL_TARGET)
+TARGET := $(TARGETDIR)/libc.a
 SRCDIRS := src src/stdlib src/string
-MKDIRS := $(OBJDIR)
+MKDIRS := $(OBJDIR) build/$(WONDERFUL_TARGET)
+
+ifeq ($(WONDERFUL_TARGET), wwitch)
+CFLAGS += -Os
+else
 CFLAGS += -O2
+endif
 
 CSOURCES := $(foreach dir,$(SRCDIRS),$(notdir $(wildcard $(dir)/*.c)))
 ASMSOURCES := $(foreach dir,$(SRCDIRS),$(notdir $(wildcard $(dir)/*.S)))
@@ -25,23 +33,23 @@ vpath %.S $(SRCDIRS)
 
 all: $(TARGET)
 
-$(TARGET): $(OBJECTS)
+$(TARGET): $(OBJECTS) | $(OBJDIR)
 	$(AR) rcs $@ $(OBJECTS)
 
 $(OBJDIR)/%.o: %.c | $(OBJDIR)
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 $(OBJDIR)/%.o: %.S | $(OBJDIR)
-	$(AS) $(ASFLAGS) -o $@ $<
+	$(CC) $(CFLAGS) -c -o $@ $<
 
 $(OBJDIR):
-	$(info $(shell mkdir -p $(MKDIRS)))
+	$(info $(foreach dir,$(MKDIRS),$(shell mkdir -p $(dir))))
 
 clean:
 	rm $(TARGET) $(OBJECTS)
 
-install:
-	cp -r include/* $(WONDERFUL_TOOLCHAIN)/i8086/wswan/include/
-	install -m 644 $(TARGET) $(WONDERFUL_TOOLCHAIN)/i8086/wswan/lib
+install: $(TARGET)
+	cp -r include/* $(WONDERFUL_TOOLCHAIN)/i8086/$(WONDERFUL_TARGET)/include/
+	install -m 644 $(TARGET) $(WONDERFUL_TOOLCHAIN)/i8086/$(WONDERFUL_TARGET)/lib
 
 -include $(DEPS)

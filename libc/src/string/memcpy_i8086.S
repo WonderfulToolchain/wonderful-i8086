@@ -9,6 +9,8 @@
  * work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
+#include "wonderful-support.h"
+
 	.arch	i8086
 	.code16
 	.intel_syntax noprefix
@@ -38,4 +40,4 @@ memcpy_no_byte:
 	pop	ds
 	pop	di
 	pop	si
-	retf	0x6
+	ASM_RET	0x6

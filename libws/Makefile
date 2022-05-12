@@ -44,7 +44,7 @@ doc:
 	@ mkdir -p build/doc
 	doxygen
 
-install:
+install: $(TARGET)
 	cp -r include/* $(WONDERFUL_TOOLCHAIN)/i8086/wswan/include/
 	install -m 644 $(TARGET) $(WONDERFUL_TOOLCHAIN)/i8086/wswan/lib
 

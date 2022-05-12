@@ -33,6 +33,8 @@ clean:
 install: $(OBJECTS)
 	install -d $(WONDERFUL_TOOLCHAIN)/i8086/wswan/include
 	install -d $(WONDERFUL_TOOLCHAIN)/i8086/wswan/lib
+	install -d $(WONDERFUL_TOOLCHAIN)/i8086/wwitch/include
+	install -d $(WONDERFUL_TOOLCHAIN)/i8086/wwitch/lib
 	install -m 644 $(OBJDIR)/crt0.o $(WONDERFUL_TOOLCHAIN)/i8086/wswan/lib/crt0.o
 	install -m 644 $(OBJDIR)/crt0_ww.o $(WONDERFUL_TOOLCHAIN)/i8086/wwitch/lib/crt0.o
 	install -m 644 wswan.ld.template $(WONDERFUL_TOOLCHAIN)/i8086/wswan/lib
@@ -43,3 +45,5 @@ install: $(OBJECTS)
 	install -m 755 bin2c.py $(WONDERFUL_TOOLCHAIN)/i8086/bin/wf-bin2c
 	install -m 755 swanlink.py $(WONDERFUL_TOOLCHAIN)/i8086/bin/wf-swanlink
 	install -m 755 mkfent.py $(WONDERFUL_TOOLCHAIN)/i8086/bin/wf-mkfent
+	install -m 644 src/wonderful-support-wswan.h $(WONDERFUL_TOOLCHAIN)/i8086/wswan/include/wonderful-support.h
+	install -m 644 src/wonderful-support-wwitch.h $(WONDERFUL_TOOLCHAIN)/i8086/wwitch/include/wonderful-support.h

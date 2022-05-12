@@ -41,7 +41,7 @@ $(OBJDIR):
 clean:
 	rm $(TARGET) $(OBJECTS_SMALL) $(OBJECTS_FAST)
 
-install:
+install: $(TARGET)
 	cp -r include/* $(WONDERFUL_TOOLCHAIN)/i8086/wswan/include/
 	install -m 644 liblzsa_small.a $(WONDERFUL_TOOLCHAIN)/i8086/wswan/lib
 	install -m 644 liblzsa.a $(WONDERFUL_TOOLCHAIN)/i8086/wswan/lib

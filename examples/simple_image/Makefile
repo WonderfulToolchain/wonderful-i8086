@@ -6,7 +6,7 @@ OBJDIR := obj
 RESDIR := res
 SRCDIRS := src
 MKDIRS := $(OBJDIR)
-LIBS := -llzma_fast -lws -lc
+LIBS := -llzsa_fast -lws -lc
 CFLAGS += -O2
 
 CSOURCES := $(foreach dir,$(SRCDIRS),$(notdir $(wildcard $(dir)/*.c)))

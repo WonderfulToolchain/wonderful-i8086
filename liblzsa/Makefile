@@ -19,12 +19,12 @@ CFLAGS += -Iinclude
 vpath %.c src
 vpath %.S src
 
-all: liblzma_small.a liblzma.a
+all: liblzsa_small.a liblzsa.a
 
-liblzma_small.a: $(OBJECTS_SMALL)
+liblzsa_small.a: $(OBJECTS_SMALL)
 	$(AR) rcs $@ $(OBJECTS_SMALL)
 
-liblzma.a: $(OBJECTS_FAST)
+liblzsa.a: $(OBJECTS_FAST)
 	$(AR) rcs $@ $(OBJECTS_FAST)
 
 $(OBJDIR)/%.o: %.c | $(OBJDIR)
@@ -41,7 +41,7 @@ clean:
 
 install:
 	cp -r include/* $(TOOLCHAIN_PREFIX)/ws/include/
-	install -m 644 liblzma_small.a $(TOOLCHAIN_PREFIX)/ws/lib
-	install -m 644 liblzma.a $(TOOLCHAIN_PREFIX)/ws/lib
+	install -m 644 liblzsa_small.a $(TOOLCHAIN_PREFIX)/ws/lib
+	install -m 644 liblzsa.a $(TOOLCHAIN_PREFIX)/ws/lib
 
 -include $(DEPS)

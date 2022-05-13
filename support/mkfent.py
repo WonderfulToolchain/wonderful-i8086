@@ -177,7 +177,7 @@ if cf_has_arg("resource"):
 			input_resource_data += align_data_16(f.read())
 
 # seconds since January 1st, 2000
-output_fent_mtime = int(round(source_file_path.lstat().st_mtime - 946080000))
+output_fent_mtime = min(0x7FFFFFFF, max(0, int(round(source_file_path.lstat().st_mtime - 946080000))))
 
 with open(output_fent_path, 'wb') as fent_file:
 	file_length = len(input_bin_data)

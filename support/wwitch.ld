@@ -6,7 +6,7 @@ SECTIONS
 	".text!" . (NOLOAD) :
 	{
 		"__stext!" = .;
-		*("_start!")
+		*(".crt0!")
 		*(".text!*" ".text.*!")
 		"__etext!" = .;
 	}
@@ -15,7 +15,7 @@ SECTIONS
 	.text . :
 	{
 		__stext = .;
-		*("_start")
+		*(".crt0")
 		*(.text ".text.*[^&]")
 		__etext = .;
 	}
@@ -24,7 +24,7 @@ SECTIONS
 	".text&" . (NOLOAD) :
 	{
 		"__stext&" = .;
-		*("_start&")
+		*(".crt0&")
 		*(".text&*" ".text.*&")
 		"__etext&" = .;
 		. = ALIGN (16);
@@ -43,6 +43,7 @@ SECTIONS
 	".data!" 0x10000 (NOLOAD) : AT(ADDR(".erom") + SIZEOF(".erom"))
 	{
 		"__sdata!" = .;
+		*(".crt0_data!")
 		*(".rodata!*" ".rodata.*!")
 		*(".data!*" ".data.*!")
 		*(".bss!*" ".bss.*!")
@@ -54,10 +55,7 @@ SECTIONS
 	".data" 0x10000: AT(ADDR(".erom") + SIZEOF(".erom"))
 	{
 		__sdata = .;
-		/* Freya reserved space (0x60 bytes). */
-		BYTE(0x47); BYTE(0x43); BYTE(0x43); BYTE(0x00); /* Compiler identifier. */
-		. = . + 0x5c;
-
+		*(".crt0_data")
 		*(.rodata ".rodata.*[^&]")
 		*(.data ".data.*[^&]")
 		. = ALIGN (2);
@@ -84,6 +82,7 @@ SECTIONS
 	".data&" . (NOLOAD) :
 	{
 		"__sdata&" = .;
+		*(".crt0_data&")
 		*(".rodata&*" ".rodata.*&")
 		*(".data&*" ".data.*&")
 		*(".bss&*" ".bss.*&")

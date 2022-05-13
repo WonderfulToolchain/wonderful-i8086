@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2022 Adrian "asie" Siekierka
  *
  * This software is provided 'as-is', without any express or implied
@@ -18,64 +18,38 @@
  *    misrepresented as being the original software.
  *
  * 3. This notice may not be removed or altered from any source distribution.
-*/
+ */
 
-	.arch	i8086
-	.code16
-	.intel_syntax noprefix
+/** \file sys/text.h
+ * FreyaBIOS text calls.
+ */
 
-	.section .crt0
-	.global _start
-_start:
-	push	ds
-	push	si
-	push	di
-	push	cx
+#pragma once
+#include <sys/types.h>
 
-	xor	si, si
-	xor	di, di
-	mov	ax, 0x1000 // data offset
-	mov	es, ax
-	mov	ax, cs
-	mov	dx, ax
-	//add	ax, offset "__erom!"
-	.byte	0x05
-	.reloc	., R_386_SEG16, "__erom!"
-	.word	0
-	//^
-	mov	ds, ax
-	mov	cx, offset "__ldata_words"
-	cld
-	rep	movsw
-	mov	es, ax
-	mov	di, si
-	mov	cx, offset "__lbss_words"
-	xor	ax, ax
-	rep	stosw
+/**
+ * @addtogroup Int13 BIOS - INT 13h - Text
+ * @{
+ */
 
-	mov	di, [es:0x58] // end of program data
-	mov	di, [es:0x5e] // TODO: end of program data?
+static inline void text_screen_init(void) {
+	__asm volatile (
+		"int $0x13"
+		: 
+		: "Rah" ((uint8_t) 0x00)
+		: "cc", "memory"
+	);
+}
 
-	mov	ax, offset "_premain"
+static inline uint16_t text_put_string(uint8_t x, uint8_t y, const char *str) {
+	uint16_t result;
+	__asm volatile (
+		"int $0x13"
+		: "=a" (result)
+		: "Rah" ((uint8_t) 0x05), "b" ((y << 8) | x), "d" ((uint16_t) str)
+		: "cc", "memory"
+	);
+	return result;
+}
 
-	pop	cx
-	pop	di
-	pop	si
-	pop	ds
-	retf
-
-_premain:
-	// cs and ss are already configured
-
-	mov	ax, 0x1000 // data offset
-	mov	ds, ax
-	mov	es, ax
-	call	main
-	int	0x10
-
-	.section .crt0_data
-_start_data:
-	.byte	'G'
-	.byte	'C'
-	.byte	'C'
-	.fill	0x5D, 1, 0x00
+/**@}*/

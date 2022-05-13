@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2022 Adrian "asie" Siekierka
  *
  * This software is provided 'as-is', without any express or implied
@@ -18,64 +18,50 @@
  *    misrepresented as being the original software.
  *
  * 3. This notice may not be removed or altered from any source distribution.
-*/
+ */
 
-	.arch	i8086
-	.code16
-	.intel_syntax noprefix
+/** \file sys/key.h
+ * FreyaBIOS keypad calls.
+ */
 
-	.section .crt0
-	.global _start
-_start:
-	push	ds
-	push	si
-	push	di
-	push	cx
+#pragma once
+#include <sys/types.h>
 
-	xor	si, si
-	xor	di, di
-	mov	ax, 0x1000 // data offset
-	mov	es, ax
-	mov	ax, cs
-	mov	dx, ax
-	//add	ax, offset "__erom!"
-	.byte	0x05
-	.reloc	., R_386_SEG16, "__erom!"
-	.word	0
-	//^
-	mov	ds, ax
-	mov	cx, offset "__ldata_words"
-	cld
-	rep	movsw
-	mov	es, ax
-	mov	di, si
-	mov	cx, offset "__lbss_words"
-	xor	ax, ax
-	rep	stosw
+/**
+ * @addtogroup Int11 BIOS - INT 11h - Keypad
+ * @{
+ */
 
-	mov	di, [es:0x58] // end of program data
-	mov	di, [es:0x5e] // TODO: end of program data?
+#define KEY_Y4    0x0800
+#define KEY_Y3    0x0400
+#define KEY_Y2    0x0200
+#define KEY_Y1    0x0100
+#define KEY_X4    0x0080
+#define KEY_X3    0x0040
+#define KEY_X2    0x0020
+#define KEY_X1    0x0010
+#define KEY_B     0x0008
+#define KEY_A     0x0004
+#define KEY_START 0x0002
 
-	mov	ax, offset "_premain"
+#define KEY_UP1    KEY_X1
+#define KEY_RIGHT1 KEY_X2
+#define KEY_DOWN1  KEY_X3
+#define KEY_LEFT1  KEY_X4
+#define KEY_UP2    KEY_Y1
+#define KEY_RIGHT2 KEY_Y2
+#define KEY_DOWN2  KEY_Y3
+#define KEY_LEFT2  KEY_Y4
 
-	pop	cx
-	pop	di
-	pop	si
-	pop	ds
-	retf
+static inline uint16_t key_wait(void) {
+	uint16_t result;
+	__asm volatile (
+		"int $0x11"
+		: "=a" (result)
+		: "Rah" ((uint8_t) 0x02)
+		: "cc", "memory"
+	);
+	return result;
+}
 
-_premain:
-	// cs and ss are already configured
-
-	mov	ax, 0x1000 // data offset
-	mov	ds, ax
-	mov	es, ax
-	call	main
-	int	0x10
-
-	.section .crt0_data
-_start_data:
-	.byte	'G'
-	.byte	'C'
-	.byte	'C'
-	.fill	0x5D, 1, 0x00
+/**@}*/

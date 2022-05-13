@@ -24,6 +24,46 @@
 	.code16
 	.intel_syntax noprefix
 
+#define DCM_SCR1 0x0001
+#define DCM_SCR2 0x0002
+#define DCM_SPR  0x0004
+
+#define TEXT_MODE_ANK      0
+#define TEXT_MODE_ANK_SJIS 1
+#define TEXT_MODE_SJIS     2
+
+#if defined(DISPLAY_MODE_JAPANESE2)
+# define DISPLAY_CONTROL_VAL (DCM_SCR1 | DCM_SCR2)
+# define SCR1_ADDR 0x1000
+# define SCR2_ADDR 0x1800
+# define SPR_ADDR 0xe00
+# define STACK_ADDR 0xe00
+# define TEXT_MODE TEXT_MODE_ANK_SJIS
+#elif defined(DISPLAY_MODE_JAPANESE1)
+# define DISPLAY_CONTROL_VAL (DCM_SCR2)
+# define SCR1_ADDR 0x1800
+# define SCR2_ADDR 0x1800
+# define SPR_ADDR 0x1600
+# define STACK_ADDR 0x1600
+# define TEXT_MODE TEXT_MODE_ANK_SJIS
+#elif defined(DISPLAY_MODE_ASCII2)
+# define DISPLAY_CONTROL_VAL (DCM_SCR1 | DCM_SCR2)
+# define SCR1_ADDR 0x3000
+# define SCR2_ADDR 0x2800
+# define SPR_ADDR 0x2600
+# define STACK_ADDR 0x2600
+# define TEXT_MODE TEXT_MODE_ANK
+#elif defined(DISPLAY_MODE_ASCII1)
+# define DISPLAY_CONTROL_VAL (DCM_SCR2)
+# define SCR1_ADDR 0x3000
+# define SCR2_ADDR 0x3000
+# define SPR_ADDR 0x2e00
+# define STACK_ADDR 0x2e00
+# define TEXT_MODE TEXT_MODE_ANK_SJIS
+#else
+# error Must specify DISPLAY_MODE!
+#endif
+
 	.section .crt0
 	.global _start
 _start:
@@ -86,17 +126,24 @@ _premain:
 	int	0x12
 	// 5. initialize SCR1, SCR2, SPR VRAM locations
 	mov	ax, 0x2100
-	mov	bl, 0x2
+	mov	bl, (SCR1_ADDR >> 11)
 	int	0x12
-	inc	al
-	inc	bl
+	mov	al, 0x01
+	mov	bl, (SCR2_ADDR >> 11)
 	int	0x12
 	inc	ah
-	mov	bl, 0x7
+	mov	bl, (SPR_ADDR >> 9)
 	int	0x12
-	// 6. enable display_control
+	// 6. initialize text mode
+	// (reusing al = 0x01 from step 5)
+	mov	ah, 0x0e
+	int	0x13
+	mov	ah, 0x02
+	mov	bl, TEXT_MODE
+	int	0x13
+	// 7. enable display_control
 	xor	ax, ax
-	mov	bl, 0x3
+	mov	bl, (DISPLAY_CONTROL_VAL)
 	int	0x12
 
 	// configure ds to point to sram
@@ -105,7 +152,7 @@ _premain:
 	mov	es, ax
 
 	// configure ss to point to iram
-	mov	ax, 0xe00
+	mov	ax, (STACK_ADDR)
 	mov	sp, ax
 
 	// pass argc/argv

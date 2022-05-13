@@ -41,6 +41,30 @@ static inline void text_screen_init(void) {
 	);
 }
 
+#define TEXT_MODE_ANK      0
+#define TEXT_MODE_ANK_SJIS 1
+#define TEXT_MODE_SJIS     2
+
+static inline void text_set_mode(uint16_t mode) {
+	__asm volatile (
+		"int $0x13"
+		: 
+		: "Rah" ((uint8_t) 0x00), "b" (mode)
+		: "cc", "memory"
+	);
+}
+
+static inline uint16_t text_get_mode(void) {
+	uint16_t result;
+	__asm volatile (
+		"int $0x13"
+		: "=a" (result)
+		: "Rah" ((uint8_t) 0x00)
+		: "cc", "memory"
+	);
+	return result;
+}
+
 static inline uint16_t text_put_char(uint8_t x, uint8_t y, uint16_t chr) {
 	uint16_t result;
 	__asm volatile (

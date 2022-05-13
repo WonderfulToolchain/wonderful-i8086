@@ -53,8 +53,8 @@ _start:
 	xor	ax, ax
 	rep	stosw
 
-	mov	di, [es:0x58] // end of program data
-	mov	di, [es:0x5e] // TODO: end of program data?
+	mov	[es:0x58], di // end of program data
+	mov	[es:0x5e], di // TODO: end of program data?
 
 	mov	ax, offset "_premain"
 
@@ -104,6 +104,8 @@ _premain:
 	mov	ax, 0x1000 // data offset
 	mov	ds, ax
 	mov	es, ax
+	mov	ax, 0xe00
+	mov	sp, ax
 	call	main
 	int	0x10
 

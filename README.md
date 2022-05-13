@@ -11,6 +11,8 @@ Experimental C toolchain for the WonderSwan. Early development.
 
 Only Linux is officially supported at this time. Using WSL2 on Windows is recommended. The scripts have been tested on Arch Linux.
 
+### Base toolchain
+
     $ export WONDERFUL_TOOLCHAIN=/opt/wonderful
     # create directory
     $ mkdir -p "$WONDERFUL_TOOLCHAIN"/i8086
@@ -21,14 +23,26 @@ Only Linux is officially supported at this time. Using WSL2 on Windows is recomm
     # build base support
     $ cd ../support
     $ make install
+
+### WonderSwan target (WIP)
+
     # build libc
     $ cd ../libc
+    $ make install
+    # build libws
+    $ cd ../libws
     $ make install
     # build liblzsa
     $ cd ../liblzsa
     $ make install
-    # build libws
-    $ cd ../libws
+
+### WonderWitch target (WIP)
+
+    # build libc
+    $ cd ../libc
+    $ make WONDERFUL_TARGET=wwitch install
+    # build libww
+    $ cd ../libww
     $ make install
 
 ## Licensing information
@@ -40,7 +54,7 @@ All source files have their licensing terms stated in the file itself. Crucially
 * libgcc runtime library: [GPLv3 w/ Runtime Library Exception](https://www.fsf.org/news/2009-01-gcc-exception)
 * startup/support code (`support/src/`): [zlib license](docs/COPYING.ZLIB)
 * wonderful-i8086 C library (`libc/`): [CC0/public domain-like](docs/COPYING.CC0)
-* wonderful-i8086 platform library (`libws/`): [zlib license](docs/COPYING.ZLIB)
+* wonderful-i8086 platform library (`libws/`, `libww/`): [zlib license](docs/COPYING.ZLIB)
 
 ### Additional libraries
 

@@ -41,12 +41,45 @@ static inline void text_screen_init(void) {
 	);
 }
 
-static inline uint16_t text_put_string(uint8_t x, uint8_t y, const char *str) {
+static inline uint16_t text_put_char(uint8_t x, uint8_t y, uint16_t chr) {
 	uint16_t result;
 	__asm volatile (
 		"int $0x13"
 		: "=a" (result)
-		: "Rah" ((uint8_t) 0x05), "b" ((y << 8) | x), "d" ((uint16_t) str)
+		: "Rah" ((uint8_t) 0x04), "b" ((y << 8) | x), "c" (chr)
+		: "cc", "memory"
+	);
+	return result;
+}
+
+static inline uint16_t text_put_string(uint8_t x, uint8_t y, const char __far* str) {
+	uint16_t result;
+	__asm volatile (
+		"int $0x13"
+		: "=a" (result)
+		: "Rah" ((uint8_t) 0x05), "b" ((y << 8) | x), "d" (FP_OFF(str)), "Rds" (FP_SEG(str))
+		: "cc", "memory"
+	);
+	return result;
+}
+
+static inline uint16_t text_put_substring(uint8_t x, uint8_t y, const char __far* str, uint16_t length) {
+	uint16_t result;
+	__asm volatile (
+		"int $0x13"
+		: "=a" (result)
+		: "Rah" ((uint8_t) 0x06), "b" ((y << 8) | x), "c" (length), "d" (FP_OFF(str)), "Rds" (FP_SEG(str))
+		: "cc", "memory"
+	);
+	return result;
+}
+
+static inline uint16_t text_put_numeric(uint8_t x, uint8_t y, uint8_t width, uint8_t flags, uint16_t value) {
+	uint16_t result;
+	__asm volatile (
+		"int $0x13"
+		: "=a" (result)
+		: "Rah" ((uint8_t) 0x07), "b" ((y << 8) | x), "c" ((flags << 8) | width), "d" (value)
 		: "cc", "memory"
 	);
 	return result;
@@ -57,6 +90,44 @@ static inline void text_set_screen(uint8_t screen_id) {
 		"int $0x13"
 		: 
 		: "a" ((uint16_t) (0x0e00 | screen_id))
+		: "cc", "memory"
+	);
+}
+
+static inline void cursor_display(uint8_t on) {
+	__asm volatile (
+		"int $0x13"
+		: 
+		: "a" ((uint16_t) (0x1000 | on))
+		: "cc", "memory"
+	);
+}
+
+static inline uint16_t cursor_status(void) {
+	uint16_t result;
+	__asm volatile (
+		"int $0x13"
+		: "=a" (result)
+		: "Rah" ((uint8_t) 0x11)
+		: "cc", "memory"
+	);
+	return result;
+}
+
+static inline void cursor_set_location(uint8_t x, uint8_t y, uint8_t width, uint8_t height) {
+	__asm volatile (
+		"int $0x13"
+		: 
+		: "Rah" ((uint8_t) 0x12), "b" ((y << 8) | x), "c" ((height << 8) | width)
+		: "cc", "memory"
+	);
+}
+
+static inline void cursor_set_type(uint8_t a /* TODO */, uint8_t b /* TODO */) {
+	__asm volatile (
+		"int $0x13"
+		: 
+		: "Rah" ((uint8_t) 0x12), "lb" (a), "lc" (b)
 		: "cc", "memory"
 	);
 }

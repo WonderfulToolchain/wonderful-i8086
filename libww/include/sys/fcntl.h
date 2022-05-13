@@ -20,45 +20,10 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-/** \file sys/system.h
- * FreyaBIOS system calls.
+/** \file sys/fcntl.h
  */
 
 #pragma once
 #include <sys/types.h>
 
-/**
- * @addtogroup Int17 BIOS - INT 17h - System
- * @{
- */
-
-static inline void sys_wait(uint16_t v /* TODO */) {
-	__asm volatile (
-		"int $0x17"
-		:
-		: "Rah" ((uint8_t) 0x02), "c" (v)
-		: "cc", "memory"
-	);
-}
-
-static inline uint32_t sys_get_tick_count(void) {
-	uint32_t result;
-	__asm volatile (
-		"int $0x17"
-		: "=A" (result)
-		: "Rah" ((uint8_t) 0x03)
-		: "cc", "memory"
-	);
-	return result;
-}
-
-static inline void sys_sleep(void) {
-	__asm volatile (
-		"int $0x17"
-		:
-		: "Rah" ((uint8_t) 0x04)
-		: "cc", "memory"
-	);
-}
-
-/**@}*/
+// TODO

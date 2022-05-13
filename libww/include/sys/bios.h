@@ -34,3 +34,17 @@
 #include <sys/timer.h>
 #include <sys/system.h>
 #include <sys/bank.h>
+
+/**
+ * @addtogroup Int10 BIOS - INT 10h - Exit
+ * @{
+ */
+
+static inline void bios_exit(void) {
+	__asm volatile (
+		"int $0x10"
+		: 
+		: 
+		: "cc", "memory"
+	);
+}

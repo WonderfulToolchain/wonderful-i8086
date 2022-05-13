@@ -32,4 +32,142 @@
  * @{
  */
 
+static inline void sound_init(void) {
+	__asm volatile (
+		"int $0x15"
+		: 
+		: "Rah" ((uint8_t) 0x00)
+		: "cc", "memory"
+	);
+}
+
+static inline void sound_set_channel(uint8_t flags) {
+	__asm volatile (
+		"int $0x15"
+		: 
+		: "Rah" ((uint8_t) 0x01), "lb" (flags)
+		: "cc", "memory"
+	);
+}
+
+static inline uint8_t sound_get_channel(void) {
+	uint8_t result;
+	__asm volatile (
+		"int $0x15"
+		: "=la" (result)
+		: "Rah" ((uint8_t) 0x02)
+		: "cc", "memory"
+	);
+	return result;
+}
+
+static inline void sound_set_output(uint8_t flags) {
+	__asm volatile (
+		"int $0x15"
+		: 
+		: "Rah" ((uint8_t) 0x03), "lb" (flags)
+		: "cc", "memory"
+	);
+}
+
+static inline uint8_t sound_get_output(void) {
+	uint8_t result;
+	__asm volatile (
+		"int $0x15"
+		: "=la" (result)
+		: "Rah" ((uint8_t) 0x04)
+		: "cc", "memory"
+	);
+	return result;
+}
+
+static inline void sound_set_wave(uint8_t channel, const uint8_t __far* data) {
+	__asm volatile (
+		"int $0x13"
+		: 
+		: "a" (0x0500 | channel), "d" (FP_OFF(data)), "Rds" (FP_SEG(data))
+		: "cc", "memory"
+	);
+}
+
+static inline void sound_set_pitch(uint8_t channel, uint16_t frequency) {
+	__asm volatile (
+		"int $0x15"
+		: 
+		: "a" (0x0600 | channel), "b" (frequency)
+		: "cc", "memory"
+	);
+}
+
+static inline uint16_t sound_get_pitch(uint8_t channel) {
+	uint16_t result;
+	__asm volatile (
+		"int $0x15"
+		: "=a" (result)
+		: "a" (0x0700 | channel)
+		: "cc", "memory"
+	);
+	return result;
+}
+
+static inline void sound_set_volume(uint8_t channel, uint8_t volume) {
+	__asm volatile (
+		"int $0x15"
+		: 
+		: "a" (0x0800 | channel), "lb" (volume)
+		: "cc", "memory"
+	);
+}
+
+static inline uint8_t sound_get_volume(uint8_t channel) {
+	uint8_t result;
+	__asm volatile (
+		"int $0x15"
+		: "=la" (result)
+		: "a" (0x0900 | channel)
+		: "cc", "memory"
+	);
+	return result;
+}
+
+static inline void sound_set_sweep(uint8_t sweep, uint8_t step_time) {
+	__asm volatile (
+		"int $0x15"
+		: 
+		: "Rah" ((uint8_t) 0x0a), "lb" (sweep), "lc" (step_time)
+		: "cc", "memory"
+	);
+}
+
+static inline void sound_set_noise(uint8_t flags) {
+	__asm volatile (
+		"int $0x15"
+		: 
+		: "Rah" ((uint8_t) 0x0c), "lb" (flags)
+		: "cc", "memory"
+	);
+}
+
+static inline uint8_t sound_get_noise(void) {
+	uint8_t result;
+	__asm volatile (
+		"int $0x15"
+		: "=la" (result)
+		: "Rah" ((uint8_t) 0x0d)
+		: "cc", "memory"
+	);
+	return result;
+}
+
+static inline uint16_t sound_get_random(void) {
+	uint16_t result;
+	__asm volatile (
+		"int $0x15"
+		: "=a" (result)
+		: "Rah" ((uint8_t) 0x0e)
+		: "cc", "memory"
+	);
+	return result;
+}
+
 /**@}*/

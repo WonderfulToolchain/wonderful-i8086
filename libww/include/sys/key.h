@@ -53,12 +53,48 @@
 #define KEY_DOWN2  KEY_Y3
 #define KEY_LEFT2  KEY_Y4
 
+static inline uint16_t key_press_check(void) {
+	uint16_t result;
+	__asm volatile (
+		"int $0x11"
+		: "=a" (result)
+		: "Rah" ((uint8_t) 0x00)
+		: "cc", "memory"
+	);
+	return result;
+}
+
+static inline uint16_t key_hit_check(void) {
+	uint16_t result;
+	__asm volatile (
+		"int $0x11"
+		: "=a" (result)
+		: "Rah" ((uint8_t) 0x01)
+		: "cc", "memory"
+	);
+	return result;
+}
+
 static inline uint16_t key_wait(void) {
 	uint16_t result;
 	__asm volatile (
 		"int $0x11"
 		: "=a" (result)
 		: "Rah" ((uint8_t) 0x02)
+		: "cc", "memory"
+	);
+	return result;
+}
+
+// TODO: key_set_repeat (0x03)
+// TODO: key_get_repeat (0x04)
+
+static inline uint16_t key_hit_check_with_repeat(void) {
+	uint16_t result;
+	__asm volatile (
+		"int $0x11"
+		: "=a" (result)
+		: "Rah" ((uint8_t) 0x05)
 		: "cc", "memory"
 	);
 	return result;

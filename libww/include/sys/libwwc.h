@@ -20,11 +20,9 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
+/** \file sys/libwwc.h
+ * WonderWitch Color support.
+ */
+
 #pragma once
-
-/** Memory model helpers. */
-#define ASM_RET retf
-
-/** IA16 helpers. */
-#define FP_SEG(x) __builtin_ia16_selector ((uint16_t) (((uint32_t) ((void __far*) (x))) >> 16))
-#define FP_OFF(x) __builtin_ia16_FP_OFF ((x))
+#include <sys/types.h>

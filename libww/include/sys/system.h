@@ -32,4 +32,13 @@
  * @{
  */
 
+static inline void sys_wait(uint16_t v /* TODO */) {
+	__asm volatile (
+		"int $0x17"
+		:
+		: "Rah" ((uint8_t) 0x02), "c" (v)
+		: "cc", "memory"
+	);
+}
+
 /**@}*/

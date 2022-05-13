@@ -65,8 +65,42 @@ _start:
 	retf
 
 _premain:
-	// cs and ss are already configured
+	// hardware initialization
+	// 1. disable display_control
+	xor	ax, ax
+	xor	bx, bx
+	xor	cx, cx
+	int	0x12
+	// 2. disable SCR2 and SPR window
+	mov	ah, 0x15
+	int	0x12
+	mov	ah, 0x17
+	int	0x12
+	// 3. disable sprites
+	mov	ah, 0xB
+	int 	0x12
+	// 4. reset scroll on SCR1, SCR2
+	mov	ah, 0x13
+	int	0x12
+	inc	al
+	int	0x12
+	// 5. initialize SCR1, SCR2, SPR VRAM locations
+	mov	ax, 0x2100
+	mov	bl, 0x2
+	int	0x12
+	inc	al
+	inc	bl
+	int	0x12
+	inc	ah
+	mov	bl, 0x7
+	int	0x12
+	// 6. enable display_control
+	xor	ax, ax
+	mov	bl, 0x3
+	int	0x12
 
+	// segment initialization
+	// assumption: cs and ss are already configured
 	mov	ax, 0x1000 // data offset
 	mov	ds, ax
 	mov	es, ax

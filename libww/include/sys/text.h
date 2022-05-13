@@ -52,4 +52,13 @@ static inline uint16_t text_put_string(uint8_t x, uint8_t y, const char *str) {
 	return result;
 }
 
+static inline void text_set_screen(uint8_t screen_id) {
+	__asm volatile (
+		"int $0x13"
+		: 
+		: "a" ((uint16_t) (0x0e00 | screen_id))
+		: "cc", "memory"
+	);
+}
+
 /**@}*/

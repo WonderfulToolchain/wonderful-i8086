@@ -27,6 +27,7 @@
 from pathlib import Path
 from types import SimpleNamespace   
 import argparse
+import codecs
 import math
 import os
 import shutil
@@ -34,6 +35,31 @@ import struct
 import subprocess
 import sys
 import tempfile
+import traceback
+
+# TODO: Add remaining modes
+MODE_CHARS = {
+	'x': 0x01, # execute
+	'w': 0x02, # write
+	'r': 0x04, # read
+	'i': 0x20  # IL
+}
+
+def align_data_16(d):
+	new_length = (len(d) + 15) & (~15)
+	return d + (b'\x00' * (new_length - len(d)))
+
+def mode_to_int(m):
+	try:
+		return int(m, 0)
+	except:
+		mode = 0
+		for i in m:
+			if i in MODE_CHARS:
+				mode |= MODE_CHARS[i]
+			else:
+				raise Exception(f"could not parse mode string: {m}")
+		return mode
 
 executable_location = Path(sys.argv[0])
 if executable_location.is_file():
@@ -69,11 +95,15 @@ cf_args_from_file = False
 
 if Path(program_args.source).suffix == '.cf':
 	cf_dict = {}
-	with open(program_args.source, 'r') as cf_file:
-		for cf_line in cf_file:
-			cf_kv = cf_line.split(":", maxsplit=1)
-			if len(cf_kv) >= 2:
-				cf_dict[cf_kv[0].strip()] = cf_kv[1].strip()
+	for enc in ['utf-8', 'shift-jis']:
+		try:
+			with codecs.open(program_args.source, 'r', encoding=enc) as cf_file:
+				for cf_line in cf_file:
+					cf_kv = cf_line.split(":", maxsplit=1)
+					if len(cf_kv) >= 2:
+						cf_dict[cf_kv[0].strip()] = cf_kv[1].strip()
+		except:
+			print(f'Could not parse {Path(program_args.source).name} as {enc}, trying next encoding...', file=sys.stderr)
 	cf_args = SimpleNamespace(**cf_dict)
 	cf_args_from_file = True
 
@@ -92,8 +122,6 @@ if (not cf_has_arg("output")):
 	else:
 		print_help_exit()
 
-if cf_has_arg("resource"):
-	raise Exception("Resources are currently unsupported!")
 
 toolchain_prefix = Path(program_args.tools_path).absolute()
 source_file_path = Path(cf_args.source).absolute()
@@ -101,7 +129,7 @@ input_bin_path = source_file_path
 output_fent_path = Path(cf_args.output).absolute()
 output_fent_name = getattr(cf_args, "name", output_fent_path.stem)
 output_fent_info = getattr(cf_args, "info", output_fent_path)
-output_fent_mode = getattr(cf_args, "mode", "7")
+output_fent_mode = mode_to_int(getattr(cf_args, "mode", "7"))
 
 objcopy_path = toolchain_prefix / ("bin/ia16-elf-objcopy%s" % executable_extension)
 
@@ -137,24 +165,37 @@ if input_bin_path.suffix == '.elf':
 		raise Exception(f'objcopy exited with error code {objcopy_result.returncode}')
 
 with open(input_bin_path, "rb") as f:
-	input_bin_data = f.read()
+	input_bin_data = align_data_16(f.read())
+
+input_resource_data = None
+
+if cf_has_arg("resource"):
+	input_resource_data = b''
+	for res_path in cf_args.resource.split(" "):
+		res_path = res_path.replace("\\", "/")
+		with open(res_path, "rb") as f:
+			input_resource_data += align_data_16(f.read())
 
 # seconds since January 1st, 2000
-# TODO: Is this accurate?
 output_fent_mtime = int(round(source_file_path.lstat().st_mtime - 946080000))
 
 with open(output_fent_path, 'wb') as fent_file:
+	file_length = len(input_bin_data)
+	if input_resource_data is not None:
+		file_length += len(input_resource_data)
 	fent_file.write('#!ws'.encode("ascii"))
 	fent_file.write(b'\xFF' * 60)
 	fent_file.write(to_sjis_bytes(output_fent_name, 16))
 	fent_file.write(to_sjis_bytes(output_fent_info, 24))
 	fent_file.write(struct.pack("<IIHHIII",
-		0x00000000, # TODO: file position
-		len(input_bin_data), # file length, in bytes
-		int((len(input_bin_data) + 127) >> 7), # file length, in XMODEM chunks
-		int(output_fent_mode, 0),
+		0x00000000, # file position?
+		file_length, # file length, in bytes
+		int((file_length + 127) >> 7), # file length, in XMODEM chunks
+		output_fent_mode,
 		output_fent_mtime,
 		0x00000000, # TODO
-		0xFFFFFFFF # TODO
+		0xFFFFFFFF if input_resource_data is None else len(input_bin_data) # resources start
 	))
 	fent_file.write(input_bin_data)
+	if input_resource_data is not None:
+		fent_file.write(input_resource_data)

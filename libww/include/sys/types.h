@@ -26,6 +26,7 @@
 
 #pragma once
 #include <stdint.h>
+#include <wonderful-support.h>
 
 typedef uint8_t BYTE;
 typedef uint16_t WORD;
@@ -33,3 +34,5 @@ typedef uint8_t BOOL;
 
 #define FALSE 0
 #define TRUE 1
+
+#define far __far

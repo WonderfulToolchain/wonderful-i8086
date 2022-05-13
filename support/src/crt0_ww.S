@@ -47,8 +47,6 @@ _start:
 	mov	cx, offset "__ldata_words"
 	cld
 	rep	movsw
-	mov	es, ax
-	mov	di, si
 	mov	cx, offset "__lbss_words"
 	xor	ax, ax
 	rep	stosw
@@ -65,6 +63,8 @@ _start:
 	retf
 
 _premain:
+	mov	bp, sp
+
 	// hardware initialization
 	// 1. disable display_control
 	xor	ax, ax
@@ -99,15 +99,23 @@ _premain:
 	mov	bl, 0x3
 	int	0x12
 
-	// segment initialization
-	// assumption: cs and ss are already configured
-	mov	ax, 0x1000 // data offset
+	// configure ds to point to sram
+	mov	ax, 0x1000
 	mov	ds, ax
 	mov	es, ax
+
+	// configure ss to point to iram
 	mov	ax, 0xe00
 	mov	sp, ax
+
+	// pass argc/argv
+	mov	ax, word ptr [bp + 0x8]
+	mov	dx, word ptr [bp + 0x6]
 	call	main
+
+	// exit to FreyaBIOS
 	int	0x10
+	retf
 
 	.section .crt0_data
 _start_data:

@@ -21,6 +21,7 @@
  */
 
 #pragma once
+#include <stdint.h>
 
 /** Memory model helpers. */
 #define ASM_RET ret
@@ -28,3 +29,4 @@
 /** IA16 helpers. */
 #define FP_SEG(x) __builtin_ia16_selector ((uint16_t) (((uint32_t) ((void __far*) (x))) >> 16))
 #define FP_OFF(x) __builtin_ia16_FP_OFF ((x))
+#define MK_FP(seg, ofs) ((void __far*) (((uint16_t) ofs) | (((uint32_t) ((uint16_t) seg)) << 16)))

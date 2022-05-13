@@ -86,7 +86,15 @@ static inline uint16_t key_wait(void) {
 	return result;
 }
 
-// TODO: key_set_repeat (0x03)
+static inline void key_set_repeat(uint8_t rate, uint8_t delay) {
+	__asm volatile (
+		"int $0x11"
+		: 
+		: "Rah" ((uint8_t) 0x03), "b" ((delay << 8) | rate)
+		: "cc", "memory"
+	);
+}
+
 // TODO: key_get_repeat (0x04)
 
 static inline uint16_t key_hit_check_with_repeat(void) {

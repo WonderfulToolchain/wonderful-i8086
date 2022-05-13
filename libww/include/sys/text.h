@@ -85,6 +85,15 @@ static inline uint16_t text_put_numeric(uint8_t x, uint8_t y, uint8_t width, uin
 	return result;
 }
 
+static inline void text_set_palette(uint16_t palette_index) {
+	__asm volatile (
+		"int $0x13"
+		: 
+		: "Rah" ((uint8_t) 0x09), "b" (palette_index)
+		: "cc", "memory"
+	);
+}
+
 static inline void text_set_screen(uint8_t screen_id) {
 	__asm volatile (
 		"int $0x13"
@@ -123,11 +132,11 @@ static inline void cursor_set_location(uint8_t x, uint8_t y, uint8_t width, uint
 	);
 }
 
-static inline void cursor_set_type(uint8_t a /* TODO */, uint8_t b /* TODO */) {
+static inline void cursor_set_type(uint16_t palette_index, uint16_t blink_interval) {
 	__asm volatile (
 		"int $0x13"
 		: 
-		: "Rah" ((uint8_t) 0x12), "lb" (a), "lc" (b)
+		: "Rah" ((uint8_t) 0x14), "b" (palette_index), "c" (blink_interval)
 		: "cc", "memory"
 	);
 }

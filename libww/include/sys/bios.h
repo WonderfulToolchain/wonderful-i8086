@@ -48,3 +48,5 @@ static inline void bios_exit(void) {
 		:
 	);
 }
+
+/**@}*/

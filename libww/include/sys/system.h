@@ -40,6 +40,15 @@ struct intvector {
 };
 typedef struct intvector intvector_t;
 
+#define SYS_INT_SENDREADY      0x00
+#define SYS_INT_KEY            0x01
+#define SYS_INT_CASETTE        0x02
+#define SYS_INT_RECEIVEREADY   0x03
+#define SYS_INT_DISPLINE       0x04
+#define SYS_INT_TIMER_COUNTUP  0x05
+#define SYS_INT_VBLANK         0x06
+#define SYS_INT_HBLANK_COUNTUP 0x07
+
 static inline void sys_interrupt_set_hook(uint8_t id, intvector_t *new_vector, intvector_t *old_vector) {
 	uint16_t ax_clobber;
 	__asm volatile (

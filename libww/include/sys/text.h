@@ -44,6 +44,16 @@ static inline void text_screen_init(void) {
 	);
 }
 
+static inline void text_window_init(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint16_t base) {
+	uint16_t ax_clobber;
+	__asm volatile (
+		"int $0x13"
+		: "=a" (ax_clobber)
+		: "Rah" ((uint8_t) 0x01), "b" ((y << 8) | x), "c" ((height << 8) | width), "d" (base)
+		: "cc", "memory"
+	);
+}
+
 #define TEXT_MODE_ANK      0
 #define TEXT_MODE_ANK_SJIS 1
 #define TEXT_MODE_SJIS     2
@@ -53,7 +63,7 @@ static inline void text_set_mode(uint16_t mode) {
 	__asm volatile (
 		"int $0x13"
 		: "=a" (ax_clobber)
-		: "Rah" ((uint8_t) 0x00), "b" (mode)
+		: "Rah" ((uint8_t) 0x02), "b" (mode)
 		: "cc", "memory"
 	);
 }
@@ -63,7 +73,7 @@ static inline uint16_t text_get_mode(void) {
 	__asm volatile (
 		"int $0x13"
 		: "=a" (result)
-		: "Rah" ((uint8_t) 0x00)
+		: "Rah" ((uint8_t) 0x03)
 		: "cc", "memory"
 	);
 	return result;
@@ -215,6 +225,17 @@ static inline void cursor_set_location(uint8_t x, uint8_t y, uint8_t width, uint
 	);
 }
 
+static inline uint32_t cursor_get_location(void) {
+	uint32_t result;
+	__asm volatile (
+		"int $0x13"
+		: "=A" (result)
+		: "Rah" ((uint8_t) 0x13)
+		: "cc", "memory"
+	);
+	return result;
+}
+
 static inline void cursor_set_type(uint16_t palette_index, uint16_t blink_interval) {
 	uint16_t ax_clobber;
 	__asm volatile (
@@ -223,6 +244,17 @@ static inline void cursor_set_type(uint16_t palette_index, uint16_t blink_interv
 		: "Rah" ((uint8_t) 0x14), "b" (palette_index), "c" (blink_interval)
 		: "cc", "memory"
 	);
+}
+
+static inline uint32_t cursor_get_type(void) {
+	uint32_t result;
+	__asm volatile (
+		"int $0x13"
+		: "=A" (result)
+		: "Rah" ((uint8_t) 0x15)
+		: "cc", "memory"
+	);
+	return result;
 }
 
 /**@}*/

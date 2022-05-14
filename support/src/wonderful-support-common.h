@@ -23,6 +23,8 @@
 #pragma once
 #include <stdint.h>
 
+#define __WONDERFUL__
+
 /** IA16 helpers. */
 #define FP_SEG(x) __builtin_ia16_selector ((uint16_t) (((uint32_t) ((void __far*) (x))) >> 16))
 #define FP_OFF(x) __builtin_ia16_FP_OFF ((x))

@@ -24,7 +24,7 @@
  * FreyaBIOS serial calls.
  */
 
-#pragma (once)
+#pragma once
 #include <sys/types.h>
 
 /**
@@ -32,26 +32,14 @@
  * @{
  */
 
-typedef struct {
-	int16_t state;
-	int8_t mode;
-	int8_t retry_c;
-	int16_t block_c;
-	int16_t block_max;
-	int16_t block_size;
-	int16_t bank;
-	int16_t offset;
-	int16_t timeout_c;
-} xmodeminfo;
-
-#define XM_START       1
-#define XM_NEGO        2
-#define XM_BLOCK       3
-#define XM_BLOCK_RETRY 4
-#define XM_CLOSE       5
-#define XM_ABORT       6
-#define XM_DONE        7
-#define XM_ERASE_BANK  8
+#define ERR_SIO_BUSY      0x8100
+#define ERR_SIO_TIMEOUT   0x8101
+#define ERR_SIO_OVERRUN   0x8102
+#define ERR_SIO_CANCEL    0x8103
+#define ERR_XM_STATECODE  0x8104
+#define ERR_XM_CANCELED   0x8105
+#define ERR_XM_BLOCK_LOST 0x8106
+#define ERR_XM_TOO_LARGE  0x8107
 
 static inline void comm_open(void) {
 	uint16_t ax_clobber;
@@ -73,14 +61,15 @@ static inline void comm_close(void) {
 	);
 }
 
-static inline void comm_send_char(int c) {
-	uint16_t ax_clobber;
+static inline uint16_t comm_send_char(int c) {
+	uint16_t result;
 	__asm volatile (
 		"int $0x14"
-		: "=a" (ax_clobber)
+		: "=a" (result)
 		: "Rah" ((uint8_t) 0x02), "b" (c)
 		: "cc", "memory"
 	);
+	return result;
 }
 
 static inline int comm_receive_char(void) {
@@ -105,24 +94,26 @@ static inline int comm_receive_with_timeout(uint16_t timeout) {
 	return result;
 }
 
-static inline void comm_send_string(const char __far* str) {
-	uint16_t ax_clobber;
+static inline uint16_t comm_send_string(const char __far* str) {
+	uint16_t result;
 	__asm volatile (
 		"int $0x14"
-		: "=a" (ax_clobber)
+		: "=a" (result)
 		: "Rah" ((uint8_t) 0x05), "d" (FP_OFF(str)), "Rds" (FP_SEG(str))
 		: "cc", "memory"
 	);
+	return result;
 }
 
-static inline void comm_send_block(const void __far* buf, uint16_t length) {
-	uint16_t ax_clobber;
+static inline uint16_t comm_send_block(const void __far* buf, uint16_t length) {
+	uint16_t result;
 	__asm volatile (
 		"int $0x14"
-		: "=a" (ax_clobber)
+		: "=a" (result)
 		: "Rah" ((uint8_t) 0x06), "c" (length), "d" (FP_OFF(buf)), "Rds" (FP_SEG(buf))
 		: "cc", "memory"
 	);
+	return result;
 }
 
 static inline void comm_receive_block(const void __far* buf, uint16_t length) {
@@ -196,6 +187,27 @@ static inline uint16_t comm_get_cancel_key(void) {
 	);
 	return result;
 }
+
+typedef struct {
+	int16_t state;
+	int8_t mode;
+	int8_t retry_c;
+	int16_t block_c;
+	int16_t block_max;
+	int16_t block_size;
+	int16_t bank;
+	int16_t offset;
+	int16_t timeout_c;
+} xmodeminfo;
+
+#define XM_START       1
+#define XM_NEGO        2
+#define XM_BLOCK       3
+#define XM_BLOCK_RETRY 4
+#define XM_CLOSE       5
+#define XM_ABORT       6
+#define XM_DONE        7
+#define XM_ERASE_BANK  8
 
 static inline void comm_xmodem(xmodeminfo __far* xmodem_info) {
 	uint16_t ax_clobber;

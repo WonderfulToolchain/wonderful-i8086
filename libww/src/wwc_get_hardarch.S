@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (c) 2022 Adrian "asie" Siekierka
  *
  * This software is provided 'as-is', without any express or implied
@@ -18,12 +18,15 @@
  *    misrepresented as being the original software.
  *
  * 3. This notice may not be removed or altered from any source distribution.
- */
+*/
 
-#pragma once
-#include <stdint.h>
+	.arch	i186
+	.code16
+	.intel_syntax noprefix
 
-/** Memory model helpers. */
-#define ASM_RET retf
-
-#include "wonderful-support-common.h"
+	.global wwc_get_hardarch
+wwc_get_hardarch:
+	in	al, 0xa0
+	and	al, 0x02
+	shr	al, 1
+	ret

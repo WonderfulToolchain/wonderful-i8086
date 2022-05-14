@@ -64,3 +64,5 @@ install: $(OBJECTS)
 	install -m 755 mkfent.py $(WONDERFUL_TOOLCHAIN)/i8086/bin/wf-mkfent
 	install -m 644 src/wonderful-support-wswan.h $(WONDERFUL_TOOLCHAIN)/i8086/wswan/include/wonderful-support.h
 	install -m 644 src/wonderful-support-wwitch.h $(WONDERFUL_TOOLCHAIN)/i8086/wwitch/include/wonderful-support.h
+	install -m 644 src/wonderful-support-common.h $(WONDERFUL_TOOLCHAIN)/i8086/wswan/include
+	install -m 644 src/wonderful-support-common.h $(WONDERFUL_TOOLCHAIN)/i8086/wwitch/include

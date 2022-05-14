@@ -5,10 +5,13 @@ Wonderful currently uses the `20180813` version of the `regparmcall` calling con
 
 ## Function parameter passing
 
-For typical functions, the first three arguments or words, whichever comes first, will be passed via the registers
-`AX`, `DX` and `CX`, in this order. The remaining arguments will be pushed onto the stack. Conversely, for functions
-with *variable arguments*, all arguments will be pushed onto the stack. It is the callee's responsibility to remove
-arguments off the stack.
+For typical functions, the first three arguments or words, whichever comes first, are passed via the registers
+`AX`, `DX` and `CX`, in this order. Bytes are passed via `AL`, `DL` and `CL`. The remaining arguments are pushed
+onto the stack.
+
+Arguments are not split between registers and stack. A far pointer, or 32-bit integer, will be passed via `DX:AX`, `CX:DX`, or entirely on the stack.
+  
+For functions with *variable arguments*, all arguments are pushed onto the stack. It is the callee's responsibility to remove arguments off the stack.
 
 For example, the following function signature:
 
@@ -20,6 +23,17 @@ results in the following calling convention:
  * `DX` = `value`.
 
 The following function signature:
+
+    void __far* memcpy(void __far* s1, const void __far* s2, size_t n);
+
+results in the following calling convention:
+
+ * `DX:AX` = `s1`,
+ * stack (4 bytes allocated) = `s2`,
+ * stack (2 bytes allocated) = `n`,
+ * return in `DX:AX`.
+
+ The following function signature:
 
     void __far* memcpy(void __far* s1, const void __far* s2, size_t n);
 

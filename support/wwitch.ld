@@ -73,6 +73,7 @@ SECTIONS
 		. = ALIGN (4);
 		__ebss = .;
 	}
+	_heap = .; /* TODO: Is this a WWitch symbol? */
 	"__lbss!" = 0;
 	__lbss = SIZEOF(.bss);
 	"__lbss_words!" = 0;

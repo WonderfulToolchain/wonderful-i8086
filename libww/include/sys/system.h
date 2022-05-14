@@ -32,6 +32,34 @@
  * @{
  */
 
+struct intvector {
+	void (*callback)(void);
+	uint16_t cs;
+	uint16_t ds;
+	uint16_t unknown; /* ? */
+};
+typedef struct intvector intvector_t;
+
+static inline void sys_interrupt_set_hook(uint8_t id, intvector_t *new_vector, intvector_t *old_vector) {
+	uint16_t ax_clobber;
+	__asm volatile (
+		"int $0x17"
+		: "=a" (ax_clobber)
+		: "a" ((uint16_t) (0x0000 | id)), "b" (FP_OFF(new_vector)), "d" (FP_OFF(old_vector)), "Rds" (FP_SEG(new_vector))
+		: "cc", "memory"
+	);
+}
+
+static inline void sys_interrupt_reset_hook(uint8_t id, intvector_t *old_vector) {
+	uint16_t ax_clobber;
+	__asm volatile (
+		"int $0x17"
+		: "=a" (ax_clobber)
+		: "a" ((uint16_t) (0x0100 | id)), "b" (FP_OFF(old_vector)), "Rds" (FP_SEG(old_vector))
+		: "cc", "memory"
+	);
+}
+
 static inline void sys_wait(uint16_t v /* TODO */) {
 	uint16_t ax_clobber;
 	__asm volatile (
@@ -40,6 +68,24 @@ static inline void sys_wait(uint16_t v /* TODO */) {
 		: "Rah" ((uint8_t) 0x02), "c" (v)
 		: "cc", "memory"
 	);
+}
+
+/**
+ * @brief Read the current tick count.
+ *
+ * Under FreyaBIOS, one tick equals one frame. Note that the WonderSwan runs at 75Hz.  
+ * 
+ * @return uint32_t The current tick count.
+ */
+static inline uint32_t sys_get_tick_count(void) {
+	uint32_t result;
+	__asm volatile (
+		"int $0x17"
+		: "=A" (result)
+		: "Rah" ((uint8_t) 0x03)
+		: "cc", "memory"
+	);
+	return result;
 }
 
 static inline void sys_sleep(void) {

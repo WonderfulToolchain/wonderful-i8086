@@ -36,3 +36,4 @@ typedef uint8_t BOOL;
 #define TRUE 1
 
 #define far __far
+#define near 

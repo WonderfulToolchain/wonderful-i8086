@@ -32,6 +32,9 @@
  * @{
  */
 
+ #define TEXT_SCREEN_WIDTH  28
+ #define TEXT_SCREEN_HEIGHT 18
+
 static inline void text_screen_init(void) {
 	__asm volatile (
 		"int $0x13"
@@ -99,12 +102,31 @@ static inline uint16_t text_put_substring(uint8_t x, uint8_t y, const char __far
 	return result;
 }
 
+#define NUM_HEXA        0x01
+#define NUM_PADSPACE    0x00
+#define NUM_PADZERO     0x02
+#define NUM_ALIGN_RIGHT 0x00
+#define NUM_ALIGN_LEFT  0x04
+#define NUM_SIGNED      0x08
+#define NUM_STORE       0x80
+
 static inline uint16_t text_put_numeric(uint8_t x, uint8_t y, uint8_t width, uint8_t flags, uint16_t value) {
 	uint16_t result;
 	__asm volatile (
 		"int $0x13"
 		: "=a" (result)
 		: "Rah" ((uint8_t) 0x07), "b" ((y << 8) | x), "c" ((flags << 8) | width), "d" (value)
+		: "cc", "memory"
+	);
+	return result;
+}
+
+static inline uint16_t text_fill_char(uint8_t x, uint8_t y, uint16_t length, uint16_t chr) {
+	uint16_t result;
+	__asm volatile (
+		"int $0x13"
+		: "=a" (result)
+		: "Rah" ((uint8_t) 0x08), "b" ((y << 8) | x), "c" (length), "d" (chr)
 		: "cc", "memory"
 	);
 	return result;
@@ -120,6 +142,27 @@ static inline void text_set_palette(uint16_t palette_index) {
 	);
 }
 
+static inline uint16_t text_get_palette(void) {
+	uint16_t result;
+	__asm volatile (
+		"int $0x13"
+		: "=a" (result)
+		: "Rah" ((uint8_t) 0x0a)
+		: "cc", "memory"
+	);
+	return result;
+}
+
+static inline void text_get_fontdata(uint16_t chr, void __far* buf) {
+	uint16_t ax_clobber;
+	__asm volatile (
+		"int $0x13"
+		: "=a" (ax_clobber)
+		: "Rah" ((uint8_t) 0x0d), "c" (chr), "d" (FP_OFF(buf)), "Rds" (FP_SEG(buf))
+		: "cc", "memory"
+	);
+}
+
 static inline void text_set_screen(uint8_t screen_id) {
 	uint16_t ax_clobber;
 	__asm volatile (
@@ -128,6 +171,17 @@ static inline void text_set_screen(uint8_t screen_id) {
 		: "a" ((uint16_t) (0x0e00 | screen_id))
 		: "cc", "memory"
 	);
+}
+
+static inline uint16_t text_get_screen(void) {
+	uint16_t result;
+	__asm volatile (
+		"int $0x13"
+		: "=a" (result)
+		: "Rah" ((uint8_t) 0x0f)
+		: "cc", "memory"
+	);
+	return result;
 }
 
 static inline void cursor_display(uint8_t on) {

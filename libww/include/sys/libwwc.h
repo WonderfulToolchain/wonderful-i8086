@@ -26,3 +26,26 @@
 
 #pragma once
 #include <sys/types.h>
+
+/**
+ * @addtogroup LibWWC WonderWitch Color routines
+ * @{
+ */
+
+#define HARDARCH_WS  0
+#define HARDARCH_WSC 1
+
+uint8_t wwc_get_hardarch();
+
+#define COLOR_MODE_GRAYSCALE 0x00
+#define COLOR_MODE_4COLOR    0x80
+#define COLOR_MODE_16COLOR   0xC0
+#define COLOR_MODE_16PACKED  0xE0
+
+void wwc_set_color_mode(uint8_t color_mode);
+void wwc_palette_set_color(uint8_t idx, uint8_t sub_idx, uint16_t color);
+uint16_t wwc_palette_get_color(uint8_t idx, uint8_t sub_idx);
+void wwc_font_set_colordata(uint16_t start, uint16_t count, const void __far* data);
+void wwc_clear_font(void);
+
+/**@}*/

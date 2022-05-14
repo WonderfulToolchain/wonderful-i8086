@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (c) 2022 Adrian "asie" Siekierka
  *
  * This software is provided 'as-is', without any express or implied
@@ -18,12 +18,18 @@
  *    misrepresented as being the original software.
  *
  * 3. This notice may not be removed or altered from any source distribution.
- */
+*/
 
-#pragma once
-#include <stdint.h>
+	.arch	i186
+	.code16
+	.intel_syntax noprefix
 
-/** Memory model helpers. */
-#define ASM_RET retf
-
-#include "wonderful-support-common.h"
+	.global wwc_palette_set_color
+wwc_palette_set_color:
+	mov	ah, 0x7F
+	shl	al, 4
+	add	al, dl
+	shl	ax, 1
+	mov	bx, ax
+	mov	word ptr [bx], cx
+	ret

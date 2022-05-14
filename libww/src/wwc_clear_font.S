@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (c) 2022 Adrian "asie" Siekierka
  *
  * This software is provided 'as-is', without any express or implied
@@ -18,12 +18,26 @@
  *    misrepresented as being the original software.
  *
  * 3. This notice may not be removed or altered from any source distribution.
- */
+*/
 
-#pragma once
-#include <stdint.h>
+	.arch	i186
+	.code16
+	.intel_syntax noprefix
 
-/** Memory model helpers. */
-#define ASM_RET retf
-
-#include "wonderful-support-common.h"
+// TODO: Is this accurate?
+	.global wwc_clear_font
+wwc_clear_font:
+	push	di
+	push	es
+	// ES:DI - destination pointer
+	// CX - length (0x8000 / 2 = 0x4000)
+	// AX - zeroes
+	xor	ax, ax
+	mov	es, ax
+	mov	cx, 0x4000
+	mov	di, cx
+	cld
+	rep	movsw
+	pop	es
+	pop	di
+	ret

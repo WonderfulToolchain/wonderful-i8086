@@ -23,7 +23,47 @@
 #pragma once
 #include <stdint.h>
 
-/** Memory model helpers. */
-#define ASM_RET retf
+/** IA16 helpers. */
+#define FP_SEG(x) __builtin_ia16_selector ((uint16_t) (((uint32_t) ((void __far*) (x))) >> 16))
+#define FP_OFF(x) __builtin_ia16_FP_OFF ((x))
+#define MK_FP(seg, ofs) ((void __far*) (((uint16_t) ofs) | (((uint32_t) ((uint16_t) seg)) << 16)))
+#define _CS __builtin_wonderful_cs()
+#define _DS __builtin_wonderful_ds()
+#define _ES __builtin_wonderful_es()
+#define _SS __builtin_wonderful_ss()
 
-#include "wonderful-support-common.h"
+static inline uint16_t __builtin_wonderful_cs() {
+	uint16_t result;
+	__asm (
+		"mov %%cs, %0"
+		: "=r" (result)
+	);
+	return result;
+}
+
+static inline uint16_t __builtin_wonderful_ds() {
+	uint16_t result;
+	__asm (
+		"mov %%ds, %0"
+		: "=r" (result)
+	);
+	return result;
+}
+
+static inline uint16_t __builtin_wonderful_es() {
+	uint16_t result;
+	__asm (
+		"mov %%es, %0"
+		: "=r" (result)
+	);
+	return result;
+}
+
+static inline uint16_t __builtin_wonderful_ss() {
+	uint16_t result;
+	__asm (
+		"mov %%ss, %0"
+		: "=r" (result)
+	);
+	return result;
+}

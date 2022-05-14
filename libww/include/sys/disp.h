@@ -67,6 +67,17 @@ static inline void display_control(uint16_t dcm) {
 	);
 }
 
+static inline uint16_t display_status(void) {
+	uint16_t result;
+	__asm volatile (
+		"int $0x12"
+		: "=a" (result)
+		: "Rah" ((uint8_t) 0x01)
+		: "cc", "memory"
+	);
+	return result;
+}
+
 static inline void font_set_monodata(uint16_t start, uint16_t count, const uint8_t __far* data) {
 	uint16_t ax_clobber;
 	__asm volatile (
@@ -314,6 +325,27 @@ static inline uint16_t lcd_get_segments(void) {
 		"int $0x12"
 		: "=a" (result)
 		: "Rah" ((uint8_t) 0x1e)
+		: "cc", "memory"
+	);
+	return result;
+}
+
+static inline void lcd_set_sleep(uint16_t on) {
+	uint16_t ax_clobber;
+	__asm volatile (
+		"int $0x12"
+		: "=a" (ax_clobber)
+		: "Rah" ((uint8_t) 0x1f), "b" (on)
+		: "cc", "memory"
+	);
+}
+
+static inline uint16_t lcd_get_sleep(void) {
+	uint16_t result;
+	__asm volatile (
+		"int $0x12"
+		: "=a" (result)
+		: "Rah" ((uint8_t) 0x20)
 		: "cc", "memory"
 	);
 	return result;

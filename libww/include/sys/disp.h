@@ -58,45 +58,50 @@
 #define CFM_FLIP_V 0x8000
 
 static inline void display_control(uint16_t dcm) {
+	uint16_t ax_clobber;
 	__asm volatile (
 		"int $0x12"
-		:
+		: "=a" (ax_clobber)
 		: "Rah" ((uint8_t) 0x00), "b" (dcm)
 		: "cc", "memory"
 	);
 }
 
 static inline void font_set_monodata(uint16_t start, uint16_t count, const uint8_t __far* data) {
+	uint16_t ax_clobber;
 	__asm volatile (
 		"int $0x12"
-		:
+		: "=a" (ax_clobber)
 		: "Rah" ((uint8_t) 0x02), "b" (start), "c" (count), "d" (FP_OFF(data)), "Rds" (FP_SEG(data))
 		: "cc", "memory"
 	);
 }
 
 static inline void font_set_colordata(uint16_t start, uint16_t count, const uint8_t __far* data) {
+	uint16_t ax_clobber;
 	__asm volatile (
 		"int $0x12"
-		:
+		: "=a" (ax_clobber)
 		: "Rah" ((uint8_t) 0x03), "b" (start), "c" (count), "d" (FP_OFF(data)), "Rds" (FP_SEG(data))
 		: "cc", "memory"
 	);
 }
 
 static inline void font_get_data(uint16_t start, uint16_t count, uint8_t __far* data) {
+	uint16_t ax_clobber;
 	__asm volatile (
 		"int $0x12"
-		:
+		: "=a" (ax_clobber)
 		: "Rah" ((uint8_t) 0x04), "b" (start), "c" (count), "d" (FP_OFF(data)), "Rds" (FP_SEG(data))
 		: "cc", "memory"
 	);
 }
 
 static inline void font_set_color(uint16_t color) {
+	uint16_t ax_clobber;
 	__asm volatile (
 		"int $0x12"
-		:
+		: "=a" (ax_clobber)
 		: "Rah" ((uint8_t) 0x05), "b" (color)
 		: "cc", "memory"
 	);
@@ -114,18 +119,20 @@ static inline uint16_t font_get_color(void) {
 }
 
 static inline void screen_set_char(uint8_t screen_id, uint8_t x, uint8_t y, uint8_t width, uint8_t height, const uint16_t __far* tiles ) {
+	uint16_t ax_clobber;
 	__asm volatile (
 		"int $0x12"
-		: 
+		: "=a" (ax_clobber)
 		: "a" ((uint16_t) (0x0700 | screen_id)), "b" ((y << 8) | x), "c" ((height << 8) | width), "d" (FP_OFF(tiles)), "Rds" (FP_SEG(tiles))
 		: "cc", "memory"
 	);
 }
 
 static inline void screen_get_char(uint8_t screen_id, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint16_t __far* tiles) {
+	uint16_t ax_clobber;
 	__asm volatile (
 		"int $0x12"
-		: 
+		: "=a" (ax_clobber)
 		: "a" ((uint16_t) (0x0800 | screen_id)), "b" ((y << 8) | x), "c" ((height << 8) | width), "d" (FP_OFF(tiles)), "Rds" (FP_SEG(tiles))
 		: "cc", "memory"
 	);
@@ -143,36 +150,40 @@ static inline uint16_t screen_get_char1(uint8_t screen_id, uint8_t x, uint8_t y)
 }
 
 static inline void screen_fill_char(uint8_t screen_id, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint16_t tile) {
+	uint16_t ax_clobber;
 	__asm volatile (
 		"int $0x12"
-		: 
+		: "=a" (ax_clobber)
 		: "a" ((uint16_t) (0x0900 | screen_id)), "b" ((y << 8) | x), "c" ((height << 8) | width), "d" (tile)
 		: "cc", "memory"
 	);
 }
 
 static inline void screen_fill_attr(uint8_t screen_id, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint16_t tile, uint16_t mask) {
+	uint16_t ax_clobber;
 	__asm volatile (
 		"int $0x12"
-		: 
+		: "=a" (ax_clobber)
 		: "a" ((uint16_t) (0x0a00 | screen_id)), "b" ((y << 8) | x), "c" ((height << 8) | width), "d" (tile), "S" (mask)
 		: "cc", "memory"
 	);
 }
 
 static inline void sprite_set_range(uint16_t first, uint16_t count) {
+	uint16_t ax_clobber;
 	__asm volatile (
 		"int $0x12"
-		: 
+		: "=a" (ax_clobber)
 		: "Rah" ((uint8_t) 0x0b), "b" (first), "c" (count)
 		: "cc", "memory"
 	);
 }
 
 static inline void sprite_set_char(uint16_t id, uint16_t tile) {
+	uint16_t ax_clobber;
 	__asm volatile (
 		"int $0x12"
-		: 
+		: "=a" (ax_clobber)
 		: "Rah" ((uint8_t) 0x0c), "b" (id), "c" (tile)
 		: "cc", "memory"
 	);
@@ -190,63 +201,70 @@ static inline uint16_t sprite_get_char(uint16_t id) {
 }
 
 static inline void sprite_set_location(uint16_t id, uint8_t x, uint8_t y) {
+	uint16_t ax_clobber;
 	__asm volatile (
 		"int $0x12"
-		: 
+		: "=a" (ax_clobber)
 		: "Rah" ((uint8_t) 0x0e), "b" (id), "d" ((y << 8) | x)
 		: "cc", "memory"
 	);
 }
 
 static inline void sprite_set_char_location(uint16_t id, uint16_t tile, uint8_t x, uint8_t y) {
+	uint16_t ax_clobber;
 	__asm volatile (
 		"int $0x12"
-		: 
+		: "=a" (ax_clobber)
 		: "Rah" ((uint8_t) 0x10), "b" (id), "c" (tile), "d" ((y << 8) | x)
 		: "cc", "memory"
 	);
 }
 
 static inline void sprite_set_data(uint16_t start, uint16_t count, const uint8_t __far* data) {
+	uint16_t ax_clobber;
 	__asm volatile (
 		"int $0x12"
-		:
+		: "=a" (ax_clobber)
 		: "Rah" ((uint8_t) 0x12), "b" (start), "c" (count), "d" (FP_OFF(data)), "Rds" (FP_SEG(data))
 		: "cc", "memory"
 	);
 }
 
 static inline void screen_set_scroll(uint8_t screen_id, uint8_t x, uint8_t y) {
+	uint16_t ax_clobber;
 	__asm volatile (
 		"int $0x12"
-		: 
+		: "=a" (ax_clobber)
 		: "a" ((uint16_t) (0x1300 | screen_id)), "b" ((y << 8) | x)
 		: "cc", "memory"
 	);
 }
 
 static inline void screen2_set_window(uint8_t screen_id, uint8_t x, uint8_t y, uint8_t width, uint8_t height) {
+	uint16_t ax_clobber;
 	__asm volatile (
 		"int $0x12"
-		: 
+		: "=a" (ax_clobber)
 		: "a" ((uint16_t) (0x1500 | screen_id)), "b" ((y << 8) | x), "c" ((height << 8) | width)
 		: "cc", "memory"
 	);
 }
 
 static inline void sprite_set_window(uint8_t screen_id, uint8_t x, uint8_t y, uint8_t width, uint8_t height) {
+	uint16_t ax_clobber;
 	__asm volatile (
 		"int $0x12"
-		: 
+		: "=a" (ax_clobber)
 		: "a" ((uint16_t) (0x1700 | screen_id)), "b" ((y << 8) | x), "c" ((height << 8) | width)
 		: "cc", "memory"
 	);
 }
 
 static inline void palette_set_color(uint16_t id, uint16_t pal) {
+	uint16_t ax_clobber;
 	__asm volatile (
 		"int $0x12"
-		:
+		: "=a" (ax_clobber)
 		: "Rah" ((uint8_t) 0x19), "b" (id), "c" (pal)
 		: "cc", "memory"
 	);
@@ -264,9 +282,10 @@ static inline uint16_t palette_get_color(uint16_t id) {
 }
 
 static inline void lcd_set_color(uint16_t low, uint16_t high) {
+	uint16_t ax_clobber;
 	__asm volatile (
 		"int $0x12"
-		:
+		: "=a" (ax_clobber)
 		: "Rah" ((uint8_t) 0x1b), "b" (low), "c" (high)
 		: "cc", "memory"
 	);
@@ -280,9 +299,10 @@ static inline void lcd_set_color(uint16_t low, uint16_t high) {
 #define LCDSEG_AUX3       0x20
 
 static inline void lcd_set_segments(uint16_t flags) {
+	uint16_t ax_clobber;
 	__asm volatile (
 		"int $0x12"
-		:
+		: "=a" (ax_clobber)
 		: "Rah" ((uint8_t) 0x1d), "b" (flags)
 		: "cc", "memory"
 	);

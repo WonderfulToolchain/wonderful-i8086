@@ -54,27 +54,30 @@ typedef struct {
 #define XM_ERASE_BANK  8
 
 static inline void comm_open(void) {
+	uint16_t ax_clobber;
 	__asm volatile (
 		"int $0x14"
-		:
-		: "Rah" ((uint8_t) 0x00)
+		: "=a" (ax_clobber)
+ 		: "Rah" ((uint8_t) 0x00)
 		: "cc", "memory"
 	);
 }
 
 static inline void comm_close(void) {
+	uint16_t ax_clobber;
 	__asm volatile (
 		"int $0x14"
-		:
+		: "=a" (ax_clobber)
 		: "Rah" ((uint8_t) 0x01)
 		: "cc", "memory"
 	);
 }
 
 static inline void comm_send_char(int c) {
+	uint16_t ax_clobber;
 	__asm volatile (
 		"int $0x14"
-		:
+		: "=a" (ax_clobber)
 		: "Rah" ((uint8_t) 0x02), "b" (c)
 		: "cc", "memory"
 	);
@@ -103,36 +106,40 @@ static inline int comm_receive_with_timeout(uint16_t timeout) {
 }
 
 static inline void comm_send_string(const char __far* str) {
+	uint16_t ax_clobber;
 	__asm volatile (
 		"int $0x14"
-		:
+		: "=a" (ax_clobber)
 		: "Rah" ((uint8_t) 0x05), "d" (FP_OFF(str)), "Rds" (FP_SEG(str))
 		: "cc", "memory"
 	);
 }
 
 static inline void comm_send_block(const void __far* buf, uint16_t length) {
+	uint16_t ax_clobber;
 	__asm volatile (
 		"int $0x14"
-		:
+		: "=a" (ax_clobber)
 		: "Rah" ((uint8_t) 0x06), "c" (length), "d" (FP_OFF(buf)), "Rds" (FP_SEG(buf))
 		: "cc", "memory"
 	);
 }
 
 static inline void comm_receive_block(const void __far* buf, uint16_t length) {
+	uint16_t ax_clobber;
 	__asm volatile (
 		"int $0x14"
-		:
+		: "=a" (ax_clobber)
 		: "Rah" ((uint8_t) 0x07), "c" (length), "d" (FP_OFF(buf)), "Rds" (FP_SEG(buf))
 		: "cc", "memory"
 	);
 }
 
 static inline void comm_set_timeout(uint16_t recv_timeout, uint16_t send_timeout) {
+	uint16_t ax_clobber;
 	__asm volatile (
 		"int $0x14"
-		:
+		: "=a" (ax_clobber)
 		: "Rah" ((uint8_t) 0x08), "b" (recv_timeout), "c" (send_timeout)
 		: "cc", "memory"
 	);
@@ -149,9 +156,10 @@ static inline void comm_set_timeout(uint16_t recv_timeout, uint16_t send_timeout
  * @param rate The new baud rate ( @ref COMM_SPEED_9600 or @ref COMM_SPEED_38400 )
  */
 static inline void comm_set_baudrate(uint16_t rate) {
+	uint16_t ax_clobber;
 	__asm volatile (
 		"int $0x14"
-		:
+		: "=a" (ax_clobber)
 		: "Rah" ((uint8_t) 0x09), "b" (rate)
 		: "cc", "memory"
 	);
@@ -169,9 +177,10 @@ static inline uint16_t comm_get_baudrate(void) {
 }
 
 static inline void comm_set_cancel_key(uint16_t value) {
+	uint16_t ax_clobber;
 	__asm volatile (
 		"int $0x14"
-		:
+		: "=a" (ax_clobber)
 		: "Rah" ((uint8_t) 0x0B), "b" (value)
 		: "cc", "memory"
 	);
@@ -189,9 +198,10 @@ static inline uint16_t comm_get_cancel_key(void) {
 }
 
 static inline void comm_xmodem(xmodeminfo __far* xmodem_info) {
+	uint16_t ax_clobber;
 	__asm volatile (
 		"int $0x14"
-		:
+		: "=a" (ax_clobber)
 		: "Rah" ((uint8_t) 0x0D), "b" (FP_OFF(xmodem_info)), "Rds" (FP_SEG(xmodem_info))
 		: "cc", "memory"
 	);

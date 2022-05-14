@@ -46,9 +46,10 @@ static inline void text_screen_init(void) {
 #define TEXT_MODE_SJIS     2
 
 static inline void text_set_mode(uint16_t mode) {
+	uint16_t ax_clobber;
 	__asm volatile (
 		"int $0x13"
-		: 
+		: "=a" (ax_clobber)
 		: "Rah" ((uint8_t) 0x00), "b" (mode)
 		: "cc", "memory"
 	);
@@ -110,27 +111,30 @@ static inline uint16_t text_put_numeric(uint8_t x, uint8_t y, uint8_t width, uin
 }
 
 static inline void text_set_palette(uint16_t palette_index) {
+	uint16_t ax_clobber;
 	__asm volatile (
 		"int $0x13"
-		: 
+		: "=a" (ax_clobber)
 		: "Rah" ((uint8_t) 0x09), "b" (palette_index)
 		: "cc", "memory"
 	);
 }
 
 static inline void text_set_screen(uint8_t screen_id) {
+	uint16_t ax_clobber;
 	__asm volatile (
 		"int $0x13"
-		: 
+		: "=a" (ax_clobber)
 		: "a" ((uint16_t) (0x0e00 | screen_id))
 		: "cc", "memory"
 	);
 }
 
 static inline void cursor_display(uint8_t on) {
+	uint16_t ax_clobber;
 	__asm volatile (
 		"int $0x13"
-		: 
+		: "=a" (ax_clobber)
 		: "a" ((uint16_t) (0x1000 | on))
 		: "cc", "memory"
 	);
@@ -148,18 +152,20 @@ static inline uint16_t cursor_status(void) {
 }
 
 static inline void cursor_set_location(uint8_t x, uint8_t y, uint8_t width, uint8_t height) {
+	uint16_t ax_clobber;
 	__asm volatile (
 		"int $0x13"
-		: 
+		: "=a" (ax_clobber)
 		: "Rah" ((uint8_t) 0x12), "b" ((y << 8) | x), "c" ((height << 8) | width)
 		: "cc", "memory"
 	);
 }
 
 static inline void cursor_set_type(uint16_t palette_index, uint16_t blink_interval) {
+	uint16_t ax_clobber;
 	__asm volatile (
 		"int $0x13"
-		: 
+		: "=a" (ax_clobber)
 		: "Rah" ((uint8_t) 0x14), "b" (palette_index), "c" (blink_interval)
 		: "cc", "memory"
 	);

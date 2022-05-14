@@ -33,38 +33,30 @@
  */
 
 static inline void sys_wait(uint16_t v /* TODO */) {
+	uint16_t ax_clobber;
 	__asm volatile (
 		"int $0x17"
-		:
+		: "=a" (ax_clobber)
 		: "Rah" ((uint8_t) 0x02), "c" (v)
 		: "cc", "memory"
 	);
 }
 
-static inline uint32_t sys_get_tick_count(void) {
-	uint32_t result;
-	__asm volatile (
-		"int $0x17"
-		: "=a" (result)
-		: "Rah" ((uint8_t) 0x03)
-		: "cc", "memory"
-	);
-	return result;
-}
-
 static inline void sys_sleep(void) {
+	uint16_t ax_clobber;
 	__asm volatile (
 		"int $0x17"
-		:
+		: "=a" (ax_clobber)
 		: "Rah" ((uint8_t) 0x04)
 		: "cc", "memory"
 	);
 }
 
 static inline void sys_set_sleep_time(uint16_t time) {
+	uint16_t ax_clobber;
 	__asm volatile (
 		"int $0x17"
-		:
+		: "=a" (ax_clobber)
 		: "Rah" ((uint8_t) 0x05), "b" (time)
 		: "cc", "memory"
 	);
@@ -82,9 +74,10 @@ static inline uint16_t sys_get_sleep_time(void) {
 }
 
 static inline void sys_set_awake_key(uint16_t key) {
+	uint16_t ax_clobber;
 	__asm volatile (
 		"int $0x17"
-		:
+		: "=a" (ax_clobber)
 		: "Rah" ((uint8_t) 0x07), "b" (key)
 		: "cc", "memory"
 	);
@@ -102,9 +95,10 @@ static inline uint16_t sys_get_awake_key(void) {
 }
 
 static inline void sys_set_keepalive_int(uint16_t value) {
+	uint16_t ax_clobber;
 	__asm volatile (
 		"int $0x17"
-		:
+		: "=a" (ax_clobber)
 		: "Rah" ((uint8_t) 0x09), "b" (value)
 		: "cc", "memory"
 	);

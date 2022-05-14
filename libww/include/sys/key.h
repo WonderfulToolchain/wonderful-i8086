@@ -87,9 +87,10 @@ static inline uint16_t key_wait(void) {
 }
 
 static inline void key_set_repeat(uint8_t rate, uint8_t delay) {
+	uint16_t ax_clobber;
 	__asm volatile (
 		"int $0x11"
-		: 
+		: "=a" (ax_clobber)
 		: "Rah" ((uint8_t) 0x03), "b" ((delay << 8) | rate)
 		: "cc", "memory"
 	);

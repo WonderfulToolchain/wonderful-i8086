@@ -1,0 +1,6 @@
+#!/bin/bash
+
+CROSS_HOST=x86_64-w64-mingw32
+CROSS_CC="$CROSS_HOST"-gcc
+CROSS_CXX="$CROSS_HOST"-g++
+HOST_EXECUTABLE_SUFFIX=.exe

@@ -36,9 +36,13 @@
 #define SCREEN1 0
 #define SCREEN2 1
 
-#define DCM_SCR1 0x0001
-#define DCM_SCR2 0x0002
-#define DCM_SPR  0x0004
+#define DCM_SCR1             0x0001
+#define DCM_SCR2             0x0002
+#define DCM_SPR              0x0004
+#define DCM_SPR_WIN          0x0008
+#define DCM_SCR2_WIN_INSIDE  0x0020
+#define DCM_SCR2_WIN_OUTSIDE 0x0030
+#define DCM_BORDER_COLOR     0x0700
 
 #define SCREEN_CHAR_WIDTH  32
 #define SCREEN_CHAR_HEIGHT 32
@@ -267,6 +271,13 @@ static inline void lcd_set_color(uint16_t low, uint16_t high) {
 		: "cc", "memory"
 	);
 }
+
+#define LCDSEG_SLEEP      0x01
+#define LCDSEG_VERTICAL   0x02
+#define LCDSEG_HORIZONTAL 0x04
+#define LCDSEG_AUX1       0x08
+#define LCDSEG_AUX2       0x10
+#define LCDSEG_AUX3       0x20
 
 static inline void lcd_set_segments(uint16_t flags) {
 	__asm volatile (

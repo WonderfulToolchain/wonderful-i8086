@@ -45,6 +45,6 @@ static inline void bios_exit(void) {
 		"int $0x10"
 		: 
 		: 
-		: "cc", "memory"
+		:
 	);
 }

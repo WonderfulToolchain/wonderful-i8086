@@ -112,34 +112,33 @@ _premain:
 	xor	cx, cx
 	int	0x12
 	// 2. disable SCR2 and SPR window
-	mov	ah, 0x15
+	mov	ax, 0x1500
 	int	0x12
-	mov	ah, 0x17
+	mov	ax, 0x1700
 	int	0x12
 	// 3. disable sprites
-	mov	ah, 0xB
-	int 	0x12
+	mov	ax, 0x0b00
+	int 0x12
 	// 4. reset scroll on SCR1, SCR2
-	mov	ah, 0x13
+	mov	ax, 0x1300
 	int	0x12
-	inc	al
+	mov	ax, 0x1301
 	int	0x12
 	// 5. initialize SCR1, SCR2, SPR VRAM locations
 	mov	ax, 0x2100
 	mov	bl, (SCR1_ADDR >> 11)
 	int	0x12
-	mov	al, 0x01
+	mov ax, 0x2101
 	mov	bl, (SCR2_ADDR >> 11)
 	int	0x12
-	inc	ah
+	mov ah, 0x22
 	mov	bl, (SPR_ADDR >> 9)
 	int	0x12
 	// 6. initialize text mode
-	// (reusing al = 0x01 from step 5)
-	mov	ah, 0x0e
-	int	0x13
 	mov	ah, 0x02
 	mov	bl, TEXT_MODE
+	int	0x13
+	mov	ax, 0x0e01
 	int	0x13
 	// 7. enable display_control
 	xor	ax, ax
@@ -147,6 +146,7 @@ _premain:
 	int	0x12
 
 	// configure ds to point to sram
+	// (reusing al = 0x00 from step 7)
 	mov	ax, 0x1000
 	mov	ds, ax
 	mov	es, ax

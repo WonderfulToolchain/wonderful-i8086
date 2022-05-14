@@ -58,7 +58,7 @@ SECTIONS
 		*(".crt0_data")
 		*(.rodata ".rodata.*[^&]")
 		*(.data ".data.*[^&]")
-		. = ALIGN (2);
+		. = ALIGN (4);
 		__edata = .;
 	}
 	"__ldata!" = 0;
@@ -70,7 +70,7 @@ SECTIONS
 	.bss . (NOLOAD) :
 	{
 		*(.bss ".bss.*[^&]")
-		. = ALIGN (2);
+		. = ALIGN (4);
 		__ebss = .;
 	}
 	"__lbss!" = 0;

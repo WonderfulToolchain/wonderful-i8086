@@ -45,7 +45,7 @@ static inline uint32_t sys_get_tick_count(void) {
 	uint32_t result;
 	__asm volatile (
 		"int $0x17"
-		: "=A" (result)
+		: "=a" (result)
 		: "Rah" ((uint8_t) 0x03)
 		: "cc", "memory"
 	);
@@ -59,6 +59,66 @@ static inline void sys_sleep(void) {
 		: "Rah" ((uint8_t) 0x04)
 		: "cc", "memory"
 	);
+}
+
+static inline void sys_set_sleep_time(uint16_t time) {
+	__asm volatile (
+		"int $0x17"
+		:
+		: "Rah" ((uint8_t) 0x05), "b" (time)
+		: "cc", "memory"
+	);
+}
+
+static inline uint16_t sys_get_sleep_time(void) {
+	uint16_t result;
+	__asm volatile (
+		"int $0x17"
+		: "=a" (result)
+		: "Rah" ((uint8_t) 0x06)
+		: "cc", "memory"
+	);
+	return result;
+}
+
+static inline void sys_set_awake_key(uint16_t key) {
+	__asm volatile (
+		"int $0x17"
+		:
+		: "Rah" ((uint8_t) 0x07), "b" (key)
+		: "cc", "memory"
+	);
+}
+
+static inline uint16_t sys_get_awake_key(void) {
+	uint16_t result;
+	__asm volatile (
+		"int $0x17"
+		: "=a" (result)
+		: "Rah" ((uint8_t) 0x08)
+		: "cc", "memory"
+	);
+	return result;
+}
+
+static inline void sys_set_keepalive_int(uint16_t value) {
+	__asm volatile (
+		"int $0x17"
+		:
+		: "Rah" ((uint8_t) 0x09), "b" (value)
+		: "cc", "memory"
+	);
+}
+
+static inline uint16_t sys_get_version(void) {
+	uint16_t result;
+	__asm volatile (
+		"int $0x17"
+		: "=a" (result)
+		: "Rah" ((uint8_t) 0x12)
+		: "cc", "memory"
+	);
+	return result;
 }
 
 /**@}*/

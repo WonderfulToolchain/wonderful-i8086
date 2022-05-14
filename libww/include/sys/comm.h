@@ -24,12 +24,177 @@
  * FreyaBIOS serial calls.
  */
 
-#pragma once
+#pragma (once)
 #include <sys/types.h>
 
 /**
  * @addtogroup Int14 BIOS - INT 14h - Serial
  * @{
  */
+
+typedef struct {
+	int16_t state;
+	int8_t mode;
+	int8_t retry_c;
+	int16_t block_c;
+	int16_t block_max;
+	int16_t block_size;
+	int16_t bank;
+	int16_t offset;
+	int16_t timeout_c;
+} xmodeminfo;
+
+#define XM_START       1
+#define XM_NEGO        2
+#define XM_BLOCK       3
+#define XM_BLOCK_RETRY 4
+#define XM_CLOSE       5
+#define XM_ABORT       6
+#define XM_DONE        7
+#define XM_ERASE_BANK  8
+
+static inline void comm_open(void) {
+	__asm volatile (
+		"int $0x14"
+		:
+		: "Rah" ((uint8_t) 0x00)
+		: "cc", "memory"
+	);
+}
+
+static inline void comm_close(void) {
+	__asm volatile (
+		"int $0x14"
+		:
+		: "Rah" ((uint8_t) 0x01)
+		: "cc", "memory"
+	);
+}
+
+static inline void comm_send_char(int c) {
+	__asm volatile (
+		"int $0x14"
+		:
+		: "Rah" ((uint8_t) 0x02), "b" (c)
+		: "cc", "memory"
+	);
+}
+
+static inline int comm_receive_char(void) {
+	int result;
+	__asm volatile (
+		"int $0x14"
+		: "=a" (result)
+		: "Rah" ((uint8_t) 0x03)
+		: "cc", "memory"
+	);
+	return result;
+}
+
+static inline int comm_receive_with_timeout(uint16_t timeout) {
+	int result;
+	__asm volatile (
+		"int $0x14"
+		: "=a" (result)
+		: "Rah" ((uint8_t) 0x04), "c" (timeout)
+		: "cc", "memory"
+	);
+	return result;
+}
+
+static inline void comm_send_string(const char __far* str) {
+	__asm volatile (
+		"int $0x14"
+		:
+		: "Rah" ((uint8_t) 0x05), "d" (FP_OFF(str)), "Rds" (FP_SEG(str))
+		: "cc", "memory"
+	);
+}
+
+static inline void comm_send_block(const void __far* buf, uint16_t length) {
+	__asm volatile (
+		"int $0x14"
+		:
+		: "Rah" ((uint8_t) 0x06), "c" (length), "d" (FP_OFF(buf)), "Rds" (FP_SEG(buf))
+		: "cc", "memory"
+	);
+}
+
+static inline void comm_receive_block(const void __far* buf, uint16_t length) {
+	__asm volatile (
+		"int $0x14"
+		:
+		: "Rah" ((uint8_t) 0x07), "c" (length), "d" (FP_OFF(buf)), "Rds" (FP_SEG(buf))
+		: "cc", "memory"
+	);
+}
+
+static inline void comm_set_timeout(uint16_t recv_timeout, uint16_t send_timeout) {
+	__asm volatile (
+		"int $0x14"
+		:
+		: "Rah" ((uint8_t) 0x08), "b" (recv_timeout), "c" (send_timeout)
+		: "cc", "memory"
+	);
+}
+
+#define COMM_SPEED_9600 0
+#define COMM_SPEED_38400 1
+
+/**
+ * @brief Set the new baud rate.
+ *
+ * This function cannot be called while the serial connection is open.
+ * 
+ * @param rate The new baud rate ( @ref COMM_SPEED_9600 or @ref COMM_SPEED_38400 )
+ */
+static inline void comm_set_baudrate(uint16_t rate) {
+	__asm volatile (
+		"int $0x14"
+		:
+		: "Rah" ((uint8_t) 0x09), "b" (rate)
+		: "cc", "memory"
+	);
+}
+
+static inline uint16_t comm_get_baudrate(void) {
+	uint16_t result;
+	__asm volatile (
+		"int $0x14"
+		: "=a" (result)
+		: "Rah" ((uint8_t) 0x0A)
+		: "cc", "memory"
+	);
+	return result;
+}
+
+static inline void comm_set_cancel_key(uint16_t value) {
+	__asm volatile (
+		"int $0x14"
+		:
+		: "Rah" ((uint8_t) 0x0B), "b" (value)
+		: "cc", "memory"
+	);
+}
+
+static inline uint16_t comm_get_cancel_key(void) {
+	uint16_t result;
+	__asm volatile (
+		"int $0x14"
+		: "=a" (result)
+		: "Rah" ((uint8_t) 0x0C)
+		: "cc", "memory"
+	);
+	return result;
+}
+
+static inline void comm_xmodem(xmodeminfo __far* xmodem_info) {
+	__asm volatile (
+		"int $0x14"
+		:
+		: "Rah" ((uint8_t) 0x0D), "b" (FP_OFF(xmodem_info)), "Rds" (FP_SEG(xmodem_info))
+		: "cc", "memory"
+	);
+}
 
 /**@}*/

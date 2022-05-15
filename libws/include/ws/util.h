@@ -38,7 +38,15 @@
   * @param port Port ID. For more information, see @ref DefinesIOPorts
   * @return uint8_t The value read.
   */
-uint8_t inportb(uint8_t port);
+static inline uint8_t inportb(uint8_t port) {
+	uint8_t result;
+	__asm volatile (
+		"inb %1, %0"
+		: "=Ral" (result)
+		: "Nd" ((uint16_t) port)
+	);
+	return result;
+}
 
  /**
   * @brief Read a word from the given port.
@@ -46,7 +54,15 @@ uint8_t inportb(uint8_t port);
   * @param port Port ID. For more information, see @ref DefinesIOPorts
   * @return uint8_t The value read.
   */
-uint16_t inportw(uint8_t port);
+static inline uint16_t inportw(uint8_t port) {
+	uint16_t result;
+	__asm volatile (
+		"inw %1, %0"
+		: "=a" (result)
+		: "Nd" ((uint16_t) port)
+	);
+	return result;
+}
 
  /**
   * @brief Write a byte to the given port.
@@ -54,7 +70,13 @@ uint16_t inportw(uint8_t port);
   * @param port Port ID. For more information, see @ref DefinesIOPorts
   * @param value The value to write.
   */
-void outportb(uint8_t port, uint8_t value);
+static inline void outportb(uint8_t port, uint8_t value) {
+	__asm volatile (
+		"outb %0, %1"
+		:
+		: "Ral" (value), "Nd" ((uint16_t) port)
+	);
+}
 
  /**
   * @brief Write a word to the given port.
@@ -62,6 +84,12 @@ void outportb(uint8_t port, uint8_t value);
   * @param port Port ID. For more information, see @ref DefinesIOPorts
   * @param value The value to write.
   */
-void outportw(uint8_t port, uint16_t value);
+static inline void outportw(uint8_t port, uint16_t value) {
+	__asm volatile (
+		"outw %0, %1"
+		:
+		: "a" (value), "Nd" ((uint16_t) port)
+	);
+}
 
 /**@}*/

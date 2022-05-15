@@ -30,7 +30,7 @@ all: $(TARGET)
 $(TARGET): $(OBJECTS)
 	$(SWANLINK) -v -o $@ --output-elf $@.elf --linker-args $(LDFLAGS) $(WF_CRT0) $(OBJECTS) $(LIBS)
 
-$(OBJDIR)/image.c: $(RESDIR)/image.png
+$(OBJDIR)/image.c: $(RESDIR)/image.png | $(OBJDIR)
 	$(SUPERFAMICONV) tiles -i $< -M ws -p $(RESDIR)/image.pal.bin -d $(OBJDIR)/image.tiles.bin
 	$(SUPERFAMICONV) map -i $< -M ws -p $(RESDIR)/image.pal.bin -t $(OBJDIR)/image.tiles.bin -d $(OBJDIR)/image.map.bin
 	$(LZSA) -r -f 1 $(OBJDIR)/image.tiles.bin $(OBJDIR)/image.tiles.bin.lzsa1
@@ -38,7 +38,7 @@ $(OBJDIR)/image.c: $(RESDIR)/image.png
 	$(LZSA) -r -f 2 $(OBJDIR)/image.tiles.bin $(OBJDIR)/image.tiles.bin.lzsa2
 	$(BIN2C) $@ $(RESDIR)/image.pal.bin:int16 $(OBJDIR)/image.tiles.bin.lzsa1 $(OBJDIR)/image.tiles.bin.lzsa2 $(OBJDIR)/image.map.bin
 
-$(OBJDIR)/logo.c: $(RESDIR)/logo.png
+$(OBJDIR)/logo.c: $(RESDIR)/logo.png | $(OBJDIR)
 	$(SUPERFAMICONV) tiles -i $< -M ws -D -F -p $(RESDIR)/image.pal.bin -d $(OBJDIR)/logo.tiles.bin
 	$(BIN2C) $@ $(OBJDIR)/logo.tiles.bin
 

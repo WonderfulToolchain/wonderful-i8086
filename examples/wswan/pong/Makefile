@@ -36,7 +36,7 @@ $(OBJDIR)/%.o: %.c $(EARLY_OBJECTS) | $(OBJDIR)
 $(OBJDIR)/%.o: %.S $(EARLY_OBJECTS) | $(OBJDIR)
 	$(AS) $(ASFLAGS) -o $@ $<
 
-$(OBJDIR)/assets.c: $(RESDIR)/game_tiles.png $(RESDIR)/game_bg.png $(RESDIR)/palette.bin
+$(OBJDIR)/assets.c: $(RESDIR)/game_tiles.png $(RESDIR)/game_bg.png $(RESDIR)/palette.bin | $(OBJDIR)
 	$(SUPERFAMICONV) tiles -i $(RESDIR)/game_tiles.png -M ws -p $(RESDIR)/palette.bin -d $(OBJDIR)/game_tiles.tiles.bin
 	$(SUPERFAMICONV) tiles -i $(RESDIR)/game_bg.png -M ws -p $(RESDIR)/palette.bin -d $(OBJDIR)/game_bg.tiles.bin
 	$(SUPERFAMICONV) map -i $(RESDIR)/game_bg.png -M ws -p $(RESDIR)/palette.bin -t $(OBJDIR)/game_bg.tiles.bin -d $(OBJDIR)/game_bg.map.bin

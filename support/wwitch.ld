@@ -8,6 +8,8 @@ SECTIONS
 		"__stext!" = .;
 		*(".crt0!")
 		*(".text!*" ".text.*!")
+		*(".fartext!*" ".fartext.*!")
+		*(".farrodata!*" ".farrodata.*!")
 		"__etext!" = .;
 	}
 
@@ -17,6 +19,8 @@ SECTIONS
 		__stext = .;
 		*(".crt0")
 		*(.text ".text.*[^&]")
+		*(".fartext.*[^&]")
+		*(".farrodata.*[^&]")
 		__etext = .;
 	}
 
@@ -26,6 +30,8 @@ SECTIONS
 		"__stext&" = .;
 		*(".crt0&")
 		*(".text&*" ".text.*&")
+		*(".fartext&*" ".fartext.*&")
+		*(".farrodata&*" ".farrodata.*&")
 		"__etext&" = .;
 		. = ALIGN (16);
 	}

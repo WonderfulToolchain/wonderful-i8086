@@ -8,13 +8,13 @@ include $(WONDERFUL_TOOLCHAIN)/i8086/$(WONDERFUL_TARGET).mk
 OBJDIR := obj/$(WONDERFUL_TARGET)
 TARGETDIR := build/$(WONDERFUL_TARGET)
 TARGET := $(TARGETDIR)/libc.a
-SRCDIRS := src src/stdlib src/string
+SRCDIRS := src src/ctype src/errno src/stdlib src/string
 MKDIRS := $(OBJDIR) build/$(WONDERFUL_TARGET)
 
 ifeq ($(WONDERFUL_TARGET), wwitch)
-CFLAGS += -Os
+CFLAGS += -Os -DLIBC_LOCALE_SJIS
 else
-CFLAGS += -O2
+CFLAGS += -O2 -DLIBC_LOCALE_ASCII
 endif
 
 CSOURCES := $(foreach dir,$(SRCDIRS),$(notdir $(wildcard $(dir)/*.c)))

@@ -21,7 +21,8 @@
  */
 
 #pragma once
-#include <stdint.h>
+
+#define __WONDERFUL_WWITCH__
 
 /** Memory model helpers. */
 #define ASM_RET ret

@@ -21,7 +21,8 @@
  */
 
 #pragma once
-#include <stdint.h>
+
+#define __WONDERFUL_WSWAN__
 
 /** Memory model helpers. */
 #define ASM_RET retf

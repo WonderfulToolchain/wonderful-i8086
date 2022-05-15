@@ -21,9 +21,11 @@
  */
 
 #pragma once
-#include <stdint.h>
 
 #define __WONDERFUL__
+
+#ifndef __ASSEMBLER__
+#include <stdint.h>
 
 /** IA16 helpers. */
 #define FP_SEG(x) __builtin_ia16_selector ((uint16_t) (((uint32_t) ((void __far*) (x))) >> 16))
@@ -69,3 +71,5 @@ static inline uint16_t __builtin_wonderful_ss() {
 	);
 	return result;
 }
+
+#endif

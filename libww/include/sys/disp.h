@@ -54,8 +54,9 @@
 #define LCD_PIXEL_HEIGHT (LCD_CHAR_HEIGHT * 8)
 
 #define CFSFT_PALETTE 9
-#define CFM_FLIP_H 0x4000
-#define CFM_FLIP_V 0x8000
+#define CFM_SPR_UPPER 0x2000
+#define CFM_FLIP_H    0x4000
+#define CFM_FLIP_V    0x8000
 
 static inline void display_control(uint16_t dcm) {
 	uint16_t ax_clobber;
@@ -300,6 +301,17 @@ static inline void lcd_set_color(uint16_t low, uint16_t high) {
 		: "Rah" ((uint8_t) 0x1b), "b" (low), "c" (high)
 		: "cc", "memory"
 	);
+}
+
+static inline uint32_t lcd_get_color(void) {
+	uint32_t result;
+	__asm volatile (
+		"int $0x12"
+		: "=A" (result)
+		: "Rah" ((uint8_t) 0x1c)
+		: "cc", "memory"
+	);
+	return result;
 }
 
 #define LCDSEG_SLEEP      0x01

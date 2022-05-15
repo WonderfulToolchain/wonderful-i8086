@@ -267,7 +267,7 @@ with tempfile.TemporaryDirectory() as temp_dir:
 	if rom_size > (MAX_BANKS * 0x10000):
 		raise Exception(f"rom too large: {rom_size} bytes > {MAX_BANKS} banks")
 	print_verbose("ROM size is %d bytes" % (rom_size))
-	final_rom_position = rom_size - HEADER_SIZE - bin_size
+	final_rom_position = rom_size - (0x100000 - final_rom_offset)
 	add_to_rom_layout(final_rom_position, bin_data, data_name='bin')
 	# Step 4b: Create header.
 	hdr_maintenance = 0x00

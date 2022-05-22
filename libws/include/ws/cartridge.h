@@ -30,6 +30,9 @@
 #include "hardware.h"
 #include "util.h"
 
+extern const void *__rom_bank_offset;
+#define BANK_INDEX(x) (((uint8_t) (uint16_t) (&__rom_bank_offset)) | (x))
+
 /**
  * @addtogroup DefinesMemoryLayout Defines - Memory layout
  * @{
@@ -56,7 +59,7 @@
  */
 static inline uint8_t push_sram_bank(uint8_t new_bank) {
 	uint8_t old_bank = inportb(IO_RAM_BANK);
-	outportb(IO_RAM_BANK, new_bank);
+	outportb(IO_RAM_BANK, BANK_INDEX(new_bank));
 	return old_bank;
 }
 
@@ -66,7 +69,7 @@ static inline uint8_t push_sram_bank(uint8_t new_bank) {
  * @param new_bank New SRAM bank.
  */
 static inline void set_sram_bank(uint8_t new_bank) {
-	outportb(IO_RAM_BANK, new_bank);
+	outportb(IO_RAM_BANK, BANK_INDEX(new_bank));
 }
 #define pop_sram_bank set_sram_bank
 
@@ -78,7 +81,7 @@ static inline void set_sram_bank(uint8_t new_bank) {
  */
 static inline uint8_t push_rom_bank0(uint8_t new_bank) {
 	uint8_t old_bank = inportb(IO_ROM_BANK0);
-	outportb(IO_ROM_BANK0, new_bank);
+	outportb(IO_ROM_BANK0, BANK_INDEX(new_bank));
 	return old_bank;
 }
 
@@ -88,7 +91,7 @@ static inline uint8_t push_rom_bank0(uint8_t new_bank) {
  * @param new_bank New ROM bank in slot 0.
  */
 static inline void set_rom_bank0(uint8_t new_bank) {
-	outportb(IO_ROM_BANK0, new_bank);
+	outportb(IO_ROM_BANK0, BANK_INDEX(new_bank));
 }
 #define pop_rom_bank0 set_rom_bank0
 
@@ -100,7 +103,7 @@ static inline void set_rom_bank0(uint8_t new_bank) {
  */
 static inline uint8_t push_rom_bank1(uint8_t new_bank) {
 	uint8_t old_bank = inportb(IO_ROM_BANK1);
-	outportb(IO_ROM_BANK1, new_bank);
+	outportb(IO_ROM_BANK1, BANK_INDEX(new_bank));
 	return old_bank;
 }
 
@@ -110,7 +113,7 @@ static inline uint8_t push_rom_bank1(uint8_t new_bank) {
  * @param new_bank New ROM bank in slot 1.
  */
 static inline void set_rom_bank1(uint8_t new_bank) {
-	outportb(IO_ROM_BANK1, new_bank);
+	outportb(IO_ROM_BANK1, BANK_INDEX(new_bank));
 }
 #define pop_rom_bank1 set_rom_bank1
 
@@ -144,18 +147,21 @@ void set_cart_gpo(uint8_t id, bool val);
  */
 
 static inline const void __far* asset_map(uint32_t position) {
-	outportb(IO_ROM_BANK0, position >> 16);
-	outportb(IO_ROM_BANK1, (position >> 16) + 1);
+	uint8_t idx = BANK_INDEX(position >> 16);
+	outportb(IO_ROM_BANK0, idx);
+	outportb(IO_ROM_BANK1, idx + 1);
 	return MK_FP(0x2000 | ((position >> 4) & 0xFFF) , (position & 0xF));
 }
 
 static inline const void __far* asset_map_bank0(uint32_t position) {
-	outportb(IO_ROM_BANK0, position >> 16);
+	uint8_t idx = BANK_INDEX(position >> 16);
+	outportb(IO_ROM_BANK0, idx);
 	return MK_FP(0x2000, position & 0xFFFF);
 }
 
 static inline const void __far* asset_map_bank1(uint32_t position) {
-	outportb(IO_ROM_BANK1, position >> 16);
+	uint8_t idx = BANK_INDEX(position >> 16);
+	outportb(IO_ROM_BANK1, idx);
 	return MK_FP(0x3000, position & 0xFFFF);
 }
 

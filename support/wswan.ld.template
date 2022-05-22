@@ -27,6 +27,9 @@ SECTIONS
 		. = ALIGN (16);
 	}
 
+	"__rom_bank_offset!" = 0;
+	"__rom_bank_offset" = ABSOLUTE(%ROM_BANK_OFFSET%);
+
 	/* segelf segment end markers for target text section. */
 	".text&" . (NOLOAD) :
 	{

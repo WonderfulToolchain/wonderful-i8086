@@ -146,6 +146,17 @@ void set_cart_gpo(uint8_t id, bool val);
  * @{
  */
 
+/**
+ * @brief Map a given asset to ROM banks 0 and 1, returning a pointer.
+ *
+ * Only one asset may be mapped in a given bank at a time.
+ * The pointer will only allow you to access 64K of data - if you'd like to access more,
+ * increment the position accordingly.
+ * For more information, see @ref fsbankpack
+ * 
+ * @param position The asset position.
+ * @return const void* The pointer to the mapped asset.
+ */
 static inline const void __far* asset_map(uint32_t position) {
 	uint8_t idx = BANK_INDEX(position >> 16);
 	outportb(IO_ROM_BANK0, idx);
@@ -153,12 +164,34 @@ static inline const void __far* asset_map(uint32_t position) {
 	return MK_FP(0x2000 | ((position >> 4) & 0xFFF) , (position & 0xF));
 }
 
+/**
+ * @brief Map a given asset to ROM bank 0, returning a pointer.
+ *
+ * Only one asset may be mapped in a given bank at a time.
+ * The pointer will only allow you to access 64K of data - if you'd like to access more,
+ * increment the position accordingly.
+ * For more information, see @ref fsbankpack
+ * 
+ * @param position The asset position.
+ * @return const void* The pointer to the mapped asset.
+ */
 static inline const void __far* asset_map_bank0(uint32_t position) {
 	uint8_t idx = BANK_INDEX(position >> 16);
 	outportb(IO_ROM_BANK0, idx);
 	return MK_FP(0x2000, position & 0xFFFF);
 }
 
+/**
+ * @brief Map a given asset to ROM bank 1, returning a pointer.
+ *
+ * Only one asset may be mapped in a given bank at a time.
+ * The pointer will only allow you to access 64K of data - if you'd like to access more,
+ * increment the position accordingly.
+ * For more information, see @ref fsbankpack
+ * 
+ * @param position The asset position.
+ * @return const void* The pointer to the mapped asset.
+ */
 static inline const void __far* asset_map_bank1(uint32_t position) {
 	uint8_t idx = BANK_INDEX(position >> 16);
 	outportb(IO_ROM_BANK1, idx);

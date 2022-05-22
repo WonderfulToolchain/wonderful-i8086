@@ -65,6 +65,7 @@ SECTIONS
 	".data!" 0x00000 (NOLOAD) : AT(ADDR(".erom") + SIZEOF(".erom"))
 	{
 		"__sdata!" = .;
+		*("_ivt!")
 		*(".rodata!*" ".rodata.*!")
 		*(".data!*" ".data.*!")
 		*(".bss!*" ".bss.*!")
@@ -76,6 +77,7 @@ SECTIONS
 	".data" 0x00000: AT(ADDR(".erom") + SIZEOF(".erom"))
 	{
 		__sdata = .;
+		*("_ivt")
 		*(.rodata ".rodata.*[^&]")
 		*(.data ".data.*[^&]")
 		__edata = .;
@@ -100,6 +102,7 @@ SECTIONS
 	".data&" . (NOLOAD) :
 	{
 		"__sdata&" = .;
+		*("_ivt&")
 		*(".rodata&*" ".rodata.*&")
 		*(".data&*" ".data.*&")
 		*(".bss&*" ".bss.*&")

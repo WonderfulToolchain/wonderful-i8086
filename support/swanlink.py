@@ -28,6 +28,7 @@
 # the typical arrangement.
 
 from pathlib import Path
+from wfcommon import * 
 import argparse
 import math
 import os
@@ -36,13 +37,6 @@ import struct
 import subprocess
 import sys
 import tempfile
-
-executable_location = Path(sys.argv[0])
-if executable_location.is_file():
-	executable_location = executable_location.parent
-executable_extension = ''
-if os.name == 'nt':
-	executable_extension = '.exe'
 
 MAX_BIN_BANKS = 12 # could be 14 or 15 with special crt0 configuration
 MAX_BANKS = 256
@@ -71,19 +65,6 @@ SRAM_TYPES = {
 	"EEPROM_2KB": 0x20,
 	"EEPROM_1KB": 0x50
 }
-
-def align_up_to(i, alignment: int):
-	if isinstance(i, int):
-		return int(math.ceil(i / alignment) * alignment)
-	else:
-		append_bytes = align_up_to(len(i), alignment) - len(i)
-		return i + (b'\x00' * append_bytes)
-
-def power_of_two_up_to(i: int, min_size: int = None):
-	if (min_size is not None) and (i < min_size):
-		i = min_size
-	i = int(2 ** math.ceil(math.log(i, 2)))
-	return i
 
 # Define arguments.
 

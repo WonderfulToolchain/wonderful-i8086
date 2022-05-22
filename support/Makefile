@@ -60,8 +60,10 @@ install: $(OBJECTS)
 	install -m 644 wwitch.mk $(WONDERFUL_TOOLCHAIN)/i8086
 	install -m 644 wwitch.ld $(WONDERFUL_TOOLCHAIN)/i8086/wwitch/lib
 	install -m 755 bin2c.py $(WONDERFUL_TOOLCHAIN)/i8086/bin/wf-bin2c
-	install -m 755 swanlink.py $(WONDERFUL_TOOLCHAIN)/i8086/bin/wf-swanlink
+	install -m 755 fsbankpack.py $(WONDERFUL_TOOLCHAIN)/i8086/bin/wf-fsbankpack
 	install -m 755 mkfent.py $(WONDERFUL_TOOLCHAIN)/i8086/bin/wf-mkfent
+	install -m 755 swanlink.py $(WONDERFUL_TOOLCHAIN)/i8086/bin/wf-swanlink
+	install -m 755 wfcommon.py $(WONDERFUL_TOOLCHAIN)/i8086/bin/wfcommon.py
 	install -m 644 src/wonderful-support-wswan.h $(WONDERFUL_TOOLCHAIN)/i8086/wswan/include/wonderful-support.h
 	install -m 644 src/wonderful-support-wwitch.h $(WONDERFUL_TOOLCHAIN)/i8086/wwitch/include/wonderful-support.h
 	install -m 644 src/wonderful-support-common.h $(WONDERFUL_TOOLCHAIN)/i8086/wswan/include

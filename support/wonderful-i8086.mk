@@ -10,6 +10,7 @@ BIN2C := $(WONDERFUL_TOOLCHAIN)/i8086/bin/wf-bin2c
 LZSA := $(WONDERFUL_TOOLCHAIN)/i8086/bin/wf-lzsa
 
 # wswan target tools
+FSBANKPACK := $(WONDERFUL_TOOLCHAIN)/i8086/bin/wf-fsbankpack
 SWANLINK := $(WONDERFUL_TOOLCHAIN)/i8086/bin/wf-swanlink
 
 # wwitch target tools

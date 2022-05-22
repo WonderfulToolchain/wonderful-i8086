@@ -26,6 +26,7 @@
 
 from pathlib import Path
 from types import SimpleNamespace   
+from wfcommon import * 
 import argparse
 import codecs
 import math
@@ -45,10 +46,6 @@ MODE_CHARS = {
 	'i': 0x20  # IL
 }
 
-def align_data_16(d):
-	new_length = (len(d) + 15) & (~15)
-	return d + (b'\x00' * (new_length - len(d)))
-
 def mode_to_int(m):
 	try:
 		return int(m, 0)
@@ -60,13 +57,6 @@ def mode_to_int(m):
 			else:
 				raise Exception(f"could not parse mode string: {m}")
 		return mode
-
-executable_location = Path(sys.argv[0])
-if executable_location.is_file():
-	executable_location = executable_location.parent
-executable_extension = ''
-if os.name == 'nt':
-	executable_extension = '.exe'
 
 arg_parser = argparse.ArgumentParser(description='WonderWitch file entry builder for Wonderful')
 
@@ -165,7 +155,7 @@ if input_bin_path.suffix == '.elf':
 		raise Exception(f'objcopy exited with error code {objcopy_result.returncode}')
 
 with open(input_bin_path, "rb") as f:
-	input_bin_data = align_data_16(f.read())
+	input_bin_data = align_up_to(f.read(), 16)
 
 input_resource_data = None
 
@@ -174,7 +164,7 @@ if cf_has_arg("resource"):
 	for res_path in cf_args.resource.split(" "):
 		res_path = res_path.replace("\\", "/")
 		with open(res_path, "rb") as f:
-			input_resource_data += align_data_16(f.read())
+			input_resource_data += align_up_to(f.read(), 16)
 
 # seconds since January 1st, 2000
 output_fent_mtime = min(0x7FFFFFFF, max(0, int(round(source_file_path.lstat().st_mtime - 946080000))))

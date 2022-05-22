@@ -16,6 +16,7 @@
 from collections import OrderedDict
 from datetime import datetime
 from pathlib import Path
+from wfcommon import * 
 import argparse
 import re
 import struct

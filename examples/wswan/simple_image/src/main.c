@@ -12,8 +12,7 @@
 #include <string.h>
 #include <lzsa.h>
 #include <ws.h>
-#include "image.h"
-#include "logo.h"
+#include "fs.h"
 
 ws_sprite_t sprites[12] __attribute__((aligned(0x200)));
 uint16_t screen[0x400] __attribute__((aligned(0x800)));
@@ -26,24 +25,24 @@ void main() {
 	// Configure shade LUT
 	video_set_gray_lut(GRAY_LUT_DEFAULT);
 	// Configure palettes
-	outportw(IO_SCR_PAL_0, image_pal_bin);
+	outportw(IO_SCR_PAL_0, 0x7520);
 	outportw(IO_SPR_PAL_4, LCD_PAL_COLORS(0, 0, 0, 1));
 	outportw(IO_SPR_PAL_5, LCD_PAL_COLORS(0, 0, 0, 6));
 
 	// Copy tiles (image)
-	// memcpy(MEM_TILE(0), image_tiles_bin, sizeof(image_tiles_bin));
-	// lzsa1_decompress(MEM_TILE(0), image_tiles_bin_lzsa1);
-	lzsa2_decompress(MEM_TILE(0), image_tiles_bin_lzsa2);
+	lzsa2_decompress(MEM_TILE(0), asset_map(ASSET_IMAGE_TILES_BIN_LZSA2));
 
 	// Copy screen map (image)
-	video_put_screen_map(screen, image_map_bin, 0, 0, 28, 28);
+	video_put_screen_map(screen, asset_map(ASSET_IMAGE_MAP_BIN), 0, 0, 28, 28);
 
 	// Configure SCR1 memory location and initial Y scroll.
 	outportb(IO_SCR_BASE, SCR1_BASE((uint16_t)screen));
 	outportb(IO_SCR1_SCRL_Y, sin_table[0]);
 
 	// Copy tiles (logo)
-	memcpy(MEM_TILE(512 - (sizeof(logo_tiles_bin) / TILE_DATA_SIZE)), logo_tiles_bin, sizeof(logo_tiles_bin));
+	memcpy(MEM_TILE(512 - 6),
+		asset_map(ASSET_LOGO_TILES_BIN),
+		ASSET_LOGO_TILES_BIN_SIZE);
 
 	// Configure sprites.
 	for (int i = 0; i < 12; i++) {

@@ -106,6 +106,7 @@ if component_requested gcc $@; then
 	pushd "$BUILD_PREFIX"-gcc
 	../gcc-ia16/configure "${CROSS_CONFIGURE[@]}" \
 		--target=ia16-elf --prefix="$PREFIX" \
+		--with-bugurl="https://github.com/WonderfulToolchain/gcc-ia16/issues"
 		--without-headers \
 		--enable-languages=c \
 		--disable-libssp \

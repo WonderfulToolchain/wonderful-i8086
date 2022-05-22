@@ -26,6 +26,7 @@
 
 #pragma once
 #include <stdint.h>
+#include <wonderful-support.h>
 #include "hardware.h"
 #include "util.h"
 
@@ -39,8 +40,6 @@
 #define MEM_ROM_BANK0 ((uint16_t __far*) 0x20000000)
 #define MEM_ROM_BANK1 ((uint16_t __far*) 0x30000000)
 #define MEM_ROM_LINEAR ((uint16_t __far*) 0x40000000)
-
-#define MEM_ROM_BANK01(offset) ((uint16_t __far*) (0x20000000 | (((uint32_t) ((offset) & 0xFFF0)) << 12))
 
 /**@}*/
 
@@ -116,18 +115,6 @@ static inline void set_rom_bank1(uint8_t new_bank) {
 #define pop_rom_bank1 set_rom_bank1
 
 /**
- * @brief Switch to a new ROM bank, sequentially, in slots 0 and 1.
- * 
- * For example, calling set_rom_bank01(2) will set slot 0 to bank 2 and slot 1 to bank 3.
- *
- * @param new_bank New ROM bank.
- */
-static inline void set_rom_bank01(uint8_t new_bank) {
-	outportb(IO_ROM_BANK0, new_bank);
-	outportb(IO_ROM_BANK1, new_bank + 1);
-}
-
-/**
  * @brief Enable general-purpose output.
  * 
  * @param id General-purpose output ID (0-3)
@@ -148,5 +135,28 @@ void disable_cart_gpo(uint8_t id);
  * @param val Value (true or false).
  */
 void set_cart_gpo(uint8_t id, bool val);
+
+/**@}*/
+
+/**
+ * @addtogroup CartridgeAsset High-Level Functions - Asset access
+ * @{
+ */
+
+static inline const void __far* asset_map(uint32_t position) {
+	outportb(IO_ROM_BANK0, position >> 16);
+	outportb(IO_ROM_BANK1, (position >> 16) + 1);
+	return MK_FP(0x2000 | ((position >> 4) & 0xFFF) , (position & 0xF));
+}
+
+static inline const void __far* asset_map_bank0(uint32_t position) {
+	outportb(IO_ROM_BANK0, position >> 16);
+	return MK_FP(0x2000, position & 0xFFFF);
+}
+
+static inline const void __far* asset_map_bank1(uint32_t position) {
+	outportb(IO_ROM_BANK1, position >> 16);
+	return MK_FP(0x3000, position & 0xFFFF);
+}
 
 /**@}*/

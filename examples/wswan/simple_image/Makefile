@@ -9,12 +9,11 @@ RESDIR := res
 SRCDIRS := src
 MKDIRS := $(OBJDIR)
 LIBS := -llzsa -lws -lc -lgcc
-CFLAGS += -O2
+CFLAGS += -Os
 
 CSOURCES := $(foreach dir,$(SRCDIRS),$(notdir $(wildcard $(dir)/*.c)))
 ASMSOURCES := $(foreach dir,$(SRCDIRS),$(notdir $(wildcard $(dir)/*.S)))
-EARLY_OBJECTS := $(OBJDIR)/image.o $(OBJDIR)/logo.o
-OBJECTS := $(CSOURCES:%.c=$(OBJDIR)/%.o) $(ASMSOURCES:%.S=$(OBJDIR)/%.o) $(EARLY_OBJECTS)
+OBJECTS := $(CSOURCES:%.c=$(OBJDIR)/%.o) $(ASMSOURCES:%.S=$(OBJDIR)/%.o)
 CFLAGS += -I$(OBJDIR)
 
 DEPS := $(OBJECTS:.o=.d)
@@ -27,26 +26,25 @@ vpath %.S $(SRCDIRS)
 
 all: $(TARGET)
 
-$(TARGET): $(OBJECTS)
-	$(SWANLINK) -v -o $@ --output-elf $@.elf --linker-args $(LDFLAGS) $(WF_CRT0) $(OBJECTS) $(LIBS)
+$(TARGET): $(OBJECTS) $(OBJDIR)/fs.bin
+	$(SWANLINK) -v -o $@ -a $(OBJDIR)/fs.bin --output-elf $@.elf --linker-args $(LDFLAGS) $(WF_CRT0) $(OBJECTS) $(LIBS)
 
-$(OBJDIR)/image.c: $(RESDIR)/image.png | $(OBJDIR)
+$(OBJDIR)/fs.bin: $(OBJDIR)/image.tiles.bin.lzsa2 $(OBJDIR)/image.map.bin $(OBJDIR)/logo.tiles.bin
+	$(FSBANKPACK) -v -o $@ $^
+
+$(OBJDIR)/image.tiles.bin.lzsa2: $(RESDIR)/image.png | $(OBJDIR)
 	$(SUPERFAMICONV) tiles -i $< -M ws -p $(RESDIR)/image.pal.bin -d $(OBJDIR)/image.tiles.bin
 	$(SUPERFAMICONV) map -i $< -M ws -p $(RESDIR)/image.pal.bin -t $(OBJDIR)/image.tiles.bin -d $(OBJDIR)/image.map.bin
-	$(LZSA) -r -f 1 $(OBJDIR)/image.tiles.bin $(OBJDIR)/image.tiles.bin.lzsa1
-	$(BIN2C) $@ $(RESDIR)/image.pal.bin:int16 $(OBJDIR)/image.tiles.bin.lzsa1 $(OBJDIR)/image.map.bin
 	$(LZSA) -r -f 2 $(OBJDIR)/image.tiles.bin $(OBJDIR)/image.tiles.bin.lzsa2
-	$(BIN2C) $@ $(RESDIR)/image.pal.bin:int16 $(OBJDIR)/image.tiles.bin.lzsa1 $(OBJDIR)/image.tiles.bin.lzsa2 $(OBJDIR)/image.map.bin
 
-$(OBJDIR)/logo.c: $(RESDIR)/logo.png | $(OBJDIR)
+$(OBJDIR)/logo.tiles.bin: $(RESDIR)/logo.png | $(OBJDIR)
 	$(SUPERFAMICONV) tiles -i $< -M ws -D -F -p $(RESDIR)/image.pal.bin -d $(OBJDIR)/logo.tiles.bin
-	$(BIN2C) $@ $(OBJDIR)/logo.tiles.bin
 
-$(OBJDIR)/%.o: %.c $(EARLY_OBJECTS) | $(OBJDIR)
+$(OBJDIR)/%.o: %.c $(OBJDIR)/fs.bin | $(OBJDIR)
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-$(OBJDIR)/%.o: %.S $(EARLY_OBJECTS) | $(OBJDIR)
-	$(AS) $(ASFLAGS) -o $@ $<
+$(OBJDIR)/%.o: %.S $(OBJDIR)/fs.bin | $(OBJDIR)
+	$(CC) $(CFLAGS) -c -o $@ $<
 
 $(OBJDIR):
 	$(info $(shell mkdir -p $(MKDIRS)))

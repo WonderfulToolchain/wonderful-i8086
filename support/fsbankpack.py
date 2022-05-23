@@ -76,7 +76,7 @@ def append_file(f: File):
 	for s in file_empty_spots(files):
 		s_pos, s_end = s
 		s_len = s_end - s_pos
-		if (f.zero_aligned) or (f.one_bank and (int(s_pos / BANK_SIZE) != int(s_end / BANK_SIZE))):
+		if (f.zero_aligned) or (f.one_bank and (int(s_pos / BANK_SIZE) != int((s_pos + f.length) / BANK_SIZE))):
 			s_pos = align_up_to(s_pos, BANK_SIZE)
 			s_len = s_end - s_pos
 		if s_len >= f.length:

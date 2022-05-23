@@ -38,11 +38,11 @@ extern const void *__rom_bank_offset;
  * @{
  */
 
-#define MEM_RAM ((uint16_t*) 0x0000)
-#define MEM_SRAM ((uint16_t __far*) 0x10000000)
-#define MEM_ROM_BANK0 ((uint16_t __far*) 0x20000000)
-#define MEM_ROM_BANK1 ((uint16_t __far*) 0x30000000)
-#define MEM_ROM_LINEAR ((uint16_t __far*) 0x40000000)
+#define MEM_RAM ((uint8_t*) 0x0000)
+#define MEM_SRAM ((uint8_t __far*) 0x10000000)
+#define MEM_ROM_BANK0 ((uint8_t __far*) 0x20000000)
+#define MEM_ROM_BANK1 ((uint8_t __far*) 0x30000000)
+#define MEM_ROM_LINEAR ((uint8_t __far*) 0x40000000)
 
 /**@}*/
 
@@ -58,8 +58,10 @@ extern const void *__rom_bank_offset;
  * @return uint8_t The previous SRAM bank.
  */
 static inline uint8_t push_sram_bank(uint8_t new_bank) {
+	asm volatile("" ::: "memory");
 	uint8_t old_bank = inportb(IO_RAM_BANK);
 	outportb(IO_RAM_BANK, BANK_INDEX(new_bank));
+	asm volatile("" ::: "memory");
 	return old_bank;
 }
 
@@ -69,7 +71,9 @@ static inline uint8_t push_sram_bank(uint8_t new_bank) {
  * @param new_bank New SRAM bank.
  */
 static inline void set_sram_bank(uint8_t new_bank) {
+	asm volatile("" ::: "memory");
 	outportb(IO_RAM_BANK, BANK_INDEX(new_bank));
+	asm volatile("" ::: "memory");
 }
 #define pop_sram_bank set_sram_bank
 
@@ -80,8 +84,10 @@ static inline void set_sram_bank(uint8_t new_bank) {
  * @return uint8_t The previous ROM bank in slot 0.
  */
 static inline uint8_t push_rom_bank0(uint8_t new_bank) {
+	asm volatile("" ::: "memory");
 	uint8_t old_bank = inportb(IO_ROM_BANK0);
 	outportb(IO_ROM_BANK0, BANK_INDEX(new_bank));
+	asm volatile("" ::: "memory");
 	return old_bank;
 }
 
@@ -91,7 +97,9 @@ static inline uint8_t push_rom_bank0(uint8_t new_bank) {
  * @param new_bank New ROM bank in slot 0.
  */
 static inline void set_rom_bank0(uint8_t new_bank) {
+	asm volatile("" ::: "memory");
 	outportb(IO_ROM_BANK0, BANK_INDEX(new_bank));
+	asm volatile("" ::: "memory");
 }
 #define pop_rom_bank0 set_rom_bank0
 
@@ -102,8 +110,10 @@ static inline void set_rom_bank0(uint8_t new_bank) {
  * @return uint8_t The previous ROM bank in slot 1.
  */
 static inline uint8_t push_rom_bank1(uint8_t new_bank) {
+	asm volatile("" ::: "memory");
 	uint8_t old_bank = inportb(IO_ROM_BANK1);
 	outportb(IO_ROM_BANK1, BANK_INDEX(new_bank));
+	asm volatile("" ::: "memory");
 	return old_bank;
 }
 
@@ -113,7 +123,9 @@ static inline uint8_t push_rom_bank1(uint8_t new_bank) {
  * @param new_bank New ROM bank in slot 1.
  */
 static inline void set_rom_bank1(uint8_t new_bank) {
+	asm volatile("" ::: "memory");
 	outportb(IO_ROM_BANK1, BANK_INDEX(new_bank));
+	asm volatile("" ::: "memory");
 }
 #define pop_rom_bank1 set_rom_bank1
 
@@ -158,9 +170,11 @@ void set_cart_gpo(uint8_t id, bool val);
  * @return const void* The pointer to the mapped asset.
  */
 static inline const void __far* asset_map(uint32_t position) {
+	asm volatile("" ::: "memory");
 	uint8_t idx = BANK_INDEX(position >> 16);
 	outportb(IO_ROM_BANK0, idx);
 	outportb(IO_ROM_BANK1, idx + 1);
+	asm volatile("" ::: "memory");
 	return MK_FP(0x2000 | ((position >> 4) & 0xFFF) , (position & 0xF));
 }
 
@@ -176,8 +190,10 @@ static inline const void __far* asset_map(uint32_t position) {
  * @return const void* The pointer to the mapped asset.
  */
 static inline const void __far* asset_map_bank0(uint32_t position) {
+	asm volatile("" ::: "memory");
 	uint8_t idx = BANK_INDEX(position >> 16);
 	outportb(IO_ROM_BANK0, idx);
+	asm volatile("" ::: "memory");
 	return MK_FP(0x2000, position & 0xFFFF);
 }
 
@@ -193,8 +209,10 @@ static inline const void __far* asset_map_bank0(uint32_t position) {
  * @return const void* The pointer to the mapped asset.
  */
 static inline const void __far* asset_map_bank1(uint32_t position) {
+	asm volatile("" ::: "memory");
 	uint8_t idx = BANK_INDEX(position >> 16);
 	outportb(IO_ROM_BANK1, idx);
+	asm volatile("" ::: "memory");
 	return MK_FP(0x3000, position & 0xFFFF);
 }
 

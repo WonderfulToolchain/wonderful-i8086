@@ -117,20 +117,23 @@ else:
 # Parse file list
 
 file_list = program_args.source
+file_source_path = Path(".").absolute()
+
 if program_args.d:
 	if len(file_list) != 1:
 		raise Exception("Must specify only one file to use definition mode!")
+	file_source_path = Path(file_list[0]).absolute().parent
 	with open(file_list[0], "r") as f:
 		file_list = []
 		for line in f:
-			file_list.append(f)
+			file_list.append(line)
 
 files_to_add = []
 
 for fstr in file_list:
 	fstr = fstr.strip().split("|")
 	fname = fstr[0]
-	with open(fname, "rb") as ff:
+	with open(file_source_path / fname, "rb") as ff:
 		fdata = ff.read()
 	f = File(fname, align_up_to(fdata, MIN_ALIGNMENT))
 	for ffilter in fstr[1:]:
@@ -175,4 +178,5 @@ with open(header_file_path, 'w') as header_file:
 	for f in files:
 		header_file.write("\n")
 		header_file.write(f"#define {f.header_prefix()} {f.position}\n")
+		header_file.write(f"#define {f.header_prefix()}_BANK BANK_INDEX({f.position >> 16})\n")
 		header_file.write(f"#define {f.header_prefix()}_SIZE {f.length}\n")

@@ -25,6 +25,7 @@ memset:
 	mov	es, dx
 	mov	di, ax
 	mov	al, cl
+	mov	ah, al
 	mov	cx, [bp + 12]
 	shr	cx, 1
 	cld

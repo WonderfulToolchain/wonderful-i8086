@@ -83,14 +83,14 @@
 #define IO_LCD_INTERRUPT 0x03
 
 #define IO_SPR_BASE 0x04
-#define SPR_BASE(x) ((x) >> 9)
+#define SPR_BASE(x) (((uint16_t) (x)) >> 9)
 
 #define IO_SPR_FIRST 0x05
 #define IO_SPR_COUNT 0x06
 
 #define IO_SCR_BASE 0x07
-#define SCR1_BASE(x) (((x) >> 11))
-#define SCR2_BASE(x) (((x) >> 11) << 4)
+#define SCR1_BASE(x) ((((uint16_t) (x)) >> 11))
+#define SCR2_BASE(x) ((((uint16_t) (x)) >> 11) << 4)
 
 #define IO_SCR2_WIN_X1 0x08
 #define IO_SCR2_WIN_Y1 0x09
@@ -221,15 +221,23 @@
 #define SND_CH4_NOISE    0x80
 
 #define IO_SND_OUT_CTRL 0x91
-#define SND_OUT_HEADPHONES       0x80
-#define SND_OUT_HEADPHONE_ENABLE 0x08
-#define SND_OUT_VOLUME_100       0x00
-#define SND_OUT_VOLUME_50        0x02
-#define SND_OUT_VOLUME_25        0x04
-#define SND_OUT_VOLUME_12_5      0x06
-#define SND_OUT_SPEAKER_ENABLE   0x01
+#define SND_OUT_HEADPHONES        0x80
+#define SND_OUT_HEADPHONES_ENABLE 0x08
+#define SND_OUT_VOLUME_100        0x06
+#define SND_OUT_VOLUME_50         0x04
+#define SND_OUT_VOLUME_25         0x02
+#define SND_OUT_VOLUME_12_5       0x00
+#define SND_OUT_SPEAKER_ENABLE    0x01
 
 #define IO_SND_RANDOM 0x92
+
+#define IO_SND_VOL_CH2_VOICE 0x94
+#define IO_SND_VOL_CH2_LEFT_HALF  0x08
+#define IO_SND_VOL_CH2_LEFT_FULL  0x0C
+#define IO_SND_VOL_CH2_RIGHT_HALF 0x02
+#define IO_SND_VOL_CH2_RIGHT_FULL 0x03
+#define IO_SND_VOL_CH2_HALF       0x0A
+#define IO_SND_VOL_CH2_FULL       0x0F
 
 #define IO_SYSTEM_CTRL1 0xA0
 
@@ -253,6 +261,24 @@
 #define IO_INT_STATUS 0xB4
 #define IO_INT_ACK 0xB6
 #define IO_INT_NMI_CTRL 0xB7
+
+#define INTR_MASK_SERIAL_TX    0x01
+#define INTR_MASK_KEY          0x02
+#define INTR_MASK_CARTRIDGE    0x04
+#define INTR_MASK_SERIAL_RX    0x08
+#define INTR_MASK_LINE         0x10
+#define INTR_MASK_VBLANK_TIMER 0x20
+#define INTR_MASK_VBLANK       0x40
+#define INTR_MASK_HBLANK_TIMER 0x80
+
+#define INTR_ENABLE_SERIAL_TX    0x01
+#define INTR_ENABLE_KEY          0x02
+#define INTR_ENABLE_CARTRIDGE    0x04
+#define INTR_ENABLE_SERIAL_RX    0x08
+#define INTR_ENABLE_LINE         0x10
+#define INTR_ENABLE_VBLANK_TIMER 0x20
+#define INTR_ENABLE_VBLANK       0x40
+#define INTR_ENABLE_HBLANK_TIMER 0x80
 
 #define IO_SERIAL_DATA 0xB1
 

@@ -65,7 +65,7 @@ arg_parser = argparse.ArgumentParser(description='WonderWitch file entry builder
 arg_parser.add_argument('source', help='Input file', type=str)
 arg_parser.add_argument('-o', dest='output', metavar='output.fx', help='Output file', type=str, default=None)
 arg_parser.add_argument('--name', help='Entry name, up to 16 Shift-JIS characters', type=str, default=None)
-arg_parser.add_argument('--info', help='Entry info, up to 24 Shift-JIS characters', type=str, default="")
+arg_parser.add_argument('--info', help='Entry info, up to 24 Shift-JIS characters', type=str, default=None)
 arg_parser.add_argument('--mode', help='Entry mode', type=str, default='7')
 
 # Wonderful-specific arguments
@@ -117,8 +117,20 @@ toolchain_prefix = Path(program_args.tools_path).absolute()
 source_file_path = Path(cf_args.source).absolute()
 input_bin_path = source_file_path
 output_fent_path = Path(cf_args.output).absolute()
-output_fent_name = getattr(cf_args, "name", output_fent_path.stem)
-output_fent_info = getattr(cf_args, "info", output_fent_path)
+output_fent_name = getattr(cf_args, "name", None)
+if output_fent_name is None:
+	if cf_args_from_file:
+		raise Exception("File entry name not provided!")
+	else:
+		output_fent_name = output_fent_path.stem
+
+output_fent_info = getattr(cf_args, "info", None)
+if output_fent_info is None:
+	if cf_args_from_file:
+		output_fent_info = ""
+	else:
+		output_fent_info = output_fent_name
+
 output_fent_mode = mode_to_int(getattr(cf_args, "mode", "7"))
 
 objcopy_path = toolchain_prefix / ("bin/ia16-elf-objcopy%s" % executable_extension)

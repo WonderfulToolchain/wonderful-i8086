@@ -44,7 +44,7 @@ _start:
 	mov	es, ax
 	mov	ss, ax
 	mov	si, offset "__erom&"
-	mov	di, ax
+	mov	di, offset "__sdata"
 	mov	cx, offset "__ldata_words"
 	cld
 	rep	movsw
@@ -60,7 +60,7 @@ _start:
 	rep	stosw
 
 	// configure sp
-	mov	sp, offset 0x2000
+	mov	sp, offset "__eheap"
 
 	// call main
 	//.reloc	.+3, R_386_SEG16, main

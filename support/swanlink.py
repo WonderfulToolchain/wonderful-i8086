@@ -101,7 +101,7 @@ arg_parser = argparse.ArgumentParser(description='WonderSwan ROM linker for Wond
 arg_parser.add_argument('-o', metavar='output.ws', help='Output ROM file', type=str, required=True)
 arg_parser.add_argument('-a', action='append', metavar='[b0:]file.bin', type=str, help='Attach file. Optionally, specify bank (bX) or raw position (X)')
 arg_parser.add_argument('-v', action='store_true', help='Enable verbose logging')
-arg_parser.add_argument('--output-elf', metavar='output.elf', help='Output ELF file', type=str)
+arg_parser.add_argument('--output-elf', metavar='out.elf', help='Output ELF file', type=str)
 arg_parser.add_argument('--tools-path', metavar='PATH', type=str, help='Toolchain location', default=str(executable_location.parent.absolute()))
 arg_parser.add_argument('--color', action='store_true', help='Mark ROM as WSC-compatible')
 arg_parser.add_argument('--ram-type', metavar='RAM_TYPE', type=str, help='RAM used. Available values: %s' % ", ".join(SRAM_TYPES.keys()), default="NONE")
@@ -110,12 +110,15 @@ arg_parser.add_argument('--rom-speed', metavar='SPEED', type=int, help='ROM acce
 arg_parser.add_argument('--rom-bus-size', metavar='SIZE', type=int, help='ROM bus size, 8 or 16 bits', default=16)
 arg_parser.add_argument('--orientation', metavar='ORIENT', type=str, help='Default orientation, "horizontal" (default) or "vertical"', default="horizontal")
 arg_parser.add_argument('--rtc', action="store_true", help='ROM uses RTC')
-arg_parser.add_argument('--publisher-id', type=publisher_id_type, help='Publisher ID, 0-255', default=255)
-arg_parser.add_argument('--game-id', type=game_id_type, help='Game ID, 0-99', default=0)
+arg_parser.add_argument('--publisher-id', metavar='ID', type=publisher_id_type, help='Publisher ID, 0-255', default=255)
+arg_parser.add_argument('--game-id', metavar='ID', type=game_id_type, help='Game ID, 0-99', default=0)
 arg_parser.add_argument('--game-version', metavar='VER', type=int, help='Game version', default=1)
 arg_parser.add_argument('--load-offset', metavar='OFFSET', type=lambda x: int(x, 0), help='Linked code load offset')
 arg_parser.add_argument('--ld-template', metavar='PATH', type=str, help='Linker template', default=None)
 arg_parser.add_argument('--linker-args', action="store_true", required=True, help='ld linker args follow after this argument')
+# FIXME: Needs more linkscript/crt0 patches...
+# arg_parser.add_argument('--heap-start', metavar='ADDR', type=lambda x: int(x, 0), help='Link-side heap start address', default=0x0000)
+arg_parser.add_argument('--heap-length', metavar='LEN', type=lambda x: int(x, 0), help='Link-side heap length', default=0x2000)
 
 try:
 	linker_args_split = sys.argv.index("--linker-args")
@@ -181,6 +184,8 @@ def call_linker(temp_dir: Path, template_file: Path, output_elf: Path, output_fi
 		result = subprocess.run(["sed",
 			"-e", f"s/%ROM_AREA_START%/{rom_offset}/g",
 			"-e", f"s/%ROM_BANK_OFFSET%/{rom_bank_offset}/g",
+			"-e", f"s/%RAM_HEAP_START%/0x00000/g",
+			"-e", f"s/%RAM_HEAP_LENGTH%/{program_args.heap_length}/g",
 			str(template_file.absolute())], stdout=outf)
 		if result.returncode != 0:
 			raise Exception(f'sed exited with error code {result.returncode}')

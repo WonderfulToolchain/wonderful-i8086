@@ -3,7 +3,7 @@ ENTRY(_start)
 MEMORY
 {
 	ROM (rx) : ORIGIN = %ROM_AREA_START%, LENGTH = 0x10000
-	RAM (wx) : ORIGIN = 0x00000, LENGTH = 0x2000
+	RAM (wx) : ORIGIN = %RAM_HEAP_START%, LENGTH = %RAM_HEAP_LENGTH%
 	HEADER (rx) : ORIGIN = 0x00000, LENGTH = 0x1000000
 }
 SECTIONS
@@ -65,7 +65,7 @@ SECTIONS
 	}
 
 	/* segelf segment start markers for target data section. */
-	".data!" 0x00000 (NOLOAD) : AT(ADDR(".erom") + SIZEOF(".erom"))
+	".data!" %RAM_HEAP_START% (NOLOAD) : AT(ADDR(".erom") + SIZEOF(".erom"))
 	{
 		"__sdata!" = .;
 		*("_ivt!")
@@ -77,7 +77,7 @@ SECTIONS
 	} >RAM
 
 	/* Target data section. */
-	".data" 0x00000: AT(ADDR(".erom") + SIZEOF(".erom"))
+	".data" %RAM_HEAP_START%: AT(ADDR(".erom") + SIZEOF(".erom"))
 	{
 		__sdata = .;
 		*("_ivt")
@@ -112,4 +112,7 @@ SECTIONS
 		"__edata&" = .;
 		"__ebss& " = .;
 	}
+
+	"__eheap!" = 0;
+	__eheap = %RAM_HEAP_LENGTH%;
 }

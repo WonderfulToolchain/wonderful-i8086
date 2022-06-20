@@ -36,15 +36,25 @@
  */
  
 /**
- * @brief Check if this device is a WonderSwan Color or above.
+ * @brief Check if this device is capable of supporting Color mode (= is a WonderSwan Color or above).
  *
  * This is useful for gating functionality specific to Color mode - see @ref ws_system_mode_t for more information.
  * 
  * @return true This device is a WonderSwan Color or above.
  * @return false This device is a "mono" WonderSwan.
  */
-static inline bool system_is_color(void) {
+static inline bool system_color_present(void) {
 	return inportb(IO_SYSTEM_CTRL1) & SYSTEM_CTRL1_COLOR;
+}
+
+/**
+ * @brief Check if this device is currently in Color mode.
+ *
+ * @return true This device can currently access WonderSwan Color functionality.
+ * @return false This device is limited to "mono" WonderSwan functionality.
+ */
+static inline bool system_color_active(void) {
+	return inportb(IO_SYSTEM_CTRL2) & 0x80;
 }
 
 /**

@@ -258,9 +258,7 @@ void init_graphics() {
 	update_graphics();
 
 	// If Color, enable color palettes.
-	if (system_is_color()) {
-		system_set_mode(MODE_COLOR);
-
+	if (system_set_mode(MODE_COLOR)) {
 		MEM_SCR_PALETTE(0)[0] = 0x09e9;
 		MEM_SCR_PALETTE(0)[1] = 0x0fff;
 		MEM_SCR_PALETTE(0)[2] = 0x0fff;

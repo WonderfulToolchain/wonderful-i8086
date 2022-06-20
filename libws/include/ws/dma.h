@@ -47,7 +47,7 @@ void dma_copy_words_linear(void *dest, uint32_t src, uint16_t length);
 
 /**
  * @brief Copy words from a source pointer to a destination pointer using DMA.
- * 
+ *
  * Note that this only works if Color mode is enabled - see @ref system_is_color
  *
  * @param dest Destination pointer, in RAM.
@@ -57,5 +57,14 @@ void dma_copy_words_linear(void *dest, uint32_t src, uint16_t length);
 static inline void dma_copy_words(void *dest, const void __far* src, uint16_t length) {
 	dma_copy_words_linear(dest, (((uint32_t) src) >> 12) + ((uint16_t) ((uint32_t) src)), length);
 }
+
+/**
+ * @brief Copy words from a source pointer to a destination pointer, using DMA if present.
+ *
+ * @param dest Destination pointer, in RAM.
+ * @param src Source pointer, in any location.
+ * @param length Length, in bytes. Must be a multiple of 2.
+ */
+void dma_maybe_copy_words(void *dest, const void __far* src, uint16_t length);
 
 /**@}*/

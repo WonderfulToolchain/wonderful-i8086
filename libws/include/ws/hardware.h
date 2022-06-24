@@ -292,9 +292,9 @@
 #define IO_EEPROM_CTRL 0xBE
 
 #define IO_KEY_SCAN 0xB5
-#define KEY_SCAN_BUTTONS 0x40
-#define KEY_SCAN_X       0x20
-#define KEY_SCAN_Y       0x10
+#define KEY_SCAN_GROUP_BUTTONS 0x40
+#define KEY_SCAN_GROUP_X       0x20
+#define KEY_SCAN_GROUP_Y       0x10
 #define KEY_SCAN_B       0x08
 #define KEY_SCAN_X4      0x08
 #define KEY_SCAN_Y4      0x08

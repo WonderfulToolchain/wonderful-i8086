@@ -26,7 +26,7 @@
 
 #pragma once
 #include <stdint.h>
-#include <wonderful-support.h>
+#include <wonderful-asm.h>
 #include "hardware.h"
 #include "util.h"
 

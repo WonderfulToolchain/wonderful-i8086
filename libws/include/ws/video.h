@@ -150,7 +150,7 @@ typedef struct {
   *
   * @param lut The shade LUT configuration. Usage of the #GRAY_LUT macro is recommended. A default configuration is provided via #GRAY_LUT_DEFAULT .
   */
-void video_set_gray_lut(uint32_t lut);
+void video_shade_lut_set(uint32_t lut);
 
 /**
  * @brief Put a map of tiles on the screen.
@@ -164,7 +164,7 @@ void video_set_gray_lut(uint32_t lut);
  * @param width Width, in tiles.
  * @param height Height, in tiles.
  */
-void video_put_screen_map(void *dest, const void __far* src, uint8_t x, uint8_t y, uint8_t width, uint8_t height);
+void video_screen_put_map(void *dest, const void __far* src, uint8_t x, uint8_t y, uint8_t width, uint8_t height);
 
 /**
  * @brief Fill an area on the screen with a given tile.
@@ -176,7 +176,7 @@ void video_put_screen_map(void *dest, const void __far* src, uint8_t x, uint8_t 
  * @param width Width, in tiles.
  * @param height Height, in tiles.
  */
-void video_fill_screen(void *dest, uint16_t src, uint8_t x, uint8_t y, uint8_t width, uint8_t height);
+void video_screen_fill(void *dest, uint16_t src, uint8_t x, uint8_t y, uint8_t width, uint8_t height);
 
 /**
  * @brief Put a tile on the screen.
@@ -186,7 +186,7 @@ void video_fill_screen(void *dest, uint16_t src, uint8_t x, uint8_t y, uint8_t w
  * @param x Destination X position, in tiles.
  * @param y Destination Y position, in tiles.
  */
-static inline void video_put_screen(void *dest, uint16_t src, uint8_t x, uint8_t y) {
+static inline void video_screen_put(void *dest, uint16_t src, uint8_t x, uint8_t y) {
 	((uint16_t*) dest)[((y & 0x1F) << 5) | (x & 0x1F)] = src;
 }
 /**@}*/

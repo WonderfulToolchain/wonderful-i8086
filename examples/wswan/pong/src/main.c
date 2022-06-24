@@ -9,7 +9,7 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <ws.h>
+#include <wonderful.h>
 #include "assets.h"
 
 #define PADDLE_HEIGHT_TILES 4
@@ -71,19 +71,19 @@ uint16_t screen[0x400] __attribute__((aligned(0x800)));
 void set_graphics(bool show_scores);
 
 void draw_scores() {
-	video_fill_screen(screen, (GAME_TILES_OFFSET + 14) | SCR_ENTRY_PALETTE(4), 0, 23, 28, 2);
+	video_screen_fill(screen, (GAME_TILES_OFFSET + 14) | SCR_ENTRY_PALETTE(4), 0, 23, 28, 2);
 
-	video_put_screen(screen, (GAME_TILES_OFFSET + 13) | SCR_ENTRY_PALETTE(4), 10, 23);
-	video_put_screen(screen, (GAME_TILES_OFFSET + 1) | SCR_ENTRY_PALETTE(4), 11, 23);
+	video_screen_put(screen, (GAME_TILES_OFFSET + 13) | SCR_ENTRY_PALETTE(4), 10, 23);
+	video_screen_put(screen, (GAME_TILES_OFFSET + 1) | SCR_ENTRY_PALETTE(4), 11, 23);
 
-	video_put_screen(screen, (GAME_TILES_OFFSET + 13) | SCR_ENTRY_PALETTE(4), 16, 23);
-	video_put_screen(screen, (GAME_TILES_OFFSET + 2) | SCR_ENTRY_PALETTE(4), 17, 23);
+	video_screen_put(screen, (GAME_TILES_OFFSET + 13) | SCR_ENTRY_PALETTE(4), 16, 23);
+	video_screen_put(screen, (GAME_TILES_OFFSET + 2) | SCR_ENTRY_PALETTE(4), 17, 23);
 
 	{
 		uint16_t score = p1_score;
 		uint8_t x = 11;
 		do {
-			video_put_screen(screen, (GAME_TILES_OFFSET + (score % 10)) | SCR_ENTRY_PALETTE(4), x, 24);
+			video_screen_put(screen, (GAME_TILES_OFFSET + (score % 10)) | SCR_ENTRY_PALETTE(4), x, 24);
 			x--;
 			score /= 10;
 		} while (score > 0);
@@ -100,7 +100,7 @@ void draw_scores() {
 		score = p2_score;
 		do {
 			x--;
-			video_put_screen(screen, (GAME_TILES_OFFSET + (score % 10)) | SCR_ENTRY_PALETTE(4), x, 24);
+			video_screen_put(screen, (GAME_TILES_OFFSET + (score % 10)) | SCR_ENTRY_PALETTE(4), x, 24);
 			score /= 10;
 		} while (score > 0);
 	}
@@ -207,7 +207,7 @@ void set_graphics(bool show_scores) {
 
 void init_graphics() {
 	// Configure black & white palettes.
-	video_set_gray_lut(GRAY_LUT_DEFAULT);
+	video_shade_lut_set(GRAY_LUT_DEFAULT);
 
 	outportw(IO_SCR_PAL_0, LCD_PAL_COLORS(0, 1, 2, 3)); // SCR1 palette
 	outportw(IO_SCR_PAL_4, LCD_PAL_COLORS(0, 3, 4, 7)); // SCR1 score palette
@@ -221,10 +221,10 @@ void init_graphics() {
 	memcpy(MEM_TILE(GAME_TILES_OFFSET), game_tiles_tiles_bin, sizeof(game_tiles_tiles_bin));
 
 	// Initialize SCR1 (background).
-	video_put_screen_map(screen, game_bg_map_bin, 0, 0, 32, 22);
+	video_screen_put_map(screen, game_bg_map_bin, 0, 0, 32, 22);
 
 	// Initialize SCR2 (score).
-	video_fill_screen(screen, (GAME_TILES_OFFSET + 14) | SCR_ENTRY_PALETTE(4), 0, 22, 32, 10);
+	video_screen_fill(screen, (GAME_TILES_OFFSET + 14) | SCR_ENTRY_PALETTE(4), 0, 22, 32, 10);
 	draw_scores();
 
 	outportb(IO_SCR_BASE, SCR1_BASE((uint16_t) screen) | SCR2_BASE((uint16_t) screen));

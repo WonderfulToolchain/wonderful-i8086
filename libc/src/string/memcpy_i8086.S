@@ -9,7 +9,7 @@
  * work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-#include "wonderful-support.h"
+#include "wonderful-asm.h"
 
 	.arch	i8086
 	.code16
@@ -40,4 +40,4 @@ memcpy_no_byte:
 	pop	ds
 	pop	di
 	pop	si
-	ASM_RET	0x6
+	ASM_PLATFORM_RET 0x6

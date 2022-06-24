@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2022 Adrian "asie" Siekierka
  *
  * This software is provided 'as-is', without any express or implied
@@ -18,16 +18,9 @@
  *    misrepresented as being the original software.
  *
  * 3. This notice may not be removed or altered from any source distribution.
-*/
+ */
 
-#include <stdbool.h>
-#include <stdint.h>
-#include "ws/system.h"
+#pragma once
 
-bool system_set_mode(ws_system_mode_t mode) {
-	if (mode > 0 && !system_color_present()) {
-		return false;
-	}
-	outportb(IO_SYSTEM_CTRL2, (inportb(IO_SYSTEM_CTRL2) & 0x1F) | mode);
-}
-
+#include "wonderful-asm.h"
+#include "ws.h"

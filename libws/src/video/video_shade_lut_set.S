@@ -20,17 +20,17 @@
  * 3. This notice may not be removed or altered from any source distribution.
 */
 
-#include <stdint.h>
-#include "ws/video.h"
+	.arch	i8086
+	.code16
+	.intel_syntax noprefix
 
-#define NEXT_ROW(i) ((uint16_t*) ( ((uint16_t) (v_dest + SCR_WIDTH) & 0x7FF) | ((uint16_t) (v_dest) & 0xF800) ))
-
-void video_fill_screen(void *dest, uint16_t src, uint8_t x, uint8_t y, uint8_t width, uint8_t height) {
-	uint16_t* v_dest = ((uint16_t*) dest) + ((y & 0x1F) * SCR_WIDTH);
-
-	for (uint8_t iy = height; iy > 0; iy--, v_dest = NEXT_ROW(v_dest)) {
-		for (uint8_t ix = 0; ix < width; ix++) {
-			v_dest[(ix + x) & 0x1F] = src;
-		}
-	}
-}
+	.global video_shade_lut_set
+video_shade_lut_set:
+	out	0x1C, al
+	mov	al, ah
+	out	0x1D, al
+	mov	al, dl
+	out	0x1E, al
+	mov	al, dh
+	out	0x1F, al
+	retf

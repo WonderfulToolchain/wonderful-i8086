@@ -22,9 +22,9 @@
 
 #pragma once
 
-#define __WONDERFUL_WSWAN__
+#define __WONDERFUL_WWITCH__
 
 /** Memory model helpers. */
-#define ASM_RET retf
+#define ASM_PLATFORM_RET ret
 
-#include "wonderful-support-common.h"
+#include "wonderful-asm-common.h"

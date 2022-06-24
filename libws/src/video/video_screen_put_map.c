@@ -25,7 +25,7 @@
 
 #define NEXT_ROW(i) ((uint16_t*) ( ((uint16_t) (v_dest + SCR_WIDTH) & 0x7FF) | ((uint16_t) (v_dest) & 0xF800) ))
 
-void video_put_screen_map(void *dest, const void __far* src, uint8_t x, uint8_t y, uint8_t width, uint8_t height) {
+void video_screen_put_map(void *dest, const void __far* src, uint8_t x, uint8_t y, uint8_t width, uint8_t height) {
 	uint16_t* v_dest = ((uint16_t*) dest) + ((y & 0x1F) * SCR_WIDTH);
 	const uint16_t __far* v_src = (const uint16_t __far*) src;
 

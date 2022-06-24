@@ -11,7 +11,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <lzsa.h>
-#include <ws.h>
+#include <wonderful.h>
 #include "fs.h"
 
 ws_sprite_t sprites[12] __attribute__((aligned(0x200)));
@@ -23,7 +23,7 @@ const uint8_t __far sin_table[] = {
 
 void main() {
 	// Configure shade LUT
-	video_set_gray_lut(GRAY_LUT_DEFAULT);
+	video_shade_lut_set(GRAY_LUT_DEFAULT);
 	// Configure palettes
 	outportw(IO_SCR_PAL_0, 0x7520);
 	outportw(IO_SPR_PAL_4, LCD_PAL_COLORS(0, 0, 0, 1));
@@ -33,7 +33,7 @@ void main() {
 	lzsa2_decompress(MEM_TILE(0), asset_map(ASSET_IMAGE_TILES_BIN_LZSA2));
 
 	// Copy screen map (image)
-	video_put_screen_map(screen, asset_map(ASSET_IMAGE_MAP_BIN), 0, 0, 28, 28);
+	video_screen_put_map(screen, asset_map(ASSET_IMAGE_MAP_BIN), 0, 0, 28, 28);
 
 	// Configure SCR1 memory location and initial Y scroll.
 	outportb(IO_SCR_BASE, SCR1_BASE((uint16_t)screen));

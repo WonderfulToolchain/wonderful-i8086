@@ -64,7 +64,9 @@ install: $(OBJECTS)
 	install -m 755 mkfent.py $(WONDERFUL_TOOLCHAIN)/i8086/bin/wf-mkfent
 	install -m 755 swanlink.py $(WONDERFUL_TOOLCHAIN)/i8086/bin/wf-swanlink
 	install -m 755 wfcommon.py $(WONDERFUL_TOOLCHAIN)/i8086/bin/wfcommon.py
-	install -m 644 src/wonderful-support-wswan.h $(WONDERFUL_TOOLCHAIN)/i8086/wswan/include/wonderful-support.h
-	install -m 644 src/wonderful-support-wwitch.h $(WONDERFUL_TOOLCHAIN)/i8086/wwitch/include/wonderful-support.h
-	install -m 644 src/wonderful-support-common.h $(WONDERFUL_TOOLCHAIN)/i8086/wswan/include
-	install -m 644 src/wonderful-support-common.h $(WONDERFUL_TOOLCHAIN)/i8086/wwitch/include
+	install -m 644 src/wonderful-asm-wswan.h $(WONDERFUL_TOOLCHAIN)/i8086/wswan/include/wonderful-asm.h
+	install -m 644 src/wonderful-asm-wwitch.h $(WONDERFUL_TOOLCHAIN)/i8086/wwitch/include/wonderful-asm.h
+	install -m 644 src/wonderful-asm-common.h $(WONDERFUL_TOOLCHAIN)/i8086/wswan/include
+	install -m 644 src/wonderful-asm-common.h $(WONDERFUL_TOOLCHAIN)/i8086/wwitch/include
+	install -m 644 src/wonderful-wswan.h $(WONDERFUL_TOOLCHAIN)/i8086/wswan/include/wonderful.h
+	install -m 644 src/wonderful-wwitch.h $(WONDERFUL_TOOLCHAIN)/i8086/wwitch/include/wonderful.h

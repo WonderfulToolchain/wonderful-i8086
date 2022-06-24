@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2022 Adrian "asie" Siekierka
  *
  * This software is provided 'as-is', without any express or implied
@@ -18,19 +18,13 @@
  *    misrepresented as being the original software.
  *
  * 3. This notice may not be removed or altered from any source distribution.
-*/
+ */
 
-	.arch	i8086
-	.code16
-	.intel_syntax noprefix
+#pragma once
 
-	.global video_set_gray_lut
-video_set_gray_lut:
-	out	0x1C, al
-	mov	al, ah
-	out	0x1D, al
-	mov	al, dl
-	out	0x1E, al
-	mov	al, dh
-	out	0x1F, al
-	retf
+#define __WONDERFUL_WSWAN__
+
+/** Memory model helpers. */
+#define ASM_PLATFORM_RET retf
+
+#include "wonderful-asm-common.h"

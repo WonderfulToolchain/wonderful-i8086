@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (c) 2022 Adrian "asie" Siekierka
  *
  * This software is provided 'as-is', without any express or implied
@@ -18,40 +18,18 @@
  *    misrepresented as being the original software.
  *
  * 3. This notice may not be removed or altered from any source distribution.
- */
+*/
 
-/** \file ieep.h
-	* Functionality related to the internal EEPROM.
- */
+#include <wonderful-asm.h>
 
-#pragma once
-#include <stdint.h>
-#include "hardware.h"
-#include "util.h"
+	.arch	i8086
+	.code16
+	.intel_syntax noprefix
 
-/**
- * @addtogroup IEEP Functions - Internal EEPROM
- * @{
- */
-
- #define IEEP_ADDRESS_MAX       0x80
- #define IEEP_ADDRESS_MAX_COLOR 0x800
-
-uint16_t ieep_read_word(uint16_t address);
-uint8_t ieep_read_byte(uint16_t address);
-//void ieep_read_data(uint16_t address, const uint8_t __far *data, uint16_t length);
-
-bool ieep_write_word(uint16_t address, uint16_t value);
-// void ieep_write_byte(uint16_t address, uint8_t value);
-// void ieep_write_data(uint16_t address, const uint8_t __far *data, uint16_t length);
-
-void ieep_erase_word(uint16_t address);
-
-void ieep_write_lock(void);
-void ieep_write_unlock(void);
-
-static inline void ieep_write_protect(void) {
-	outportb(IO_IEEP_CTRL, IEEP_CTRL_PROTECT);
-}
-
-/**@}*/
+	.global ieep_read_byte
+ieep_read_byte:
+	test al, 0x01
+	jz ieep_read_word // Returns with AX = word (incl. low byte)
+	call ieep_read_word
+	mov al, ah
+	ASM_PLATFORM_RET

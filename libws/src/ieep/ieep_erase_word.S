@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (c) 2022 Adrian "asie" Siekierka
  *
  * This software is provided 'as-is', without any express or implied
@@ -18,14 +18,23 @@
  *    misrepresented as being the original software.
  *
  * 3. This notice may not be removed or altered from any source distribution.
- */
+*/
 
-#pragma once
-#include <ws/util.h>
-#include <ws/hardware.h>
-#include <ws/system.h>
-#include <ws/video.h>
-#include <ws/keypad.h>
-#include <ws/dma.h>
-#include <ws/cartridge.h>
-#include <ws/ieep.h>
+#include <wonderful-asm.h>
+
+	.arch	i8086
+	.code16
+	.intel_syntax noprefix
+
+	.global ieep_erase_word
+ieep_erase_word:
+	mov bl, 0x1C
+	call ieep_addr_to_command
+	test bl, bl
+	jnz ieep_erase_word_skip
+	out 0xBC, ax
+	mov al, 0x40
+	out 0xBE, al
+	call ieep_wait_ready
+ieep_erase_word_skip:
+	ASM_PLATFORM_RET

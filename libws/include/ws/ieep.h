@@ -20,12 +20,35 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
+/** \file ieep.h
+	* Functionality related to the internal EEPROM.
+ */
+
 #pragma once
-#include <ws/util.h>
-#include <ws/hardware.h>
-#include <ws/system.h>
-#include <ws/video.h>
-#include <ws/keypad.h>
-#include <ws/dma.h>
-#include <ws/cartridge.h>
-#include <ws/ieep.h>
+#include <stdint.h>
+#include "hardware.h"
+#include "util.h"
+
+/**
+ * @addtogroup IEEP Functions - Internal EEPROM
+ * @{
+ */
+
+uint16_t ieep_read_word(uint16_t address);
+// uint8_t ieep_read_byte(uint16_t address);
+// void ieep_read_data(uint16_t address, const uint8_t __far *data, uint16_t length);
+
+bool ieep_write_word(uint16_t address, uint16_t value);
+// void ieep_write_byte(uint16_t address, uint8_t value);
+// void ieep_write_data(uint16_t address, const uint8_t __far *data, uint16_t length);
+
+void ieep_erase_word(uint16_t address);
+
+void ieep_write_lock(void);
+void ieep_write_unlock(void);
+
+static inline void ieep_write_protect(void) {
+	outportb(IO_IEEP_CTRL, IEEP_CTRL_PROTECT);
+}
+
+/**@}*/

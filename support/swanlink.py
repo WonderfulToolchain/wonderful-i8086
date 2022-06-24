@@ -86,6 +86,15 @@ def game_id_type(arg):
 		raise argparse.ArgumentTypeError("must be between 0 and 99")
 	return i
 
+def game_version_type(arg):
+	try:
+		i = int(arg)
+	except ValueError:
+		raise argparse.ArgumentTypeError("must be an integer")
+	if i < 0 or i > 127:
+		raise argparse.ArgumentTypeError("must be between 0 and 127")
+	return i
+
 def banks_type(arg):
 	try:
 		i = int(arg)
@@ -110,9 +119,10 @@ arg_parser.add_argument('--rom-speed', metavar='SPEED', type=int, help='ROM acce
 arg_parser.add_argument('--rom-bus-size', metavar='SIZE', type=int, help='ROM bus size, 8 or 16 bits', default=16)
 arg_parser.add_argument('--orientation', metavar='ORIENT', type=str, help='Default orientation, "horizontal" (default) or "vertical"', default="horizontal")
 arg_parser.add_argument('--rtc', action="store_true", help='ROM uses RTC')
+arg_parser.add_argument('--unlock-ieep', action="store_true", help='ROM can write to internal EEPROM')
 arg_parser.add_argument('--publisher-id', metavar='ID', type=publisher_id_type, help='Publisher ID, 0-255', default=255)
 arg_parser.add_argument('--game-id', metavar='ID', type=game_id_type, help='Game ID, 0-99', default=0)
-arg_parser.add_argument('--game-version', metavar='VER', type=int, help='Game version', default=1)
+arg_parser.add_argument('--game-version', metavar='VER', type=game_version_type, help='Game version, 0-127', default=1)
 arg_parser.add_argument('--load-offset', metavar='OFFSET', type=lambda x: int(x, 0), help='Linked code load offset')
 arg_parser.add_argument('--ld-template', metavar='PATH', type=str, help='Linker template', default=None)
 arg_parser.add_argument('--linker-args', action="store_true", required=True, help='ld linker args follow after this argument')
@@ -268,6 +278,8 @@ with tempfile.TemporaryDirectory() as temp_dir:
 	hdr_color = 0x01 if program_args.color else 0x00
 	hdr_game_id = byte_to_bcd(program_args.game_id)
 	hdr_game_version = program_args.game_version
+	if program_args.unlock_ieep:
+		hdr_game_version |= (1 << 7)
 	hdr_rom_size = BANK_COUNT_TO_ROM_SIZE[rom_size >> 16]
 	hdr_save_type = 0x00
 	if program_args.ram_type:

@@ -30,6 +30,9 @@
 ieep_read_byte:
 	test al, 0x01
 	jz ieep_read_word // Returns with AX = word (incl. low byte)
-	call ieep_read_word
+	.byte	0x9A
+	.word	ieep_read_word
+	.reloc	., R_386_SEG16, "ieep_read_word!"
+	.word	0
 	mov al, ah
 	ASM_PLATFORM_RET

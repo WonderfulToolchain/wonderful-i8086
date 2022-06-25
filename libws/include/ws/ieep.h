@@ -35,20 +35,64 @@
  * @{
  */
 
- #define IEEP_ADDRESS_MAX       0x80
- #define IEEP_ADDRESS_MAX_COLOR 0x800
+/**
+ * @brief The internal EEPROM size in "mono" WonderSwan mode.
+ */
+#define IEEP_SIZE_WS  0x80
+/**
+ * @brief The internal EEPROM size in color WonderSwan mode.
+ */
+#define IEEP_SIZE_WSC 0x800
 
+/**
+ * @brief Read an aligned word from the internal EEPROM.
+ * 
+ * @param address The address to read from. The lowest bit is ignored.
+ * @return uint16_t The value read.
+ */
 uint16_t ieep_read_word(uint16_t address);
+
+/**
+ * @brief Read a byte from the internal EEPROM.
+ * 
+ * @param address The address to read from.
+ * @return uint8_t The value read.
+ */
 uint8_t ieep_read_byte(uint16_t address);
+
+/**
+ * @brief Read bytes from the internal EEPROM.
+ * 
+ * @param address The address to read from.
+ * @param data The pointer to write to.
+ * @param length The number of bytes to read.
+ */
 void ieep_read_data(uint16_t address, uint8_t *data, uint16_t length);
 
+/**
+ * @brief Write a word to the internal EEPROM.
+ * 
+ * @param address The address to write to. The lowest bit is ignored.
+ * @param value The word to write.
+ */
 bool ieep_write_word(uint16_t address, uint16_t value);
 // void ieep_write_byte(uint16_t address, uint8_t value);
 // void ieep_write_data(uint16_t address, const uint8_t __far *data, uint16_t length);
 
+/**
+ * @brief Erase a word from the internal EEPROM, setting it to 0xFFFF.
+ * 
+ * @param address The address to erase.
+ */
 void ieep_erase_word(uint16_t address);
 
+/**
+ * @brief Lock the internal EEPROM, preventing writes and erases.
+ */
 void ieep_write_lock(void);
+/**
+ * @brief Unlock the internal EEPROM, allowing writes and erases.
+ */
 void ieep_write_unlock(void);
 
 #define IEEP_ADDRESS_OWNER_NAME                0x60 /* 16 bytes */
@@ -111,6 +155,13 @@ void ieep_read_owner_name_ascii(char *str);
  */
 uint16_t ieep_name_color_to_rgb(uint8_t value);
 
+/**
+ * @brief Protect the non-cartridge area of the internal EEPROM.
+ *
+ * By default, the WonderSwan boot ROM protects the non-cartridge area of the internal EEPROM - addresses 0x60 and above - on boot.
+ * By setting a bit in the cartridge's header (--unlock-ieep in swanlink), the non-cartridge area remains writable. In this case,
+ * this function can be used to make the area read-only again.
+ */
 static inline void ieep_write_protect(void) {
 	outportb(IO_IEEP_CTRL, IEEP_CTRL_PROTECT);
 }

@@ -72,4 +72,79 @@ static inline uint16_t __builtin_wonderful_ss() {
 	return result;
 }
 
+ /**
+  * @brief Read a byte from the given port.
+  * 
+  * @param port Port ID. For more information, see @ref DefinesIOPorts
+  * @return uint8_t The value read.
+  */
+static inline uint8_t inportb(uint8_t port) {
+	uint8_t result;
+	__asm volatile (
+		"inb %1, %0"
+		: "=Ral" (result)
+		: "Nd" ((uint16_t) port)
+	);
+	return result;
+}
+
+ /**
+  * @brief Read a word from the given port.
+  * 
+  * @param port Port ID. For more information, see @ref DefinesIOPorts
+  * @return uint8_t The value read.
+  */
+static inline uint16_t inportw(uint8_t port) {
+	uint16_t result;
+	__asm volatile (
+		"inw %1, %0"
+		: "=a" (result)
+		: "Nd" ((uint16_t) port)
+	);
+	return result;
+}
+
+ /**
+  * @brief Write a byte to the given port.
+  * 
+  * @param port Port ID. For more information, see @ref DefinesIOPorts
+  * @param value The value to write.
+  */
+static inline void outportb(uint8_t port, uint8_t value) {
+	__asm volatile (
+		"outb %0, %1"
+		:
+		: "Ral" (value), "Nd" ((uint16_t) port)
+	);
+}
+
+ /**
+  * @brief Write a word to the given port.
+  * 
+  * @param port Port ID. For more information, see @ref DefinesIOPorts
+  * @param value The value to write.
+  */
+static inline void outportw(uint8_t port, uint16_t value) {
+	__asm volatile (
+		"outw %0, %1"
+		:
+		: "a" (value), "Nd" ((uint16_t) port)
+	);
+}
+
+static inline void cpu_halt(void) {
+	__asm volatile ("hlt");
+}
+#define hlt cpu_halt
+
+static inline void cpu_irq_enable(void) {
+	__asm volatile ("sti");
+}
+#define sti cpu_irq_enable
+
+static inline void cpu_irq_disable(void) {
+	__asm volatile ("cli");
+}
+#define cli cpu_irq_disable
+
 #endif

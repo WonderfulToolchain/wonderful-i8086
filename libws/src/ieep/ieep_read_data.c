@@ -20,59 +20,19 @@
  * 3. This notice may not be removed or altered from any source distribution.
 */
 
-	.arch	i8086
-	.code16
-	.intel_syntax noprefix
+#include <stdint.h>
+#include "ws/ieep.h"
 
-	.section .data
-	.global _ivt
-_ivt:
-	.fill 16, 4, 0
-
-	.section .text
-	.global _start
-_start:
-	cli
-
-	// copy rodata/data from ROM to RAM
-	//mov	ax, offset "__erom!"
-	.byte	0xB8
-	.reloc	., R_386_SEG16, "__erom!"
-	.word	0
-	mov	ds, ax
-	xor	ax, ax
-	mov	es, ax
-	mov	ss, ax
-	mov	si, offset "__erom&"
-	mov	di, offset "__sdata"
-	mov	cx, offset "__ldata_words"
-	cld
-	rep	movsw
-
-	// initialize segments
-	// (es/ss) initialized above
-	xor	ax, ax
-	mov	ds, ax
-
-	// clear bss
-	mov	di, offset "__edata"
-	mov	cx, offset "__lbss_words"
-	rep	stosw
-
-	// configure sp
-	mov	sp, offset "__eheap"
-
-	// configure default interrupt base
-	mov	al, 0x08
-	out	0xB0, al
-
-	// call main
-	//.reloc	.+3, R_386_SEG16, main
-	//call 0:main
-	.byte	0x9A
-	.word	main
-	.reloc	., R_386_SEG16, "main!"
-	.word	0
-
-loop:
-	jmp loop
+void ieep_read_data(uint16_t address, uint8_t *data, uint16_t length) {
+	uint16_t address_last = address + length;
+	uint16_t i = 0;
+	if (address & 1) {
+		data[i++] = ieep_read_byte(address++);
+	}
+	for (; address < (address_last & (~1)); i += 2, address += 2) {
+		*((uint16_t*) (data + i)) = ieep_read_word(address);
+	}
+	if (address_last & 1) {
+		data[i] = ieep_read_byte(address);
+	}
+}

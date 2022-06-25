@@ -120,6 +120,7 @@ arg_parser.add_argument('--rom-bus-size', metavar='SIZE', type=int, help='ROM bu
 arg_parser.add_argument('--orientation', metavar='ORIENT', type=str, help='Default orientation, "horizontal" (default) or "vertical"', default="horizontal")
 arg_parser.add_argument('--rtc', action="store_true", help='ROM uses RTC')
 arg_parser.add_argument('--unlock-ieep', action="store_true", help='ROM can write to internal EEPROM')
+arg_parser.add_argument('--disable-custom-bootsplash', action="store_true", help='ROM disables custom console boot splash')
 arg_parser.add_argument('--publisher-id', metavar='ID', type=publisher_id_type, help='Publisher ID, 0-255', default=255)
 arg_parser.add_argument('--game-id', metavar='ID', type=game_id_type, help='Game ID, 0-99', default=0)
 arg_parser.add_argument('--game-version', metavar='VER', type=game_version_type, help='Game version, 0-127', default=1)
@@ -280,6 +281,8 @@ with tempfile.TemporaryDirectory() as temp_dir:
 	hdr_game_version = program_args.game_version
 	if program_args.unlock_ieep:
 		hdr_game_version |= (1 << 7)
+	if program_args.disable_custom_bootsplash:
+		hdr_maintenance |= (1 << 7)
 	hdr_rom_size = BANK_COUNT_TO_ROM_SIZE[rom_size >> 16]
 	hdr_save_type = 0x00
 	if program_args.ram_type:

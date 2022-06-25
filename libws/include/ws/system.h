@@ -54,7 +54,7 @@ static inline bool system_color_present(void) {
  * @return false This device is limited to "mono" WonderSwan functionality.
  */
 static inline bool system_color_active(void) {
-	return inportb(IO_SYSTEM_CTRL2) & 0x80;
+	return system_color_present() && (inportb(IO_SYSTEM_CTRL2) & 0x80);
 }
 
 /**

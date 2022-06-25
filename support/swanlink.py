@@ -127,6 +127,7 @@ arg_parser.add_argument('--game-version', metavar='VER', type=game_version_type,
 arg_parser.add_argument('--load-offset', metavar='OFFSET', type=lambda x: int(x, 0), help='Linked code load offset')
 arg_parser.add_argument('--ld-template', metavar='PATH', type=str, help='Linker template', default=None)
 arg_parser.add_argument('--linker-args', action="store_true", required=True, help='ld linker args follow after this argument')
+arg_parser.add_argument('--rom-empty-fill', metavar='VALUE', type=lambda x: int(x, 0), help='ROM empty fill value, 0xFF by default', default=0xFF)
 # FIXME: Needs more linkscript/crt0 patches...
 # arg_parser.add_argument('--heap-start', metavar='ADDR', type=lambda x: int(x, 0), help='Link-side heap start address', default=0x0000)
 arg_parser.add_argument('--heap-length', metavar='LEN', type=lambda x: int(x, 0), help='Link-side heap length', default=0x2000)
@@ -308,6 +309,7 @@ with tempfile.TemporaryDirectory() as temp_dir:
 	hdr_checksum = 0x0000
 	print_verbose('Saving as %s' % output_rom_path.name)
 	with open(output_rom_path, 'wb') as rom_file:
+		rom_file.write(struct.pack("<B", program_args.rom_empty_fill) * rom_size)
 		for position in rom_layout.keys():
 			data = rom_layout[position]
 			rom_file.seek(position, 0)

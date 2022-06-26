@@ -96,7 +96,7 @@ typedef enum {
 	 * In this mode, the device enables the functionality specific to the WonderSwan Color.
 	 * The 4BPP tile area is utilized.
 	 */
-	MODE_COLOR_4BPP = 0xA0,
+	MODE_COLOR_4BPP = 0xC0,
 	/**
 	 * @brief Color/4bpp/Packed mode.
 	 * 

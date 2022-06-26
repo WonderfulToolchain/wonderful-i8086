@@ -10,16 +10,23 @@
  */
 
 #include <stddef.h>
-#include "string.h"
 
 #if 0
 
-void __far* memset(void __far* s, int c, size_t n) {
-	unsigned char __far* p = (unsigned char __far*) s;
+void* _nmemcpy(void* restrict s1, const void* restrict s2, size_t n) {
+	char* dest = (char*) s1;
+	const char* src = (const char*) s2;
+
 	while (n--) {
-		*(p++) = (unsigned char) c;
+		*dest++ = *src++;
 	}
-	return s;
+
+	return s1;
 }
+
+#ifndef __IA16_CMODEL_IS_FAR_DATA
+__attribute__ ((alias ("_nmemcpy")))
+void* memcpy(void* s1, const void* s2, size_t n);
+#endif
 
 #endif

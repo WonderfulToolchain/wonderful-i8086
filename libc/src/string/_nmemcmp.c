@@ -10,16 +10,22 @@
  */
 
 #include <stddef.h>
-#include "string.h"
 
-void __far* memchr(const void __far* s, int c, size_t n) {
-	unsigned char __far* p = (unsigned char __far*) s;
+int _nmemcmp(const void* s1, const void* s2, size_t n) {
+	const unsigned char* p1 = (const unsigned char*) s1;
+	const unsigned char* p2 = (const unsigned char*) s2;
 	while (n--) {
-		if ( *p == (unsigned char) c) {
-			return (void __far*) p;
+	        if ( *p1 != *p2) {
+			return *p1 - *p2;
 		}
-
-		p++;
+		p1++;
+		p2++;
 	}
-	return NULL;
+        return 0;
 }
+
+#ifndef __IA16_CMODEL_IS_FAR_DATA
+__attribute__ ((alias ("_nmemcmp")))
+void* memcmp(const void* s1, const void* s2, size_t n);
+#endif
+

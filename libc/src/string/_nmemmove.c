@@ -10,11 +10,10 @@
  */
 
 #include <stddef.h>
-#include "string.h"
 
-void __far* memmove(void __far* s1, const void __far* s2, size_t n) {
-	char __far* dest = (char __far*) s1;
-	const char __far* src = (const char __far*) s2;
+void* _nmemmove(void* s1, const void* s2, size_t n) {
+	char* dest = (char*) s1;
+	const char* src = (const char*) s2;
 
 	if (dest < src) {
 		while (n--) {
@@ -30,3 +29,8 @@ void __far* memmove(void __far* s1, const void __far* s2, size_t n) {
 
 	return s1;
 }
+
+#ifndef __IA16_CMODEL_IS_FAR_DATA
+__attribute__ ((alias ("_nmemmove")))
+void* memmove(void* s1, const void* s2, size_t n);
+#endif

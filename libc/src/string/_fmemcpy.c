@@ -10,17 +10,23 @@
  */
 
 #include <stddef.h>
-#include "string.h"
 
-int memcmp(const void __far* s1, const void __far* s2, size_t n) {
-	const unsigned char __far* p1 = (const unsigned char __far*) s1;
-	const unsigned char __far* p2 = (const unsigned char __far*) s2;
+#if 0
+
+void __far* _fmemcpy(void __far* restrict s1, const void __far* restrict s2, size_t n) {
+	char __far* dest = (char __far*) s1;
+	const char __far* src = (const char __far*) s2;
+
 	while (n--) {
-	        if ( *p1 != *p2) {
-			return *p1 - *p2;
-		}
-		p1++;
-		p2++;
+		*dest++ = *src++;
 	}
-        return 0;
+
+	return s1;
 }
+
+#ifdef __IA16_CMODEL_IS_FAR_DATA
+__attribute__ ((alias ("_fmemcpy")))
+void* memcpy(void* s1, const void* s2, size_t n);
+#endif
+
+#endif

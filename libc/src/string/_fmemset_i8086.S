@@ -15,29 +15,30 @@
 	.code16
 	.intel_syntax noprefix
 
-	.global memcpy
-memcpy:
-	push	si
+	.global _fmemset
+_fmemset:
+#ifdef __IA16_CMODEL_IS_FAR_DATA
+	.global memset
+memset:
+#endif
 	push	di
-	push	ds
 	push	es
+	push	ax
 	push	bp
 	mov	bp, sp
 	mov	es, dx
 	mov	di, ax
-	lds	si, [bp + 14]
-	mov	cx, [bp + 18]
+	mov	al, cl
+	mov	ah, al
+	mov	cx, [bp + 12]
 	shr	cx, 1
 	cld
-	rep	movsw
-	jnc	memcpy_no_byte
-	movsb
-memcpy_no_byte:
-	mov	dx, ds
-	mov	ax, [bp + 14]
+	rep	stosw
+	jnc	_fmemset_no_byte
+	stosb
+_fmemset_no_byte:
 	pop	bp
+	pop	ax
 	pop	es
-	pop	ds
 	pop	di
-	pop	si
-	ASM_PLATFORM_RET 0x6
+	ASM_PLATFORM_RET 0x2

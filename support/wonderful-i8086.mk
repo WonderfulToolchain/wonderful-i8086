@@ -1,13 +1,13 @@
-CC := $(WONDERFUL_TOOLCHAIN)/i8086/bin/ia16-elf-gcc
-AR := $(WONDERFUL_TOOLCHAIN)/i8086/bin/ia16-elf-ar
-AS := $(WONDERFUL_TOOLCHAIN)/i8086/bin/ia16-elf-as
-LD := $(WONDERFUL_TOOLCHAIN)/i8086/bin/ia16-elf-ld
-NM := $(WONDERFUL_TOOLCHAIN)/i8086/bin/ia16-elf-nm
-OBJCOPY := $(WONDERFUL_TOOLCHAIN)/i8086/bin/ia16-elf-objcopy
-RANLIB := $(WONDERFUL_TOOLCHAIN)/i8086/bin/ia16-elf-ranlib
-SUPERFAMICONV := $(WONDERFUL_TOOLCHAIN)/i8086/bin/wf-superfamiconv
+CC := $(WONDERFUL_TOOLCHAIN)/toolchain/gcc-ia16-elf/bin/ia16-elf-gcc
+AR := $(WONDERFUL_TOOLCHAIN)/toolchain/gcc-ia16-elf/bin/ia16-elf-ar
+AS := $(WONDERFUL_TOOLCHAIN)/toolchain/gcc-ia16-elf/bin/ia16-elf-as
+LD := $(WONDERFUL_TOOLCHAIN)/toolchain/gcc-ia16-elf/bin/ia16-elf-ld
+NM := $(WONDERFUL_TOOLCHAIN)/toolchain/gcc-ia16-elf/bin/ia16-elf-nm
+OBJCOPY := $(WONDERFUL_TOOLCHAIN)/toolchain/gcc-ia16-elf/bin/ia16-elf-objcopy
+RANLIB := $(WONDERFUL_TOOLCHAIN)/toolchain/gcc-ia16-elf/bin/ia16-elf-ranlib
+SUPERFAMICONV := $(WONDERFUL_TOOLCHAIN)/bin/wf-superfamiconv
 BIN2C := $(WONDERFUL_TOOLCHAIN)/i8086/bin/wf-bin2c
-LZSA := $(WONDERFUL_TOOLCHAIN)/i8086/bin/wf-lzsa
+LZSA := $(WONDERFUL_TOOLCHAIN)/bin/wf-lzsa
 
 # wswan target tools
 FSBANKPACK := $(WONDERFUL_TOOLCHAIN)/i8086/bin/wf-fsbankpack

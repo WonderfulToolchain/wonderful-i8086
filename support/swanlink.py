@@ -152,9 +152,9 @@ if program_args.output_elf:
 ld_template_path = toolchain_prefix / 'wswan/lib/wswan.ld.template'
 if program_args.ld_template is not None:
 	ld_template_path = Path(ld_template).absolute()
-ld_path = toolchain_prefix / ("bin/ia16-elf-ld%s" % executable_extension)
-objcopy_path = toolchain_prefix / ("bin/ia16-elf-objcopy%s" % executable_extension)
-size_path = toolchain_prefix / ("bin/ia16-elf-size%s" % executable_extension)
+ld_path = toolchain_prefix / ("../toolchain/gcc-ia16-elf/bin/ia16-elf-ld%s" % executable_extension)
+objcopy_path = toolchain_prefix / ("../toolchain/gcc-ia16-elf/bin/ia16-elf-objcopy%s" % executable_extension)
+size_path = toolchain_prefix / ("../toolchain/gcc-ia16-elf/bin/ia16-elf-size%s" % executable_extension)
 
 rom_layout = {}
 

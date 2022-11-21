@@ -117,6 +117,15 @@ static inline ws_system_mode_t system_get_mode(void) {
 }
 
 /**
+ * @brief Acknowledge hardware interrupt.
+ * 
+ * @param mask The interrupt mask.
+ */
+static inline ws_system_mode_t system_ack_hw_int(uint8_t mask) {
+	outportb(IO_INT_ACK, mask);
+}
+
+/**
  * @brief Set the new system mode.
  *
  * Note that any non-Mono modes require a WonderSwan Color or above - see @ref system_is_color

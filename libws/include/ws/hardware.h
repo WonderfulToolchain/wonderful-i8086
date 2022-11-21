@@ -260,7 +260,6 @@
 #define IO_INT_ENABLE 0xB2
 #define IO_INT_STATUS 0xB4
 #define IO_INT_ACK 0xB6
-#define IO_INT_NMI_CTRL 0xB7
 
 #define INTR_MASK_SERIAL_TX    0x01
 #define INTR_MASK_KEY          0x02
@@ -279,6 +278,9 @@
 #define INTR_ENABLE_VBLANK_TIMER 0x20
 #define INTR_ENABLE_VBLANK       0x40
 #define INTR_ENABLE_HBLANK_TIMER 0x80
+
+#define IO_INT_NMI_CTRL 0xB7
+#define NMI_ENABLE_LOW_BATTERY 0x10
 
 #define IO_SERIAL_DATA 0xB1
 

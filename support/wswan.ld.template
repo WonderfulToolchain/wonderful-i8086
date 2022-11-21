@@ -83,24 +83,25 @@ SECTIONS
 	}
 
 	/* Target data section. */
+	__sdata = .;
 	".data" . : AT(ADDR(".erom") + SIZEOF(".erom"))
 	{
-		__sdata = .;
 		*(.rodata ".rodata.*[^&]")
 		*(.data ".data.*[^&]")
-		__edata = .;
 	}
+	__edata = .;
 	"__ldata!" = 0;
 	__ldata = SIZEOF(.data);
 	"__ldata_words!" = 0;
 	__ldata_words = (__ldata + 1) / 2;
 
+	__sbss = .;
 	/* Target BSS section. */
 	.bss . (NOLOAD) :
 	{
 		*(.bss ".bss.*[^&]")
-		__ebss = .;
 	}
+	__ebss = .;
 	"__lbss!" = 0;
 	__lbss = SIZEOF(.bss);
 	"__lbss_words!" = 0;

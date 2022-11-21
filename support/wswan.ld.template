@@ -68,7 +68,7 @@ SECTIONS
 	".data!" %RAM_HEAP_START% (NOLOAD) : AT(ADDR(".erom") + SIZEOF(".erom"))
 	{
 		"__sdata!" = .;
-		*("_ivt!")
+		*(".ivt!")
 		*(".rodata!*" ".rodata.*!")
 		*(".data!*" ".data.*!")
 		*(".bss!*" ".bss.*!")
@@ -76,11 +76,16 @@ SECTIONS
 		"__ebss!" = .;
 	} >RAM
 
+	/* IVT header - we don't want to store it in ROM. */
+	.ivt %RAM_HEAP_START% (NOLOAD) :
+	{
+		*(.ivt)
+	}
+
 	/* Target data section. */
-	".data" %RAM_HEAP_START%: AT(ADDR(".erom") + SIZEOF(".erom"))
+	".data" . : AT(ADDR(".erom") + SIZEOF(".erom"))
 	{
 		__sdata = .;
-		*("_ivt")
 		*(.rodata ".rodata.*[^&]")
 		*(.data ".data.*[^&]")
 		__edata = .;
@@ -90,7 +95,7 @@ SECTIONS
 	"__ldata_words!" = 0;
 	__ldata_words = (__ldata + 1) / 2;
 
-	/* Target BSS section, with same segment bases as data section. */
+	/* Target BSS section. */
 	.bss . (NOLOAD) :
 	{
 		*(.bss ".bss.*[^&]")
@@ -105,7 +110,7 @@ SECTIONS
 	".data&" . (NOLOAD) :
 	{
 		"__sdata&" = .;
-		*("_ivt&")
+		*(".ivt&")
 		*(".rodata&*" ".rodata.*&")
 		*(".data&*" ".data.*&")
 		*(".bss&*" ".bss.*&")

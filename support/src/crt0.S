@@ -24,7 +24,7 @@
 	.code16
 	.intel_syntax noprefix
 
-	.section .data
+	.section .ivt
 	.global _ivt
 _ivt:
 	.fill 16, 4, 0

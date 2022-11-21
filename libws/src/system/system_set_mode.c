@@ -25,9 +25,10 @@
 #include "ws/system.h"
 
 bool system_set_mode(ws_system_mode_t mode) {
-	if (mode > 0 && !system_color_present()) {
-		return false;
+	if (!system_color_present()) {
+		return mode == 0;
 	}
 	outportb(IO_SYSTEM_CTRL2, (inportb(IO_SYSTEM_CTRL2) & 0x1F) | mode);
+	return true;
 }
 

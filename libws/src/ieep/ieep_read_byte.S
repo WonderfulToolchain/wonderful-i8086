@@ -26,13 +26,13 @@
 	.code16
 	.intel_syntax noprefix
 
-	.global ieep_read_byte
-ieep_read_byte:
+	.global ws_ieep_read_byte
+ws_ieep_read_byte:
 	test al, 0x01
-	jz ieep_read_word // Returns with AX = word (incl. low byte)
+	jz ws_ieep_read_word // Returns with AX = word (incl. low byte)
 	.byte	0x9A
-	.word	ieep_read_word
-	.reloc	., R_386_SEG16, "ieep_read_word!"
+	.word	ws_ieep_read_word
+	.reloc	., R_386_SEG16, "ws_ieep_read_word!"
 	.word	0
 	mov al, ah
 	ASM_PLATFORM_RET

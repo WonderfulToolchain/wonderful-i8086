@@ -26,20 +26,20 @@
 	.code16
 	.intel_syntax noprefix
 
-	.global ieep_write_word
-ieep_write_word:
+	.global ws_ieep_write_word
+ws_ieep_write_word:
 	push dx
 	mov bl, 0x14
-	call ieep_addr_to_command
+	call ws_ieep_addr_to_command
 	pop dx
 	test bl, bl
-	jnz ieep_write_word_skip
+	jnz ws_ieep_write_word_skip
 	out 0xBC, ax
 	mov ax, dx
 	out 0xBA, ax
 	mov al, 0x20
 	out 0xBE, al
-	call ieep_wait_ready
-ieep_write_word_skip:
+	call ws_ieep_wait_ready
+ws_ieep_write_word_skip:
 	xor bl, 1
 	ASM_PLATFORM_RET

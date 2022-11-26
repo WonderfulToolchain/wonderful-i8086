@@ -26,13 +26,13 @@
 	.code16
 	.intel_syntax noprefix
 
-	.global ieep_write_lock
-ieep_write_lock:
+	.global ws_ieep_write_lock
+ws_ieep_write_lock:
 	xor ax, ax
 	mov bl, 0x10
-	call ieep_addr_to_command
+	call ws_ieep_addr_to_command
 	out 0xBC, ax
 	mov al, 0x40
 	out 0xBE, al
-	call ieep_wait_ready
+	call ws_ieep_wait_ready
 	ASM_PLATFORM_RET

@@ -25,7 +25,7 @@
 #include "ws/hardware.h"
 #include "ws/dma.h"
 
-void dma_copy_words_linear(void *dest, uint32_t src, uint16_t length) {
+void ws_dma_copy_words_linear(void *dest, uint32_t src, uint16_t length) {
 	outportw(IO_DMA_SOURCE_L, src);
 	outportb(IO_DMA_SOURCE_H, src >> 16);
 	outportw(IO_DMA_DEST, (uint16_t) dest);

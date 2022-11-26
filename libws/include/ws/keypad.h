@@ -37,7 +37,7 @@
  * 
  * @return uint16_t A bitfield representing currently pressed keys.
  */
-uint16_t keypad_scan(void);
+uint16_t ws_keypad_scan(void);
 
 #define KEY_Y4    0x0800
 #define KEY_Y3    0x0400

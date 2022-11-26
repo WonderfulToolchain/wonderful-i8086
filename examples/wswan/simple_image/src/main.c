@@ -23,17 +23,17 @@ const uint8_t __far sin_table[] = {
 
 void main() {
 	// Configure shade LUT
-	video_shade_lut_set(GRAY_LUT_DEFAULT);
+	ws_display_set_shade_lut(SHADE_LUT_DEFAULT);
 	// Configure palettes
 	outportw(IO_SCR_PAL_0, 0x7520);
-	outportw(IO_SPR_PAL_4, LCD_PAL_COLORS(0, 0, 0, 1));
-	outportw(IO_SPR_PAL_5, LCD_PAL_COLORS(0, 0, 0, 6));
+	outportw(IO_SPR_PAL_4, MONO_PAL_COLORS(0, 0, 0, 1));
+	outportw(IO_SPR_PAL_5, MONO_PAL_COLORS(0, 0, 0, 6));
 
 	// Copy tiles (image)
-	lzsa2_decompress(MEM_TILE(0), asset_map(ASSET_IMAGE_TILES_BIN_LZSA2));
+	lzsa2_decompress(MEM_TILE(0), wf_asset_map(ASSET_IMAGE_TILES_BIN_LZSA2));
 
 	// Copy screen map (image)
-	video_screen_put_map(screen, asset_map(ASSET_IMAGE_MAP_BIN), 0, 0, 28, 28);
+	ws_screen_put_map(screen, wf_asset_map(ASSET_IMAGE_MAP_BIN), 0, 0, 28, 28);
 
 	// Configure SCR1 memory location and initial Y scroll.
 	outportb(IO_SCR_BASE, SCR1_BASE((uint16_t)screen));
@@ -41,7 +41,7 @@ void main() {
 
 	// Copy tiles (logo)
 	memcpy(MEM_TILE(512 - 6),
-		asset_map(ASSET_LOGO_TILES_BIN),
+		wf_asset_map(ASSET_LOGO_TILES_BIN),
 		ASSET_LOGO_TILES_BIN_SIZE);
 
 	// Configure sprites.

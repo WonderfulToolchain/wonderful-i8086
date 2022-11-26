@@ -29,10 +29,10 @@ const char __far ieep_owner_to_ascii_map[] = {
 	'V', 'W', 'X', 'Y', 'Z', 3/* heart */, 13/* music note */, '+', '-', '?', '.'
 };
 
-void ieep_read_owner_name_ascii(char *str) {
+void ws_ieep_read_owner_name_ascii(char *str) {
 	uint8_t i, len;
 
-	ieep_read_owner_name((uint8_t*) str);
+	ws_ieep_read_owner_name((uint8_t*) str);
 	for (len = 16; len > 0; len--) {
 		if (str[len - 1] != 0x00) break;
 	}

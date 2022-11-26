@@ -30,57 +30,57 @@
 	// AX = address, in bytes
 	// returns AX = command, BL = 1 if out of range
 	// trashes BX, DX
-	.global ieep_addr_to_command
-ieep_addr_to_command:
+	.global ws_ieep_addr_to_command
+ws_eep_addr_to_command:
 	shr ax, 1
 	mov dx, ax
 	in al, 0x60
 	test al, al
 	mov ax, dx
-	js ieep_addr_to_command_wsc
+	js ws_ieep_addr_to_command_wsc
 	cmp ax, 0x40
-	jae ieep_addr_to_command_out_of_range
+	jae ws_ieep_addr_to_command_out_of_range
 	xor bh, bh
 	shl bx, 4
 	or ax, bx
 	xor bl, bl
 	ret
-ieep_addr_to_command_wsc:
+ws_ieep_addr_to_command_wsc:
 	cmp ax, 0x400
-	jae ieep_addr_to_command_out_of_range
+	jae ws_ieep_addr_to_command_out_of_range
 	xor bh, bh
 	or ah, bl
 	xor bl, bl
 	ret
-ieep_addr_to_command_out_of_range:
+ws_ieep_addr_to_command_out_of_range:
 	mov bl, 0x1
 	ret
 
 	// AL = 1 if IEEP ready, 0 otherwise
 	// trashes CX
 	.global ieep_wait_ready
-ieep_wait_ready:
+ws_ieep_wait_ready:
 	mov cx, 3413 // 10 ms / 9 cycles at 3 MHz
-ieep_wait_ready_l1:
+iws_eep_wait_ready_l1:
 	in al, 0xBE // 6
 	test al, 0x02 // 1
-	jnz ieep_wait_ready_ok // 1
-	loop ieep_wait_ready_l1 // 1
+	jnz ws_ieep_wait_ready_ok // 1
+	loop ws_ieep_wait_ready_l1 // 1
 	xor al, al
 	ret
-ieep_wait_ready_ok:
+ws_ieep_wait_ready_ok:
 	mov al, 1
 	ret
 
 	// AL = 1 if IEEP done, 0 otherwise
 	// trashes CX
 	.global ieep_wait_done
-ieep_wait_done:
+ws_ieep_wait_done:
 	mov cx, 50
-ieep_wait_done_l1:
+ws_ieep_wait_done_l1:
 	in al, 0xBE // 6
 	and al, 0x01 // 1
-	jnz ieep_wait_done_ok // 1
-	loop ieep_wait_done_l1 // 1
-ieep_wait_done_ok:
+	jnz ws_ieep_wait_done_ok // 1
+	loop ws_ieep_wait_done_l1 // 1
+ws_ieep_wait_done_ok:
 	ret

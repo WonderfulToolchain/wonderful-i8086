@@ -24,14 +24,14 @@
 #include <stdint.h>
 #include "ws/cartridge.h"
 
-void enable_cart_gpo(uint8_t id) {
+void ws_cart_gpo_enable(uint8_t id) {
 	outportb(IO_GPO_CTRL, inportb(IO_GPO_CTRL) | (1 << id));
 }
 
-void disable_cart_gpo(uint8_t id) {
+void ws_cart_gpo_disable(uint8_t id) {
 	outportb(IO_GPO_CTRL, inportb(IO_GPO_CTRL) & (~(1 << id)));
 }
 
-void set_cart_gpo(uint8_t id, bool val) {
+void ws_cart_gpo_set(uint8_t id, bool val) {
 	outportb(IO_GPO_DATA, inportb(IO_GPO_DATA) & (~(1 << id)) | ((val & 1) << id));
 }

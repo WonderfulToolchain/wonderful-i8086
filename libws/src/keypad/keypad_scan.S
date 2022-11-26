@@ -24,8 +24,8 @@
 	.code16
 	.intel_syntax noprefix
 
-	.global keypad_scan
-keypad_scan:
+	.global ws_keypad_scan
+ws_keypad_scan:
 	mov	dx, 0x00B5
 
 	mov	al, 0x10

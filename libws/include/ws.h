@@ -24,7 +24,7 @@
 #include <ws/util.h>
 #include <ws/hardware.h>
 #include <ws/system.h>
-#include <ws/video.h>
+#include <ws/display.h>
 #include <ws/keypad.h>
 #include <ws/dma.h>
 #include <ws/cartridge.h>

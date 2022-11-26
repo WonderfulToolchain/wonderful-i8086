@@ -71,19 +71,19 @@ uint16_t screen[0x400] __attribute__((aligned(0x800)));
 void set_graphics(bool show_scores);
 
 void draw_scores() {
-	video_screen_fill(screen, (GAME_TILES_OFFSET + 14) | SCR_ENTRY_PALETTE(4), 0, 23, 28, 2);
+	ws_screen_fill(screen, (GAME_TILES_OFFSET + 14) | SCR_ENTRY_PALETTE(4), 0, 23, 28, 2);
 
-	video_screen_put(screen, (GAME_TILES_OFFSET + 13) | SCR_ENTRY_PALETTE(4), 10, 23);
-	video_screen_put(screen, (GAME_TILES_OFFSET + 1) | SCR_ENTRY_PALETTE(4), 11, 23);
+	ws_screen_put(screen, (GAME_TILES_OFFSET + 13) | SCR_ENTRY_PALETTE(4), 10, 23);
+	ws_screen_put(screen, (GAME_TILES_OFFSET + 1) | SCR_ENTRY_PALETTE(4), 11, 23);
 
-	video_screen_put(screen, (GAME_TILES_OFFSET + 13) | SCR_ENTRY_PALETTE(4), 16, 23);
-	video_screen_put(screen, (GAME_TILES_OFFSET + 2) | SCR_ENTRY_PALETTE(4), 17, 23);
+	ws_screen_put(screen, (GAME_TILES_OFFSET + 13) | SCR_ENTRY_PALETTE(4), 16, 23);
+	ws_screen_put(screen, (GAME_TILES_OFFSET + 2) | SCR_ENTRY_PALETTE(4), 17, 23);
 
 	{
 		uint16_t score = p1_score;
 		uint8_t x = 11;
 		do {
-			video_screen_put(screen, (GAME_TILES_OFFSET + (score % 10)) | SCR_ENTRY_PALETTE(4), x, 24);
+			ws_screen_put(screen, (GAME_TILES_OFFSET + (score % 10)) | SCR_ENTRY_PALETTE(4), x, 24);
 			x--;
 			score /= 10;
 		} while (score > 0);
@@ -100,7 +100,7 @@ void draw_scores() {
 		score = p2_score;
 		do {
 			x--;
-			video_screen_put(screen, (GAME_TILES_OFFSET + (score % 10)) | SCR_ENTRY_PALETTE(4), x, 24);
+			ws_screen_put(screen, (GAME_TILES_OFFSET + (score % 10)) | SCR_ENTRY_PALETTE(4), x, 24);
 			score /= 10;
 		} while (score > 0);
 	}
@@ -207,24 +207,24 @@ void set_graphics(bool show_scores) {
 
 void init_graphics() {
 	// Configure black & white palettes.
-	video_shade_lut_set(GRAY_LUT_DEFAULT);
+	ws_display_set_shade_lut(SHADE_LUT_DEFAULT);
 
-	outportw(IO_SCR_PAL_0, LCD_PAL_COLORS(0, 1, 2, 3)); // SCR1 palette
-	outportw(IO_SCR_PAL_4, LCD_PAL_COLORS(0, 3, 4, 7)); // SCR1 score palette
-	outportw(IO_SPR_PAL_4, LCD_PAL_COLORS(0, 3, 4, 7)); // paddle 1 palette
-	outportw(IO_SPR_PAL_5, LCD_PAL_COLORS(0, 3, 4, 7)); // paddle 2 palette
-	outportw(IO_SPR_PAL_6, LCD_PAL_COLORS(0, 1, 3, 4)); // ball palette
-	outportw(IO_SPR_PAL_7, LCD_PAL_COLORS(0, 0, 0, 7)); // shadows
+	outportw(IO_SCR_PAL_0, MONO_PAL_COLORS(0, 1, 2, 3)); // SCR1 palette
+	outportw(IO_SCR_PAL_4, MONO_PAL_COLORS(0, 3, 4, 7)); // SCR1 score palette
+	outportw(IO_SPR_PAL_4, MONO_PAL_COLORS(0, 3, 4, 7)); // paddle 1 palette
+	outportw(IO_SPR_PAL_5, MONO_PAL_COLORS(0, 3, 4, 7)); // paddle 2 palette
+	outportw(IO_SPR_PAL_6, MONO_PAL_COLORS(0, 1, 3, 4)); // ball palette
+	outportw(IO_SPR_PAL_7, MONO_PAL_COLORS(0, 0, 0, 7)); // shadows
 
 	// Initialize tiles.
 	memcpy(MEM_TILE(0), game_bg_tiles_bin, sizeof(game_bg_tiles_bin));
 	memcpy(MEM_TILE(GAME_TILES_OFFSET), game_tiles_tiles_bin, sizeof(game_tiles_tiles_bin));
 
 	// Initialize SCR1 (background).
-	video_screen_put_map(screen, game_bg_map_bin, 0, 0, 32, 22);
+	ws_screen_put_map(screen, game_bg_map_bin, 0, 0, 32, 22);
 
 	// Initialize SCR2 (score).
-	video_screen_fill(screen, (GAME_TILES_OFFSET + 14) | SCR_ENTRY_PALETTE(4), 0, 22, 32, 10);
+	ws_screen_fill(screen, (GAME_TILES_OFFSET + 14) | SCR_ENTRY_PALETTE(4), 0, 22, 32, 10);
 	draw_scores();
 
 	outportb(IO_SCR_BASE, SCR1_BASE((uint16_t) screen) | SCR2_BASE((uint16_t) screen));
@@ -258,7 +258,7 @@ void init_graphics() {
 	update_graphics();
 
 	// If Color, enable color palettes.
-	if (system_set_mode(MODE_COLOR)) {
+	if (ws_mode_set(WS_MODE_COLOR)) {
 		MEM_SCR_PALETTE(0)[0] = 0x09e9;
 		MEM_SCR_PALETTE(0)[1] = 0x0fff;
 		MEM_SCR_PALETTE(0)[2] = 0x0fff;
@@ -298,7 +298,7 @@ void main() {
 		while (inportb(IO_LCD_LINE) == 144);
 		while (inportb(IO_LCD_LINE) != 144);
 
-		uint16_t keys = keypad_scan();
+		uint16_t keys = ws_keypad_scan();
 		if (game_state == GAME_PAUSED_FOR_KEYPAD_CLEAR) {
 			set_graphics(true);
 			if (keys == 0) game_state = GAME_PAUSED_FOR_KEYPAD_SET;

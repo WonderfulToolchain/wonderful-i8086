@@ -20,17 +20,17 @@
  * 3. This notice may not be removed or altered from any source distribution.
 */
 
-	.arch	i8086
-	.code16
-	.intel_syntax noprefix
+#include <stdint.h>
+#include <string.h>
+#include "ws/util.h"
+#include "ws/hardware.h"
+#include "ws/system.h"
+#include "ws/dma.h"
 
-	.global video_shade_lut_set
-video_shade_lut_set:
-	out	0x1C, al
-	mov	al, ah
-	out	0x1D, al
-	mov	al, dl
-	out	0x1E, al
-	mov	al, dh
-	out	0x1F, al
-	retf
+void ws_dma_opt_copy_words(void *dest, const void __far* src, uint16_t length) {
+	if (ws_system_is_color()) {
+		ws_dma_copy_words_linear(dest, (((uint32_t) src) >> 12) + ((uint16_t) ((uint32_t) src)), length);
+	} else {
+		memcpy(dest, src, length);
+	}
+}

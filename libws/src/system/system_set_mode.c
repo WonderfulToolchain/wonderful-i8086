@@ -24,8 +24,8 @@
 #include <stdint.h>
 #include "ws/system.h"
 
-bool system_set_mode(ws_system_mode_t mode) {
-	if (!system_color_present()) {
+bool ws_mode_set(ws_mode_t mode) {
+	if (!ws_system_is_color()) {
 		return mode == 0;
 	}
 	outportb(IO_SYSTEM_CTRL2, (inportb(IO_SYSTEM_CTRL2) & 0x1F) | mode);

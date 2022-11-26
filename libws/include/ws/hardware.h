@@ -36,12 +36,19 @@
  * @{
  */
 
-#define INTR_CPU_DIV    0
-#define INTR_CPU_STEP   1
-#define INTR_CPU_NMI    2
-#define INTR_CPU_BREAK  3
-#define INTR_CPU_INTO   4
-#define INTR_CPU_BOUNDS 5
+#define CPUINT_DIV    0x01
+#define CPUINT_STEP   0x02
+#define CPUINT_NMI    0x04
+#define CPUINT_BREAK  0x08
+#define CPUINT_INTO   0x10
+#define CPUINT_BOUNDS 0x20
+
+#define CPUINT_IDX_DIV    0
+#define CPUINT_IDX_STEP   1
+#define CPUINT_IDX_NMI    2
+#define CPUINT_IDX_BREAK  3
+#define CPUINT_IDX_INTO   4
+#define CPUINT_IDX_BOUNDS 5
 
 /**@}*/
 
@@ -50,14 +57,23 @@
  * @{
  */
  
-#define INTR_HW_SERIAL_TX    0
-#define INTR_HW_KEY          1
-#define INTR_HW_CARTRIDGE    2
-#define INTR_HW_SERIAL_RX    3
-#define INTR_HW_LINE         4
-#define INTR_HW_VBLANK_TIMER 5
-#define INTR_HW_VBLANK       6
-#define INTR_HW_HBLANK_TIMER 7
+#define HWINT_SERIAL_TX    0x01
+#define HWINT_KEY          0x02
+#define HWINT_CARTRIDGE    0x04
+#define HWINT_SERIAL_RX    0x08
+#define HWINT_LINE         0x10
+#define HWINT_VBLANK_TIMER 0x20
+#define HWINT_VBLANK       0x40
+#define HWINT_HBLANK_TIMER 0x80
+
+#define HWINT_IDX_SERIAL_TX    0
+#define HWINT_IDX_KEY          1
+#define HWINT_IDX_CARTRIDGE    2
+#define HWINT_IDX_SERIAL_RX    3
+#define HWINT_IDX_LINE         4
+#define HWINT_IDX_VBLANK_TIMER 5
+#define HWINT_IDX_VBLANK       6
+#define HWINT_IDX_HBLANK_TIMER 7
 
 /**@}*/
 
@@ -108,7 +124,7 @@
 #define IO_SCR2_SCRL_Y 0x13
 
 #define IO_LCD_IF_CTRL 0x14
-#define IO_LCD_SEG_DATA 0x15
+#define IO_LCD_SEG     0x15
 
 #define LCD_SEG_AUX3     0x20
 #define LCD_SEG_AUX2     0x10
@@ -143,11 +159,11 @@
 #define IO_SPR_PAL_6 0x3C
 #define IO_SPR_PAL_7 0x3E
 
-#define LCD_PAL_COLORS(c0, c1, c2, c3) ((c0) | ((c1) << 4) | ((c2) << 8) | ((c3) << 12))
-#define LCD_PAL_COLOR_0(x) ((x))
-#define LCD_PAL_COLOR_1(x) ((x) << 4)
-#define LCD_PAL_COLOR_2(x) ((x) << 8)
-#define LCD_PAL_COLOR_3(x) ((x) << 12)
+#define MONO_PAL_COLORS(c0, c1, c2, c3) ((c0) | ((c1) << 4) | ((c2) << 8) | ((c3) << 12))
+#define MONO_PAL_COLOR0(x) ((x))
+#define MONO_PAL_COLOR1(x) ((x) << 4)
+#define MONO_PAL_COLOR2(x) ((x) << 8)
+#define MONO_PAL_COLOR3(x) ((x) << 12)
 
 #define IO_DMA_SOURCE_L 0x40
 #define IO_DMA_SOURCE_H 0x42
@@ -256,28 +272,10 @@
 #define IO_HBLANK_COUNTER 0xA8
 #define IO_VBLANK_COUNTER 0xAA
 
-#define IO_INT_VECTOR 0xB0
-#define IO_INT_ENABLE 0xB2
-#define IO_INT_STATUS 0xB4
-#define IO_INT_ACK 0xB6
-
-#define INTR_MASK_SERIAL_TX    0x01
-#define INTR_MASK_KEY          0x02
-#define INTR_MASK_CARTRIDGE    0x04
-#define INTR_MASK_SERIAL_RX    0x08
-#define INTR_MASK_LINE         0x10
-#define INTR_MASK_VBLANK_TIMER 0x20
-#define INTR_MASK_VBLANK       0x40
-#define INTR_MASK_HBLANK_TIMER 0x80
-
-#define INTR_ENABLE_SERIAL_TX    0x01
-#define INTR_ENABLE_KEY          0x02
-#define INTR_ENABLE_CARTRIDGE    0x04
-#define INTR_ENABLE_SERIAL_RX    0x08
-#define INTR_ENABLE_LINE         0x10
-#define INTR_ENABLE_VBLANK_TIMER 0x20
-#define INTR_ENABLE_VBLANK       0x40
-#define INTR_ENABLE_HBLANK_TIMER 0x80
+#define IO_HWINT_VECTOR 0xB0
+#define IO_HWINT_ENABLE 0xB2
+#define IO_HWINT_STATUS 0xB4
+#define IO_HWINT_ACK 0xB6
 
 #define IO_INT_NMI_CTRL 0xB7
 #define NMI_ENABLE_LOW_BATTERY 0x10

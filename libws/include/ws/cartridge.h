@@ -57,7 +57,7 @@ extern const void *__rom_bank_offset;
  * @param new_bank New SRAM bank.
  * @return uint8_t The previous SRAM bank.
  */
-static inline uint8_t push_sram_bank(uint8_t new_bank) {
+static inline uint8_t ws_bank_sram_push(uint8_t new_bank) {
 	asm volatile("" ::: "memory");
 	uint8_t old_bank = inportb(IO_RAM_BANK);
 	outportb(IO_RAM_BANK, BANK_INDEX(new_bank));
@@ -70,12 +70,12 @@ static inline uint8_t push_sram_bank(uint8_t new_bank) {
  * 
  * @param new_bank New SRAM bank.
  */
-static inline void set_sram_bank(uint8_t new_bank) {
+static inline void ws_bank_sram_set(uint8_t new_bank) {
 	asm volatile("" ::: "memory");
 	outportb(IO_RAM_BANK, BANK_INDEX(new_bank));
 	asm volatile("" ::: "memory");
 }
-#define pop_sram_bank set_sram_bank
+#define ws_bank_sram_pop ws_bank_sram_set
 
 /**
  * @brief Switch to a new ROM bank in slot 0, while preserving the value of the old one.
@@ -83,7 +83,7 @@ static inline void set_sram_bank(uint8_t new_bank) {
  * @param new_bank New ROM bank in slot 0.
  * @return uint8_t The previous ROM bank in slot 0.
  */
-static inline uint8_t push_rom_bank0(uint8_t new_bank) {
+static inline uint8_t ws_bank_rom0_push(uint8_t new_bank) {
 	asm volatile("" ::: "memory");
 	uint8_t old_bank = inportb(IO_ROM_BANK0);
 	outportb(IO_ROM_BANK0, BANK_INDEX(new_bank));
@@ -96,12 +96,12 @@ static inline uint8_t push_rom_bank0(uint8_t new_bank) {
  * 
  * @param new_bank New ROM bank in slot 0.
  */
-static inline void set_rom_bank0(uint8_t new_bank) {
+static inline void ws_bank_rom0_set(uint8_t new_bank) {
 	asm volatile("" ::: "memory");
 	outportb(IO_ROM_BANK0, BANK_INDEX(new_bank));
 	asm volatile("" ::: "memory");
 }
-#define pop_rom_bank0 set_rom_bank0
+#define ws_bank_rom0_pop ws_bank_rom0_set
 
 /**
  * @brief Switch to a new ROM bank in slot 1, while preserving the value of the old one.
@@ -109,7 +109,7 @@ static inline void set_rom_bank0(uint8_t new_bank) {
  * @param new_bank New ROM bank in slot 1.
  * @return uint8_t The previous ROM bank in slot 1.
  */
-static inline uint8_t push_rom_bank1(uint8_t new_bank) {
+static inline uint8_t ws_bank_rom1_push(uint8_t new_bank) {
 	asm volatile("" ::: "memory");
 	uint8_t old_bank = inportb(IO_ROM_BANK1);
 	outportb(IO_ROM_BANK1, BANK_INDEX(new_bank));
@@ -122,26 +122,26 @@ static inline uint8_t push_rom_bank1(uint8_t new_bank) {
  * 
  * @param new_bank New ROM bank in slot 1.
  */
-static inline void set_rom_bank1(uint8_t new_bank) {
+static inline void ws_bank_rom1_set(uint8_t new_bank) {
 	asm volatile("" ::: "memory");
 	outportb(IO_ROM_BANK1, BANK_INDEX(new_bank));
 	asm volatile("" ::: "memory");
 }
-#define pop_rom_bank1 set_rom_bank1
+#define ws_bank_rom1_pop ws_bank_rom1_set
 
 /**
  * @brief Enable general-purpose output.
  * 
  * @param id General-purpose output ID (0-3)
  */
-void enable_cart_gpo(uint8_t id);
+void ws_cart_gpo_enable(uint8_t id);
 
 /**
  * @brief Disable general-purpose output.
  * 
  * @param id General-purpose output ID (0-3)
  */
-void disable_cart_gpo(uint8_t id);
+void ws_cart_gpo_disable(uint8_t id);
 
 /**
  * @brief Set general-purpose output value.
@@ -149,7 +149,7 @@ void disable_cart_gpo(uint8_t id);
  * @param id General-purpose output ID (0-3)
  * @param val Value (true or false).
  */
-void set_cart_gpo(uint8_t id, bool val);
+void ws_cart_gpo_set(uint8_t id, bool val);
 
 /**@}*/
 
@@ -169,7 +169,7 @@ void set_cart_gpo(uint8_t id, bool val);
  * @param position The asset position.
  * @return const void* The pointer to the mapped asset.
  */
-static inline const void __far* asset_map(uint32_t position) {
+static inline const void __far* wf_asset_map(uint32_t position) {
 	asm volatile("" ::: "memory");
 	uint8_t idx = BANK_INDEX(position >> 16);
 	outportb(IO_ROM_BANK0, idx);
@@ -189,7 +189,7 @@ static inline const void __far* asset_map(uint32_t position) {
  * @param position The asset position.
  * @return const void* The pointer to the mapped asset.
  */
-static inline const void __far* asset_map_bank0(uint32_t position) {
+static inline const void __far* wf_asset_map_rom0(uint32_t position) {
 	asm volatile("" ::: "memory");
 	uint8_t idx = BANK_INDEX(position >> 16);
 	outportb(IO_ROM_BANK0, idx);
@@ -208,7 +208,7 @@ static inline const void __far* asset_map_bank0(uint32_t position) {
  * @param position The asset position.
  * @return const void* The pointer to the mapped asset.
  */
-static inline const void __far* asset_map_bank1(uint32_t position) {
+static inline const void __far* wf_asset_map_rom1(uint32_t position) {
 	asm volatile("" ::: "memory");
 	uint8_t idx = BANK_INDEX(position >> 16);
 	outportb(IO_ROM_BANK1, idx);

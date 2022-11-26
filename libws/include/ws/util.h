@@ -22,7 +22,7 @@
 
 #pragma once
 #include <stdint.h>
-#include <wonderful.h>
+#include <wonderful-asm.h>
 
 /** \file util.h
  * Various utility functions for working with the WonderSwan hardware.

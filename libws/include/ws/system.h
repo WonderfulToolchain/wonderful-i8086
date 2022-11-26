@@ -43,7 +43,7 @@
  * @return true This device is a WonderSwan Color or above.
  * @return false This device is a "mono" WonderSwan.
  */
-static inline bool system_color_present(void) {
+static inline bool ws_system_is_color(void) {
 	return inportb(IO_SYSTEM_CTRL1) & SYSTEM_CTRL1_COLOR;
 }
 
@@ -53,8 +53,8 @@ static inline bool system_color_present(void) {
  * @return true This device can currently access WonderSwan Color functionality.
  * @return false This device is limited to "mono" WonderSwan functionality.
  */
-static inline bool system_color_active(void) {
-	return system_color_present() && (inportb(IO_SYSTEM_CTRL2) & 0x80);
+static inline bool ws_system_color_active(void) {
+	return ws_system_is_color() && (inportb(IO_SYSTEM_CTRL2) & 0x80);
 }
 
 /**
@@ -68,7 +68,7 @@ static inline bool system_color_active(void) {
  * @return true This device is a SwanCrystal.
  * @return false This device is not a SwanCrystal.
  */
-static inline bool system_is_swancrystal(void) {
+static inline bool ws_system_is_swancrystal(void) {
 	return inportb(IO_SYSTEM_CTRL3) & SYSTEM_CTRL3_SWANCRYSTAL;
 }
 
@@ -82,21 +82,21 @@ typedef enum {
 	 * In this mode, the device acts like a "mono" WonderSwan. This is
 	 * typically the default mode after boot.
 	 */
-	MODE_MONO = 0x00,
+	WS_MODE_MONO = 0x00,
 	/**
 	 * @brief Color mode.
 	 * 
 	 * In this mode, the device enables the functionality specific to the WonderSwan Color.
 	 * The 2BPP tile area is utilized - only the first four colors of each palette are used.
 	 */
-	MODE_COLOR = 0x80,
+	WS_MODE_COLOR = 0x80,
 	/**
 	 * @brief Color/4bpp mode.
 	 * 
 	 * In this mode, the device enables the functionality specific to the WonderSwan Color.
 	 * The 4BPP tile area is utilized.
 	 */
-	MODE_COLOR_4BPP = 0xC0,
+	WS_MODE_COLOR_4BPP = 0xC0,
 	/**
 	 * @brief Color/4bpp/Packed mode.
 	 * 
@@ -104,25 +104,16 @@ typedef enum {
 	 * The 4BPP tile area is utilized. Tiles are stored in packed form - with two complete
 	 * pixels per byte, as opposed to four separate consecutive planes.
 	 */
-	MODE_COLOR_4BPP_PACKED = 0xE0
-} ws_system_mode_t;
+	WS_MODE_COLOR_4BPP_PACKED = 0xE0
+} ws_mode_t;
 
 /**
  * @brief Get the current system mode.
  * 
  * @return ws_system_mode_t The current system mode.
  */
-static inline ws_system_mode_t system_get_mode(void) {
+static inline ws_mode_t ws_mode_get(void) {
 	return inportb(IO_SYSTEM_CTRL2) & 0xE0;
-}
-
-/**
- * @brief Acknowledge hardware interrupt.
- * 
- * @param mask The interrupt mask.
- */
-static inline ws_system_mode_t system_ack_hw_int(uint8_t mask) {
-	outportb(IO_INT_ACK, mask);
 }
 
 /**
@@ -134,6 +125,15 @@ static inline ws_system_mode_t system_ack_hw_int(uint8_t mask) {
  * @return true If the operation was successful.
  * @return false If the operation was unsuccessful (trying to apply a color mode on a "mono" WonderSwan).
  */
-bool system_set_mode(ws_system_mode_t mode);
+bool ws_mode_set(ws_mode_t mode);
+
+/**
+ * @brief Acknowledge hardware interrupt.
+ * 
+ * @param mask The interrupt mask.
+ */
+static inline ws_mode_t ws_hwint_ack(uint8_t mask) {
+	outportb(IO_HWINT_ACK, mask);
+}
 
 /**@}*/

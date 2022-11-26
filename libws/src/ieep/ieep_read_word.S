@@ -26,18 +26,18 @@
 	.code16
 	.intel_syntax noprefix
 
-	.global ieep_read_word
-ieep_read_word:
+	.global ws_ieep_read_word
+ws_ieep_read_word:
 	mov bl, 0x18
-	call ieep_addr_to_command
+	call ws_ieep_addr_to_command
 	test bl, bl
-	jnz ieep_read_word_skip
+	jnz ws_ieep_read_word_skip
 	out 0xBC, ax
 	mov al, 0x10
 	out 0xBE, al
-	call ieep_wait_done
+	call ws_ieep_wait_done
 	in ax, 0xBA
 	ASM_PLATFORM_RET
-ieep_read_word_skip:
+ws_ieep_read_word_skip:
 	mov ax, 0xFFFF
 	ASM_PLATFORM_RET

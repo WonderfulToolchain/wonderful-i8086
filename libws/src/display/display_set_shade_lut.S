@@ -20,17 +20,17 @@
  * 3. This notice may not be removed or altered from any source distribution.
 */
 
-#include <stdint.h>
-#include <string.h>
-#include "ws/util.h"
-#include "ws/hardware.h"
-#include "ws/system.h"
-#include "ws/dma.h"
+	.arch	i8086
+	.code16
+	.intel_syntax noprefix
 
-void dma_maybe_copy_words(void *dest, const void __far* src, uint16_t length) {
-	if (system_color_active()) {
-		dma_copy_words_linear(dest, (((uint32_t) src) >> 12) + ((uint16_t) ((uint32_t) src)), length);
-	} else {
-		memcpy(dest, src, length);
-	}
-}
+	.global ws_display_set_shade_lut
+ws_display_set_shade_lut:
+	out	0x1C, al
+	mov	al, ah
+	out	0x1D, al
+	mov	al, dl
+	out	0x1E, al
+	mov	al, dh
+	out	0x1F, al
+	retf

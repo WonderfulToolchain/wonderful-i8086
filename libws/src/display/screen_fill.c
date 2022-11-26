@@ -21,17 +21,16 @@
 */
 
 #include <stdint.h>
-#include "ws/video.h"
+#include "ws/display.h"
 
 #define NEXT_ROW(i) ((uint16_t*) ( ((uint16_t) (v_dest + SCR_WIDTH) & 0x7FF) | ((uint16_t) (v_dest) & 0xF800) ))
 
-void video_screen_put_map(void *dest, const void __far* src, uint8_t x, uint8_t y, uint8_t width, uint8_t height) {
+void ws_screen_fill(void *dest, uint16_t src, uint8_t x, uint8_t y, uint8_t width, uint8_t height) {
 	uint16_t* v_dest = ((uint16_t*) dest) + ((y & 0x1F) * SCR_WIDTH);
-	const uint16_t __far* v_src = (const uint16_t __far*) src;
 
 	for (uint8_t iy = height; iy > 0; iy--, v_dest = NEXT_ROW(v_dest)) {
 		for (uint8_t ix = 0; ix < width; ix++) {
-			v_dest[(ix + x) & 0x1F] = *(v_src++);
+			v_dest[(ix + x) & 0x1F] = src;
 		}
 	}
 }

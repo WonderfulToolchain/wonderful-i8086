@@ -21,10 +21,10 @@
 */
 
 #include <stdint.h>
-#include "ws/video.h"
+#include "ws/display.h"
 #include "ws/ieep.h"
 
-const uint16_t __far ieep_name_color_to_rgb_map[16] = {
+static const uint16_t __far ieep_name_color_to_rgb_map[16] = {
 	RGB(0, 0, 0),
 	RGB(15, 0, 0),
 	RGB(15, 7, 0),
@@ -43,6 +43,6 @@ const uint16_t __far ieep_name_color_to_rgb_map[16] = {
 	RGB(7, 7, 7)
 };
 
-uint16_t ieep_name_color_to_rgb(uint8_t value) {
+uint16_t ws_ieep_name_color_to_rgb(uint8_t value) {
 	return ieep_name_color_to_rgb_map[value & 0x0F];
 }

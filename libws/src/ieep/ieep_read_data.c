@@ -23,16 +23,16 @@
 #include <stdint.h>
 #include "ws/ieep.h"
 
-void ieep_read_data(uint16_t address, uint8_t *data, uint16_t length) {
+void ws_ieep_read_data(uint16_t address, uint8_t *data, uint16_t length) {
 	uint16_t address_last = address + length;
 	uint16_t i = 0;
 	if (address & 1) {
-		data[i++] = ieep_read_byte(address++);
+		data[i++] = ws_ieep_read_byte(address++);
 	}
 	for (; address < (address_last & (~1)); i += 2, address += 2) {
-		*((uint16_t*) (data + i)) = ieep_read_word(address);
+		*((uint16_t*) (data + i)) = ws_ieep_read_word(address);
 	}
 	if (address_last & 1) {
-		data[i] = ieep_read_byte(address);
+		data[i] = ws_ieep_read_byte(address);
 	}
 }

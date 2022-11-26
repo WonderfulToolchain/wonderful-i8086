@@ -38,11 +38,11 @@
 /**
  * @brief The internal EEPROM size in "mono" WonderSwan mode.
  */
-#define IEEP_SIZE_WS  0x80
+#define WS_IEEP_SIZE_MONO 0x80
 /**
  * @brief The internal EEPROM size in color WonderSwan mode.
  */
-#define IEEP_SIZE_WSC 0x800
+#define WS_IEEP_SIZE_COLOR 0x800
 
 /**
  * @brief Read an aligned word from the internal EEPROM.
@@ -50,7 +50,7 @@
  * @param address The address to read from. The lowest bit is ignored.
  * @return uint16_t The value read.
  */
-uint16_t ieep_read_word(uint16_t address);
+uint16_t ws_ieep_read_word(uint16_t address);
 
 /**
  * @brief Read a byte from the internal EEPROM.
@@ -58,7 +58,7 @@ uint16_t ieep_read_word(uint16_t address);
  * @param address The address to read from.
  * @return uint8_t The value read.
  */
-uint8_t ieep_read_byte(uint16_t address);
+uint8_t ws_ieep_read_byte(uint16_t address);
 
 /**
  * @brief Read bytes from the internal EEPROM.
@@ -67,7 +67,7 @@ uint8_t ieep_read_byte(uint16_t address);
  * @param data The pointer to write to.
  * @param length The number of bytes to read.
  */
-void ieep_read_data(uint16_t address, uint8_t *data, uint16_t length);
+void ws_ieep_read_data(uint16_t address, uint8_t *data, uint16_t length);
 
 /**
  * @brief Write a word to the internal EEPROM.
@@ -75,25 +75,25 @@ void ieep_read_data(uint16_t address, uint8_t *data, uint16_t length);
  * @param address The address to write to. The lowest bit is ignored.
  * @param value The word to write.
  */
-bool ieep_write_word(uint16_t address, uint16_t value);
-// void ieep_write_byte(uint16_t address, uint8_t value);
-// void ieep_write_data(uint16_t address, const uint8_t __far *data, uint16_t length);
+bool ws_ieep_write_word(uint16_t address, uint16_t value);
+// void ws_ieep_write_byte(uint16_t address, uint8_t value);
+// void ws_ieep_write_data(uint16_t address, const uint8_t __far *data, uint16_t length);
 
 /**
  * @brief Erase a word from the internal EEPROM, setting it to 0xFFFF.
  * 
  * @param address The address to erase.
  */
-void ieep_erase_word(uint16_t address);
+void ws_ieep_erase_word(uint16_t address);
 
 /**
  * @brief Lock the internal EEPROM, preventing writes and erases.
  */
-void ieep_write_lock(void);
+void ws_ieep_write_lock(void);
 /**
  * @brief Unlock the internal EEPROM, allowing writes and erases.
  */
-void ieep_write_unlock(void);
+void ws_ieep_write_unlock(void);
 
 #define IEEP_ADDRESS_OWNER_NAME                0x60 /* 16 bytes */
 #define IEEP_ADDRESS_OWNER_BIRTHDAY_YEAR       0x70 /* word */
@@ -136,8 +136,8 @@ void ieep_write_unlock(void);
  *
  * @param data Target data area - must be at least 16 bytes.
  */
-static inline void ieep_read_owner_name(uint8_t *data) {
-	ieep_read_data(IEEP_ADDRESS_OWNER_NAME, data, 16);
+static inline void ws_ieep_read_owner_name(uint8_t *data) {
+	ws_ieep_read_data(IEEP_ADDRESS_OWNER_NAME, data, 16);
 }
 
 /**
@@ -145,7 +145,7 @@ static inline void ieep_read_owner_name(uint8_t *data) {
  * 
  * @param str Target string area - must be at least 17 bytes.
  */
-void ieep_read_owner_name_ascii(char *str);
+void ws_ieep_read_owner_name_ascii(char *str);
 
 /**
  * @brief Convert a given name color to its RGB value.
@@ -153,7 +153,7 @@ void ieep_read_owner_name_ascii(char *str);
  * @param value The given name color.
  * @return uint16_t A 12-bit RGB value.
  */
-uint16_t ieep_name_color_to_rgb(uint8_t value);
+uint16_t ws_ieep_name_color_to_rgb(uint8_t value);
 
 /**
  * @brief Protect the non-cartridge area of the internal EEPROM.
@@ -162,7 +162,7 @@ uint16_t ieep_name_color_to_rgb(uint8_t value);
  * By setting a bit in the cartridge's header (--unlock-ieep in swanlink), the non-cartridge area remains writable. In this case,
  * this function can be used to make the area read-only again.
  */
-static inline void ieep_write_protect(void) {
+static inline void ws_ieep_write_protect(void) {
 	outportb(IO_IEEP_CTRL, IEEP_CTRL_PROTECT);
 }
 

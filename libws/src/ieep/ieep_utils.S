@@ -31,7 +31,7 @@
 	// returns AX = command, BL = 1 if out of range
 	// trashes BX, DX
 	.global ws_ieep_addr_to_command
-ws_eep_addr_to_command:
+ws_ieep_addr_to_command:
 	shr ax, 1
 	mov dx, ax
 	in al, 0x60
@@ -58,10 +58,10 @@ ws_ieep_addr_to_command_out_of_range:
 
 	// AL = 1 if IEEP ready, 0 otherwise
 	// trashes CX
-	.global ieep_wait_ready
+	.global ws_ieep_wait_ready
 ws_ieep_wait_ready:
 	mov cx, 3413 // 10 ms / 9 cycles at 3 MHz
-iws_eep_wait_ready_l1:
+ws_ieep_wait_ready_l1:
 	in al, 0xBE // 6
 	test al, 0x02 // 1
 	jnz ws_ieep_wait_ready_ok // 1
@@ -74,7 +74,7 @@ ws_ieep_wait_ready_ok:
 
 	// AL = 1 if IEEP done, 0 otherwise
 	// trashes CX
-	.global ieep_wait_done
+	.global ws_ieep_wait_done
 ws_ieep_wait_done:
 	mov cx, 50
 ws_ieep_wait_done_l1:

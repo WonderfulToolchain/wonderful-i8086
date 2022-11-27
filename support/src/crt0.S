@@ -51,8 +51,11 @@ _start:
 
 	// initialize segments
 	// (es/ss) initialized above
-	xor	ax, ax
+	// xor	ax, ax - done above
 	mov	ds, ax
+
+	// clear int enable
+	out	0xB2, al
 
 	// clear bss
 	mov	di, offset "__edata"

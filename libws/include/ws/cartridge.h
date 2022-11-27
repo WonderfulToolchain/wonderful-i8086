@@ -98,7 +98,7 @@ static inline uint8_t ws_bank_rom0_push(uint8_t new_bank) {
  */
 static inline void ws_bank_rom0_set(uint8_t new_bank) {
 	asm volatile("" ::: "memory");
-	outportb(IO_BANK_ROM1, WF_BANK_INDEX(new_bank));
+	outportb(IO_BANK_ROM0, WF_BANK_INDEX(new_bank));
 	asm volatile("" ::: "memory");
 }
 #define ws_bank_rom0_pop ws_bank_rom0_set

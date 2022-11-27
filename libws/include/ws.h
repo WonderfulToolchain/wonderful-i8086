@@ -27,5 +27,7 @@
 #include <ws/display.h>
 #include <ws/keypad.h>
 #include <ws/dma.h>
-#include <ws/cartridge.h>
 #include <ws/ieep.h>
+#include <ws/serial.h>
+#include <ws/cartridge.h>
+#include <ws/rtc.h>

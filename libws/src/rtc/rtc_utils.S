@@ -20,59 +20,28 @@
  * 3. This notice may not be removed or altered from any source distribution.
 */
 
-	.arch	i8086
+#include <wonderful-asm.h>
+
+	.arch	i186
 	.code16
 	.intel_syntax noprefix
 
-	.section .ivt
-	.global _ivt
-_ivt:
-	.fill 16, 4, 0
-
-	.section .start
-	.global _start
-_start:
-	cli
-
-	// copy rodata/data from ROM to RAM
-	//mov	ax, offset "__erom!"
-	.byte	0xB8
-	.reloc	., R_386_SEG16, "__erom!"
-	.word	0
-	mov	ds, ax
-	xor	ax, ax
-	mov	es, ax
-	mov	ss, ax
-	mov	si, offset "__erom&"
-	mov	di, offset "__sdata"
-	mov	cx, offset "__ldata_words"
-	cld
-	rep	movsw
-
-	// initialize segments
-	// (es/ss) initialized above
-	xor	ax, ax
-	mov	ds, ax
-
-	// clear bss
-	mov	di, offset "__edata"
-	mov	cx, offset "__lbss_words"
-	rep	stosw
-
-	// configure sp
-	mov	sp, offset "__eheap"
-
-	// configure default interrupt base
-	mov	al, 0x08
-	out	0xB0, al
-
-	// jmp main
-	//.reloc	.+3, R_386_SEG16, main
-	//jmp 0:main
-	.byte	0xEA
-	.word	main
-	.reloc	., R_386_SEG16, "main!"
-	.word	0
-
-loop:
-	jmp loop
+// CX = timeout value
+// preserves AX
+// if CX = 0, timeout occured
+	.global __ws_rtc_wait_ready_timeout
+__ws_rtc_wait_ready_timeout:
+	push ax
+	shr cx, 2 // 3 cycles ~= 1 us
+__ws_rtc_wait_ready_loop:
+	// 15 cycles per iteration, or so
+	dec cx // 1 cycle
+	jz __ws_rtc_wait_ready_done // 1 cycle (branch not taken)
+	in al, 0xCA // 6 cycles
+	test al, 0x10 // 1 cycle
+	jz __ws_rtc_wait_ready_done // 1-4 cycles
+	test al, 0x80 // 1 cycle
+	jz __ws_rtc_wait_ready_loop // 1-4 cycles
+__ws_rtc_wait_ready_done:
+	pop ax
+	ret

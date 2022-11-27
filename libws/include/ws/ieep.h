@@ -95,41 +95,41 @@ void ws_ieep_write_lock(void);
  */
 void ws_ieep_write_unlock(void);
 
-#define IEEP_ADDRESS_OWNER_NAME                0x60 /* 16 bytes */
-#define IEEP_ADDRESS_OWNER_BIRTHDAY_YEAR       0x70 /* word */
-#define IEEP_ADDRESS_OWNER_BIRTHDAY_MONTH      0x72 /* byte */
-#define IEEP_ADDRESS_OWNER_BIRTHDAY_DAY        0x73 /* byte */
-#define IEEP_ADDRESS_OWNER_GENDER              0x74 /* byte */
-#define IEEP_ADDRESS_OWNER_BLOOD_TYPE          0x75 /* byte */
-#define IEEP_ADDRESS_LAST_CART_PUBLISHER       0x76 /* byte */
-#define IEEP_ADDRESS_LAST_CART_PLATFORM        0x77 /* byte */
-#define IEEP_ADDRESS_LAST_CART_GAME_ID         0x78 /* byte */
-#define IEEP_ADDRESS_CART_CHANGE_COUNT         0x7C /* byte */
-#define IEEP_ADDRESS_NAME_CHANGE_COUNT         0x7D /* byte */
-#define IEEP_ADDRESS_STARTUP_COUNT             0x7E /* word */
+#define IEEP_ADDR_OWNER_NAME                0x60 /* 16 bytes */
+#define IEEP_ADDR_OWNER_BIRTHDAY_YEAR       0x70 /* word */
+#define IEEP_ADDR_OWNER_BIRTHDAY_MONTH      0x72 /* byte */
+#define IEEP_ADDR_OWNER_BIRTHDAY_DAY        0x73 /* byte */
+#define IEEP_ADDR_OWNER_GENDER              0x74 /* byte */
+#define IEEP_ADDR_OWNER_BLOOD_TYPE          0x75 /* byte */
+#define IEEP_ADDR_LAST_CART_PUBLISHER       0x76 /* byte */
+#define IEEP_ADDR_LAST_CART_PLATFORM        0x77 /* byte */
+#define IEEP_ADDR_LAST_CART_GAME_ID         0x78 /* byte */
+#define IEEP_ADDR_CART_CHANGE_COUNT         0x7C /* byte */
+#define IEEP_ADDR_NAME_CHANGE_COUNT         0x7D /* byte */
+#define IEEP_ADDR_STARTUP_COUNT             0x7E /* word */
 
-#define IEEP_ADDRESS_COLOR_OPTIONS_1           0x83 /* byte */
-#define IEEP_COLOR_OPTIONS_1_CUSTOM_SPLASH     0x80
-#define IEEP_COLOR_OPTIONS_1_WSC_HIGH_CONTRAST 0x40
-#define IEEP_COLOR_OPTIONS_1_VOLUME(x)         ((x) & 3)
-#define IEEP_COLOR_OPTIONS_1_VOLUME_MASK       0x03
+#define IEEP_ADDR_C_OPTIONS1 0x83 /* byte */
+#define IEEP_C_OPTIONS1_CUSTOM_SPLASH     0x80
+#define IEEP_C_OPTIONS1_WSC_HIGH_CONTRAST 0x40
+#define IEEP_C_OPTIONS1_VOLUME(x)         ((x) & 3)
+#define IEEP_C_OPTIONS1_VOLUME_MASK       0x03
 
-#define IEEP_ADDRESS_COLOR_NAME                0x84 /* byte */
-#define IEEP_COLOR_NAME_BLACK          0x00 /* RGB(0, 0, 0) */
-#define IEEP_COLOR_NAME_RED            0x01 /* RGB(15, 0, 0) */
-#define IEEP_COLOR_NAME_ORANGE         0x02 /* RGB(15, 7, 0) */
-#define IEEP_COLOR_NAME_YELLOW         0x03 /* RGB(15, 15, 0) */
-#define IEEP_COLOR_NAME_LIME           0x04 /* RGB(7, 15, 0) */
-#define IEEP_COLOR_NAME_GREEN          0x05 /* RGB(0, 15, 0) */
-#define IEEP_COLOR_NAME_TEAL           0x06 /* RGB(0, 15, 7) */
-#define IEEP_COLOR_NAME_CYAN           0x07 /* RGB(0, 15, 15) */
-#define IEEP_COLOR_NAME_SEABLUE        0x08 /* RGB(0, 7, 15) */
-#define IEEP_COLOR_NAME_BLUE           0x09 /* RGB(0, 0, 15) */
-#define IEEP_COLOR_NAME_PURPLE         0x0A /* RGB(7, 0, 15) */
-#define IEEP_COLOR_NAME_PINK           0x0B /* RGB(15, 0, 15) */
-#define IEEP_COLOR_NAME_FUCHSIA        0x0C /* RGB(15, 0, 7) */
-#define IEEP_COLOR_NAME_WHITE          0x0D /* RGB(15, 15, 15) */
-#define IEEP_COLOR_NAME_GRAY           0x0E /* RGB(7, 7, 7) */
+#define IEEP_ADDR_C_NAME_COLOR 0x84 /* byte */
+#define IEEP_C_NAME_COLOR_BLACK          0x00 /* RGB(0, 0, 0) */
+#define IEEP_C_NAME_COLOR_RED            0x01 /* RGB(15, 0, 0) */
+#define IEEP_C_NAME_COLOR_ORANGE         0x02 /* RGB(15, 7, 0) */
+#define IEEP_C_NAME_COLOR_YELLOW         0x03 /* RGB(15, 15, 0) */
+#define IEEP_C_NAME_COLOR_LIME           0x04 /* RGB(7, 15, 0) */
+#define IEEP_C_NAME_COLOR_GREEN          0x05 /* RGB(0, 15, 0) */
+#define IEEP_C_NAME_COLOR_TEAL           0x06 /* RGB(0, 15, 7) */
+#define IEEP_C_NAME_COLOR_CYAN           0x07 /* RGB(0, 15, 15) */
+#define IEEP_C_NAME_COLOR_SEABLUE        0x08 /* RGB(0, 7, 15) */
+#define IEEP_C_NAME_COLOR_BLUE           0x09 /* RGB(0, 0, 15) */
+#define IEEP_C_NAME_COLOR_PURPLE         0x0A /* RGB(7, 0, 15) */
+#define IEEP_C_NAME_COLOR_PINK           0x0B /* RGB(15, 0, 15) */
+#define IEEP_C_NAME_COLOR_FUCHSIA        0x0C /* RGB(15, 0, 7) */
+#define IEEP_C_NAME_COLOR_WHITE          0x0D /* RGB(15, 15, 15) */
+#define IEEP_C_NAME_COLOR_GRAY           0x0E /* RGB(7, 7, 7) */
 
 /**
  * @brief Read the owner name, as raw data.
@@ -137,7 +137,7 @@ void ws_ieep_write_unlock(void);
  * @param data Target data area - must be at least 16 bytes.
  */
 static inline void ws_ieep_read_owner_name(uint8_t *data) {
-	ws_ieep_read_data(IEEP_ADDRESS_OWNER_NAME, data, 16);
+	ws_ieep_read_data(IEEP_ADDR_OWNER_NAME, data, 16);
 }
 
 /**
@@ -163,7 +163,7 @@ uint16_t ws_ieep_name_color_to_rgb(uint8_t value);
  * this function can be used to make the area read-only again.
  */
 static inline void ws_ieep_write_protect(void) {
-	outportb(IO_IEEP_CTRL, IEEP_CTRL_PROTECT);
+	outportb(IO_IEEP_CTRL, IEEP_PROTECT);
 }
 
 /**@}*/

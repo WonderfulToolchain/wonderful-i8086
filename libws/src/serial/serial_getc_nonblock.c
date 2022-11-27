@@ -20,59 +20,12 @@
  * 3. This notice may not be removed or altered from any source distribution.
 */
 
-	.arch	i8086
-	.code16
-	.intel_syntax noprefix
+#include <stdint.h>
+#include "ws/util.h"
+#include "ws/hardware.h"
+#include "ws/serial.h"
 
-	.section .ivt
-	.global _ivt
-_ivt:
-	.fill 16, 4, 0
-
-	.section .start
-	.global _start
-_start:
-	cli
-
-	// copy rodata/data from ROM to RAM
-	//mov	ax, offset "__erom!"
-	.byte	0xB8
-	.reloc	., R_386_SEG16, "__erom!"
-	.word	0
-	mov	ds, ax
-	xor	ax, ax
-	mov	es, ax
-	mov	ss, ax
-	mov	si, offset "__erom&"
-	mov	di, offset "__sdata"
-	mov	cx, offset "__ldata_words"
-	cld
-	rep	movsw
-
-	// initialize segments
-	// (es/ss) initialized above
-	xor	ax, ax
-	mov	ds, ax
-
-	// clear bss
-	mov	di, offset "__edata"
-	mov	cx, offset "__lbss_words"
-	rep	stosw
-
-	// configure sp
-	mov	sp, offset "__eheap"
-
-	// configure default interrupt base
-	mov	al, 0x08
-	out	0xB0, al
-
-	// jmp main
-	//.reloc	.+3, R_386_SEG16, main
-	//jmp 0:main
-	.byte	0xEA
-	.word	main
-	.reloc	., R_386_SEG16, "main!"
-	.word	0
-
-loop:
-	jmp loop
+int16_t ws_serial_getc_nonblock(void) {
+	if (!ws_serial_is_readable()) return -1;
+	return inportb(IO_SERIAL_DATA);
+}

@@ -2,9 +2,8 @@ OUTPUT_FORMAT("elf32-i386")
 ENTRY(_start)
 MEMORY
 {
-	ROM (rx) : ORIGIN = %ROM_AREA_START%, LENGTH = 0x10000
+	ROM (rx) : ORIGIN = %ROM_AREA_START%, LENGTH = %ROM_AREA_LENGTH%
 	RAM (wx) : ORIGIN = %RAM_HEAP_START%, LENGTH = %RAM_HEAP_LENGTH%
-	HEADER (rx) : ORIGIN = 0x00000, LENGTH = 0x1000000
 }
 SECTIONS
 {
@@ -12,7 +11,7 @@ SECTIONS
 	".text!" %ROM_AREA_START% (NOLOAD) :
 	{
 		"__stext!" = .;
-		*("_start!")
+		*(".start!")
 		*(".text!*" ".text.*!")
 		"__etext!" = .;
 	} >ROM
@@ -21,7 +20,7 @@ SECTIONS
 	.text . :
 	{
 		__stext = .;
-		*("_start")
+		*(".start")
 		*(.text ".text.*[^&]")
 		__etext = .;
 		. = ALIGN (16);
@@ -34,7 +33,7 @@ SECTIONS
 	".text&" . (NOLOAD) :
 	{
 		"__stext&" = .;
-		*("_start&")
+		*(".start&")
 		*(".text&*" ".text.*&")
 		"__etext&" = .;
 	}

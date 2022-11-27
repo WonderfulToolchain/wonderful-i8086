@@ -20,59 +20,28 @@
  * 3. This notice may not be removed or altered from any source distribution.
 */
 
-	.arch	i8086
+#include <wonderful-asm.h>
+
+	.arch	i186
 	.code16
 	.intel_syntax noprefix
+	.global ws_hwint_set_default_handler_serial_tx
 
-	.section .ivt
-	.global _ivt
-_ivt:
-	.fill 16, 4, 0
+__ws_hwint_default_handler0:
+	push ax
+	in al, 0xB2
+	and al, 0xFE
+	out 0xB2, al
+	mov al, 0x01
+	out 0xB6, al
+	pop ax
+	iret
 
-	.section .start
-	.global _start
-_start:
-	cli
-
-	// copy rodata/data from ROM to RAM
-	//mov	ax, offset "__erom!"
-	.byte	0xB8
-	.reloc	., R_386_SEG16, "__erom!"
-	.word	0
-	mov	ds, ax
-	xor	ax, ax
-	mov	es, ax
-	mov	ss, ax
-	mov	si, offset "__erom&"
-	mov	di, offset "__sdata"
-	mov	cx, offset "__ldata_words"
-	cld
-	rep	movsw
-
-	// initialize segments
-	// (es/ss) initialized above
-	xor	ax, ax
-	mov	ds, ax
-
-	// clear bss
-	mov	di, offset "__edata"
-	mov	cx, offset "__lbss_words"
-	rep	stosw
-
-	// configure sp
-	mov	sp, offset "__eheap"
-
-	// configure default interrupt base
-	mov	al, 0x08
-	out	0xB0, al
-
-	// jmp main
-	//.reloc	.+3, R_386_SEG16, main
-	//jmp 0:main
+ws_hwint_set_default_handler_serial_tx:
+	mov ax, 0
+	mov dx, offset "__ws_hwint_default_handler0"
+	mov cx, cs
 	.byte	0xEA
-	.word	main
-	.reloc	., R_386_SEG16, "main!"
+	.word	ws_hwint_set_handler
+	.reloc	., R_386_SEG16, "ws_hwint_set_handler!"
 	.word	0
-
-loop:
-	jmp loop

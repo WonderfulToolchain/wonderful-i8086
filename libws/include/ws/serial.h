@@ -20,23 +20,47 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-#pragma once
-#include <stdint.h>
-#include <wonderful-asm.h>
-
-/** \file util.h
- * Various utility functions for working with the WonderSwan hardware.
+/** \file serial.h
+	* Functionality related to the serial port.
  */
+
+#pragma once
+#include <stdbool.h>
+#include <stdint.h>
+#include "hardware.h"
+#include "util.h"
 
 /**
- * @brief Busy wait.
- *
- * This is not recommended - use only when necessary!
- * Not halting the CPU can lead to higher power consumption.
- * The recommended approach is configuring an interrupt handler
- * and using cpu_halt() - which will then sleep until any interrupt
- * occurs.
- *
- * @param us Approximate number of microseconds.
+ * @addtogroup SerialPort Functions - Serial port
+ * @{
  */
-void ws_busywait(uint16_t us);
+
+static inline void ws_serial_open(uint8_t baud_rate) {
+	outportb(IO_SERIAL_STATUS, SERIAL_ENABLE | SERIAL_OVERRUN_RESET | baud_rate);
+}
+
+static inline void ws_serial_close(void) {
+	outportb(IO_SERIAL_STATUS, 0x00);
+}
+
+static inline bool ws_serial_is_overrun(void) {
+	return inportb(IO_SERIAL_STATUS) & SERIAL_OVERRUN;
+}
+
+static inline void ws_serial_ack_overrun(void) {
+	outportb(IO_SERIAL_STATUS, inportb(IO_SERIAL_STATUS) | SERIAL_OVERRUN);
+}
+
+static inline bool ws_serial_is_readable(void) {
+	return inportb(IO_SERIAL_STATUS) & SERIAL_RX_READY;
+}
+
+static inline bool ws_serial_is_writable(void) {
+	return inportb(IO_SERIAL_STATUS) & SERIAL_TX_READY;
+}
+
+uint8_t ws_serial_getc(void);
+int16_t ws_serial_getc_nonblock(void);
+void ws_serial_putc(uint8_t value);
+
+/**@}*/

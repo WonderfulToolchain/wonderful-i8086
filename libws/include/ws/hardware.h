@@ -27,12 +27,7 @@
 #pragma once
 
 /**
- * @brief The maximum number of sprites that can be passed to #IO_SPR_COUNT.
- */
-#define SPR_COUNT_MAX 128
-
-/**
- * @addtogroup DefinesCPUInt Defines - CPU interrupt IDs
+ * @addtogroup DefinesInt Defines - Interrupt IDs
  * @{
  */
 
@@ -50,13 +45,6 @@
 #define CPUINT_IDX_INTO   4
 #define CPUINT_IDX_BOUNDS 5
 
-/**@}*/
-
-/**
- * @addtogroup DefinesHWInt Defines - Hardware interrupt IDs
- * @{
- */
- 
 #define HWINT_SERIAL_TX    0x01
 #define HWINT_KEY          0x02
 #define HWINT_CARTRIDGE    0x04
@@ -123,9 +111,13 @@
 #define IO_SCR2_SCRL_X 0x12
 #define IO_SCR2_SCRL_Y 0x13
 
-#define IO_LCD_IF_CTRL 0x14
-#define IO_LCD_SEG     0x15
+#define IO_LCD_CTRL 0x14
+#define LCD_CONTRAST      0x02 /* WSC only (not SC!) */
+#define LCD_CONTRAST_LOW  0x00 /* WSC only (not SC!) */
+#define LCD_CONTRAST_HIGH 0x02 /* WSC only (not SC!) */
+#define LCD_SLEEP         0x01
 
+#define IO_LCD_SEG 0x15
 #define LCD_SEG_AUX3     0x20
 #define LCD_SEG_AUX2     0x10
 #define LCD_SEG_AUX1     0x08
@@ -133,14 +125,12 @@
 #define LCD_SEG_ORIENT_V 0x02
 #define LCD_SEG_SLEEP    0x01
 
-#define IO_LCD_GRAY_01 0x1C
-#define IO_LCD_GRAY_23 0x1D
-#define IO_LCD_GRAY_45 0x1E
-#define IO_LCD_GRAY_67 0x1F
+#define IO_LCD_SHADE_01 0x1C
+#define IO_LCD_SHADE_23 0x1D
+#define IO_LCD_SHADE_45 0x1E
+#define IO_LCD_SHADE_67 0x1F
 
-#define LCD_GRAY_SHADES(c0, c1) ((c0) | ((c1) << 4))
-#define LCD_GRAY_SHADE0(x) ((x))
-#define LCD_GRAY_SHADE1(x) ((x) << 4)
+#define LCD_SHADES(c0, c1) ((c0) | ((c1) << 4))
 
 #define IO_SCR_PAL_0 0x20
 #define IO_SCR_PAL_1 0x22
@@ -218,7 +208,7 @@
 
 #define IO_SND_NOISE_CTRL 0x8E
 #define SND_NOISE_ENABLE 0x10
-#define SND_NOISE_RESET 0x08
+#define SND_NOISE_RESET  0x08
 
 #define IO_SND_WAVE_BASE 0x8F
 #define SND_WAVE_BASE(a) ((a) >> 6)
@@ -243,6 +233,10 @@
 #define SND_OUT_VOLUME_50         0x04
 #define SND_OUT_VOLUME_25         0x02
 #define SND_OUT_VOLUME_12_5       0x00
+#define SND_OUT_DIVIDER_1         0x06
+#define SND_OUT_DIVIDER_2         0x04
+#define SND_OUT_DIVIDER_4         0x02
+#define SND_OUT_DIVIDER_8         0x00
 #define SND_OUT_SPEAKER_ENABLE    0x01
 
 #define IO_SND_RANDOM 0x92
@@ -278,24 +272,27 @@
 #define IO_HWINT_ACK 0xB6
 
 #define IO_INT_NMI_CTRL 0xB7
-#define NMI_ENABLE_LOW_BATTERY 0x10
+#define NMI_ON_LOW_BATTERY 0x10
 
 #define IO_SERIAL_DATA 0xB1
-
 #define IO_SERIAL_STATUS 0xB3
-#define SERIAL_ENABLE 0x80
-#define SERIAL_BAUD_9600 0x00
-#define SERIAL_BAUD_38400 0x40
+#define SERIAL_ENABLE        0x80
+#define SERIAL_BAUD_9600     0x00
+#define SERIAL_BAUD_38400    0x40
+#define SERIAL_OVERRUN_RESET 0x20
+#define SERIAL_TX_READY      0x04
+#define SERIAL_OVERRUN       0x02
+#define SERIAL_RX_READY      0x01
 
 #define IO_IEEP_DATA 0xBA
 #define IO_IEEP_COM 0xBC
 #define IO_IEEP_CTRL 0xBE
-#define IEEP_CTRL_PROTECT 0x80
-#define IEEP_CTRL_ERASE   0x40
-#define IEEP_CTRL_WRITE   0x20
-#define IEEP_CTRL_READ    0x10
-#define IEEP_CTRL_READY   0x02
-#define IEEP_CTRL_DONE    0x01
+#define IEEP_PROTECT 0x80
+#define IEEP_ERASE   0x40
+#define IEEP_WRITE   0x20
+#define IEEP_READ    0x10
+#define IEEP_READY   0x02
+#define IEEP_DONE    0x01
 
 #define IO_KEY_SCAN 0xB5
 #define KEY_SCAN_GROUP_BUTTONS 0x40
@@ -313,17 +310,28 @@
 #define KEY_SCAN_X1      0x01
 #define KEY_SCAN_Y1      0x01
 
-#define IO_RAM_BANK 0xC1
-#define IO_ROM_BANK0 0xC2
-#define IO_ROM_BANK1 0xC3
-#define IO_ROM_LINEAR 0xC0
+#define IO_BANK_RAM 0xC1
+#define IO_BANK_ROM0 0xC2
+#define IO_BANK_ROM1 0xC3
+#define IO_BANK_LINEAR 0xC0
 
 #define IO_RTC_CTRL 0xCA
-#define RTC_READY 0x80
+#define RTC_READY  0x80
+#define RTC_ACTIVE 0x10
+#define RTC_READ   0x00
+#define RTC_WRITE  0x01
+#define RTC_CMD_RESET    0x00
+#define RTC_CMD_STATUS   0x02
+#define RTC_CMD_DATETIME 0x04
+#define RTC_CMD_TIME     0x06
+#define RTC_CMD_INTCFG   0x08
+#define RTC_CMD_NOP      0x0A
 
 #define IO_RTC_DATA 0xCB
 
 #define IO_GPO_CTRL 0xCC
 #define IO_GPO_DATA 0xCD
+#define GPO_ENABLE(n) (1 << (n))
+#define GPO_MASK(n)   (1 << (n))
 
 /**@}*/

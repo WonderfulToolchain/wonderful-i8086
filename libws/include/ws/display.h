@@ -24,8 +24,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-/** \file video.h
- * Functionality related to video.
+/** \file display.h
+ * Functionality related to the display.
  */
 
 #define DISPLAY_WIDTH 28
@@ -73,6 +73,8 @@ typedef struct {
 #define SPR_ENTRY_PRIORITY 0x2000
 #define SPR_ENTRY_FLIP_H   0x4000
 #define SPR_ENTRY_FLIP_V   0x8000
+
+#define SPR_MAX_COUNT 128
 
 /**
  * @addtogroup DefinesVideoMem Defines - Video memory
@@ -136,7 +138,7 @@ typedef struct {
 #define SHADE_LUT_DEFAULT SHADE_LUT(0, 2, 4, 6, 9, 11, 13, 15)
 
 /**
- * @addtogroup Video Functions - Video
+ * @addtogroup Display Functions - Display
  * @{
  */
 

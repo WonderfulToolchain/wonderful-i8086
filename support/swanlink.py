@@ -110,6 +110,7 @@ arg_parser = argparse.ArgumentParser(description='WonderSwan ROM linker for Wond
 arg_parser.add_argument('-o', metavar='output.ws', help='Output ROM file', type=str, required=True)
 arg_parser.add_argument('-a', action='append', metavar='[b0:]file.bin', type=str, help='Attach file. Optionally, specify bank (bX) or raw position (X)')
 arg_parser.add_argument('-v', action='store_true', help='Enable verbose logging')
+arg_parser.add_argument('-t', type=str, default='ws_rom', help='Output type: ws_rom, sram_binary')
 arg_parser.add_argument('--output-elf', metavar='out.elf', help='Output ELF file', type=str)
 arg_parser.add_argument('--tools-path', metavar='PATH', type=str, help='Toolchain location', default=str(executable_location.parent.absolute()))
 arg_parser.add_argument('--color', action='store_true', help='Mark ROM as WSC-compatible')
@@ -158,6 +159,17 @@ size_path = toolchain_prefix / ("../toolchain/gcc-ia16-elf/bin/ia16-elf-size%s" 
 
 rom_layout = {}
 
+rom_type = program_args.t
+rom_area_length = 0xC0000
+rom_load_offset = program_args.load_offset
+if rom_type == "ws_rom":
+	pass
+elif rom_type == "sram_binary":
+	rom_load_offset = 0x10000
+	rom_area_length = 0x10000
+else:
+	raise Exception(f'unknown rom type: {rom_type}')
+
 def print_verbose(*args, **kwargs):
 	if program_args.v:
 		print(*args, **kwargs, file=sys.stderr)
@@ -195,6 +207,7 @@ def call_linker(temp_dir: Path, template_file: Path, output_elf: Path, output_fi
 		rom_bank_offset = (256 - rom_banks)
 		result = subprocess.run(["sed",
 			"-e", f"s/%ROM_AREA_START%/{rom_offset}/g",
+			"-e", f"s/%ROM_AREA_LENGTH%/{rom_area_length}/g",
 			"-e", f"s/%ROM_BANK_OFFSET%/{rom_bank_offset}/g",
 			"-e", f"s/%RAM_HEAP_START%/0x00000/g",
 			"-e", f"s/%RAM_HEAP_LENGTH%/{program_args.heap_length}/g",
@@ -216,6 +229,8 @@ def byte_to_bcd(i: int) -> int:
 # Append files from -a arguments to ROM.
 
 if program_args.a is not None:
+	if rom_type != "ws_rom":
+		raise Exception(f'file appending not supported for type {rom_type}')
 	for entry in program_args.a:
 		entry = entry.split(":", maxsplit=1)
 		if len(entry) >= 2:
@@ -240,8 +255,7 @@ def calc_rom_size(final_rom_offset: int):
 
 with tempfile.TemporaryDirectory() as temp_dir:
 	temp_path = Path(str(temp_dir)).absolute()
-	final_rom_offset = program_args.load_offset
-	if final_rom_offset is None:
+	if rom_load_offset is None:
 		# Step 1: Create ELF.
 		temporary_elf = temp_path / "stage1.elf"
 		temporary_bin = temp_path / "stage1.bin"
@@ -250,70 +264,75 @@ with tempfile.TemporaryDirectory() as temp_dir:
 		bin_size = align_up_to(temporary_bin.stat().st_size, 0x10)
 		# Use the measured ELF size to calculate the minimum ROM size.
 		# Use that to calculate the new ELF location.
-		final_rom_offset = 0x100000 - HEADER_SIZE - bin_size
-		print_verbose("Program size is %d bytes, load at %04X:0000" % (bin_size, final_rom_offset >> 4))
-	rom_size = calc_rom_size(final_rom_offset)
+		rom_load_offset = 0x100000 - HEADER_SIZE - bin_size
+		print_verbose("Program size is %d bytes, load at %04X:0000" % (bin_size, rom_load_offset >> 4))
+	rom_size = calc_rom_size(rom_load_offset)
 	# Step 3: Create ELF and BIN at final ROM location.
 	target_elf = output_elf_path or (temp_path / "stage2.elf")
 	target_bin = temp_path / "stage2.bin"
-	call_linker(temp_path, ld_template_path, target_elf, target_bin, final_rom_offset, rom_size >> 16, linker_args)
-	# Step 4: Build ROM.
-	# The final five bytes of the BIN file have to go to FFFF:0000.
-	# Step 4a: Import BIN file.
+	call_linker(temp_path, ld_template_path, target_elf, target_bin, rom_load_offset, rom_size >> 16, linker_args)
+	# Import BIN file.
 	with open(target_bin, "rb") as f:
 		bin_data = f.read()
-	bin_data = align_up_to(bin_data, 16)
-	bin_size = len(bin_data)
-	if (bin_size + HEADER_SIZE) > (MAX_BIN_BANKS * 0x10000):
-		raise Exception(f"bin too large: {bin_size} bytes > {MAX_BIN_BANKS} banks")
-	if (final_rom_offset + bin_size) > 0xFFFF0:
-		raise Exception("out of bounds: load address %04X:0000 + %d > 0xFFFF0" % (final_rom_offset >> 4, bin_size))
-	rom_size = calc_rom_size(final_rom_offset)
-	if rom_size > (MAX_BANKS * 0x10000):
-		raise Exception(f"rom too large: {rom_size} bytes > {MAX_BANKS} banks")
-	print_verbose("ROM size is %d bytes" % (rom_size))
-	final_rom_position = rom_size - (0x100000 - final_rom_offset)
-	add_to_rom_layout(final_rom_position, bin_data, data_name='bin')
-	# Step 4b: Create header.
-	hdr_maintenance = 0x00
-	hdr_publisher = program_args.publisher_id
-	hdr_color = 0x01 if program_args.color else 0x00
-	hdr_game_id = byte_to_bcd(program_args.game_id)
-	hdr_game_version = program_args.game_version
-	if program_args.unlock_ieep:
-		hdr_game_version |= (1 << 7)
-	if program_args.disable_custom_bootsplash:
-		hdr_maintenance |= (1 << 7)
-	hdr_rom_size = BANK_COUNT_TO_ROM_SIZE[rom_size >> 16]
-	hdr_save_type = 0x00
-	if program_args.ram_type:
-		if program_args.ram_type in SRAM_TYPES:
-			hdr_save_type = SRAM_TYPES[program_args.ram_type]
-		else:
-			hdr_save_type = int(program_args.ram_type, 0)
-	hdr_flags = 0x0000
-	if program_args.rtc:
-		hdr_flags |= (1 << 8)
-	if program_args.rom_speed == 1:
-		hdr_flags |= (1 << 2)
-	if program_args.rom_bus_size == 8:
-		hdr_flags |= (1 << 1)
-	if program_args.orientation == 'vertical':
-		hdr_flags |= (1 << 0)
-	bin_call_routine = struct.pack("<BHH", 0xEA, 0x0000, final_rom_offset >> 4)
-	rom_header = bin_call_routine + struct.pack("<BBBBBBBHH",
-		hdr_maintenance, hdr_publisher, hdr_color, hdr_game_id,
-		hdr_game_version, hdr_rom_size, hdr_save_type, hdr_flags, 0x0000)
-	add_to_rom_layout(rom_size - 0x10, rom_header, data_name='header')
-	# Step 4c: Output ROM, calculate checksum in the process.
-	hdr_checksum = 0x0000
-	print_verbose('Saving as %s' % output_rom_path.name)
-	with open(output_rom_path, 'wb') as rom_file:
-		rom_file.write(struct.pack("<B", program_args.rom_empty_fill) * rom_size)
-		for position in rom_layout.keys():
-			data = rom_layout[position]
-			rom_file.seek(position, 0)
-			rom_file.write(data)
-			hdr_checksum += sum(data)
-		rom_file.seek(rom_size - 2)
-		rom_file.write(struct.pack("<H", hdr_checksum & 0xFFFF))
+	if rom_type == "ws_rom":
+		# Step 4: Build ROM.
+		# The final five bytes of the BIN file have to go to FFFF:0000.
+		bin_data = align_up_to(bin_data, 16)
+		bin_size = len(bin_data)
+		if (bin_size + HEADER_SIZE) > (MAX_BIN_BANKS * 0x10000):
+			raise Exception(f"bin too large: {bin_size} bytes > {MAX_BIN_BANKS} banks")
+		if (rom_load_offset + bin_size) > 0xFFFF0:
+			raise Exception("out of bounds: load address %04X:0000 + %d > 0xFFFF0" % (rom_load_offset >> 4, bin_size))
+		rom_size = calc_rom_size(rom_load_offset)
+		if rom_size > (MAX_BANKS * 0x10000):
+			raise Exception(f"rom too large: {rom_size} bytes > {MAX_BANKS} banks")
+		print_verbose("ROM size is %d bytes" % (rom_size))
+		final_rom_position = rom_size - (0x100000 - rom_load_offset)
+		add_to_rom_layout(final_rom_position, bin_data, data_name='bin')
+		# Step 4b: Create header.
+		hdr_maintenance = 0x00
+		hdr_publisher = program_args.publisher_id
+		hdr_color = 0x01 if program_args.color else 0x00
+		hdr_game_id = byte_to_bcd(program_args.game_id)
+		hdr_game_version = program_args.game_version
+		if program_args.unlock_ieep:
+			hdr_game_version |= (1 << 7)
+		if program_args.disable_custom_bootsplash:
+			hdr_maintenance |= (1 << 7)
+		hdr_rom_size = BANK_COUNT_TO_ROM_SIZE[rom_size >> 16]
+		hdr_save_type = 0x00
+		if program_args.ram_type:
+			if program_args.ram_type in SRAM_TYPES:
+				hdr_save_type = SRAM_TYPES[program_args.ram_type]
+			else:
+				hdr_save_type = int(program_args.ram_type, 0)
+		hdr_flags = 0x0000
+		if program_args.rtc:
+			hdr_flags |= (1 << 8)
+		if program_args.rom_speed == 1:
+			hdr_flags |= (1 << 2)
+		if program_args.rom_bus_size == 8:
+			hdr_flags |= (1 << 1)
+		if program_args.orientation == 'vertical':
+			hdr_flags |= (1 << 0)
+		bin_call_routine = struct.pack("<BHH", 0xEA, 0x0000, rom_load_offset >> 4)
+		rom_header = bin_call_routine + struct.pack("<BBBBBBBHH",
+			hdr_maintenance, hdr_publisher, hdr_color, hdr_game_id,
+			hdr_game_version, hdr_rom_size, hdr_save_type, hdr_flags, 0x0000)
+		add_to_rom_layout(rom_size - 0x10, rom_header, data_name='header')
+		# Step 4c: Output ROM, calculate checksum in the process.
+		hdr_checksum = 0x0000
+		print_verbose('Saving as %s' % output_rom_path.name)
+		with open(output_rom_path, 'wb') as rom_file:
+			rom_file.write(struct.pack("<B", program_args.rom_empty_fill) * rom_size)
+			for position in rom_layout.keys():
+				data = rom_layout[position]
+				rom_file.seek(position, 0)
+				rom_file.write(data)
+				hdr_checksum += sum(data)
+			rom_file.seek(rom_size - 2)
+			rom_file.write(struct.pack("<H", hdr_checksum & 0xFFFF))
+	elif rom_type == "sram_binary":
+		print_verbose('Saving as %s' % output_rom_path.name)
+		with open(output_rom_path, 'wb') as rom_file:
+			rom_file.write(bin_data)

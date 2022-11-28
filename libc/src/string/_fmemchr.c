@@ -11,7 +11,7 @@
 
 #include <stddef.h>
 
-void __far* memchr(const void __far* s, int c, size_t n) {
+void __far* _fmemchr(const void __far* s, int c, size_t n) {
 	unsigned char __far* p = (unsigned char __far*) s;
 	while (n--) {
 		if ( *p == (unsigned char) c) {

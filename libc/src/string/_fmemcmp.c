@@ -11,7 +11,7 @@
 
 #include <stddef.h>
 
-int memcmp(const void __far* s1, const void __far* s2, size_t n) {
+int _fmemcmp(const void __far* s1, const void __far* s2, size_t n) {
 	const unsigned char __far* p1 = (const unsigned char __far*) s1;
 	const unsigned char __far* p2 = (const unsigned char __far*) s2;
 	while (n--) {

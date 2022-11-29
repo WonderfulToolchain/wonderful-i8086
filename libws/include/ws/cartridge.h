@@ -60,7 +60,7 @@ extern const void *__rom_bank_offset;
 static inline uint8_t ws_bank_ram_push(uint8_t new_bank) {
 	asm volatile("" ::: "memory");
 	uint8_t old_bank = inportb(IO_BANK_RAM);
-	outportb(IO_BANK_RAM, WF_BANK_INDEX(new_bank));
+	outportb(IO_BANK_RAM, new_bank);
 	asm volatile("" ::: "memory");
 	return old_bank;
 }
@@ -72,7 +72,7 @@ static inline uint8_t ws_bank_ram_push(uint8_t new_bank) {
  */
 static inline void ws_bank_ram_set(uint8_t new_bank) {
 	asm volatile("" ::: "memory");
-	outportb(IO_BANK_RAM, WF_BANK_INDEX(new_bank));
+	outportb(IO_BANK_RAM, new_bank);
 	asm volatile("" ::: "memory");
 }
 #define ws_bank_ram_pop ws_bank_ram_set

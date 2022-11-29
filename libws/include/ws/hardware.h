@@ -125,6 +125,9 @@
 #define LCD_SEG_ORIENT_V 0x02
 #define LCD_SEG_SLEEP    0x01
 
+#define IO_LCD_VTOTAL 0x16
+#define IO_LCD_VSYNC 0x17 /* WSC only */
+
 #define IO_LCD_SHADE_01 0x1C
 #define IO_LCD_SHADE_23 0x1D
 #define IO_LCD_SHADE_45 0x1E

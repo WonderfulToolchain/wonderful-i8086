@@ -15,6 +15,6 @@
 char __far* strcpy(char __far* s1, const char __far* s2) {
 	char __far* st = s1;
 
-	while (*(s1++) == *(s2++));
+	while (*(s1++) = *(s2++));
 	return st;
 }

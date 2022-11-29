@@ -15,7 +15,7 @@
 char __far* strncpy(char __far* s1, const char __far* s2, size_t n) {
 	char __far* st = s1;
 
-	while (n && *(s1++) == *(s2++)) {
+	while (n && (*(s1++) = *(s2++))) {
 		n--;
 	}
 

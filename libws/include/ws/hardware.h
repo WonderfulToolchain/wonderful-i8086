@@ -288,14 +288,14 @@
 #define SERIAL_RX_READY      0x01
 
 #define IO_IEEP_DATA 0xBA
-#define IO_IEEP_COM 0xBC
+#define IO_IEEP_CMD  0xBC
 #define IO_IEEP_CTRL 0xBE
 #define IEEP_PROTECT 0x80
-#define IEEP_ERASE   0x40
-#define IEEP_WRITE   0x20
-#define IEEP_READ    0x10
-#define IEEP_READY   0x02
-#define IEEP_DONE    0x01
+#define EEP_ERASE    0x40
+#define EEP_WRITE    0x20
+#define EEP_READ     0x10
+#define EEP_READY    0x02
+#define EEP_DONE     0x01
 
 #define IO_KEY_SCAN 0xB5
 #define KEY_SCAN_GROUP_BUTTONS 0x40
@@ -317,6 +317,10 @@
 #define IO_BANK_ROM0 0xC2
 #define IO_BANK_ROM1 0xC3
 #define IO_BANK_LINEAR 0xC0
+
+#define IO_CART_EEP_DATA 0xC4
+#define IO_CART_EEP_CMD  0xC6
+#define IO_CART_EEP_CTRL 0xC8
 
 #define IO_RTC_CTRL 0xCA
 #define RTC_READY  0x80

@@ -37,8 +37,7 @@ memcpy:
 	jnc	_fmemcpy_no_byte
 	movsb
 _fmemcpy_no_byte:
-	mov	dx, ds
-	mov	ax, [bp + 14]
+	// dx:ax is already set to destination
 	pop	bp
 	pop	es
 	pop	ds

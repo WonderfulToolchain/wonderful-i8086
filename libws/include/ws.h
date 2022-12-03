@@ -21,8 +21,11 @@
  */
 
 #pragma once
-#include <ws/util.h>
+
 #include <ws/hardware.h>
+
+#ifndef __ASSEMBLER__
+#include <ws/util.h>
 #include <ws/system.h>
 #include <ws/display.h>
 #include <ws/keypad.h>
@@ -31,3 +34,4 @@
 #include <ws/serial.h>
 #include <ws/cartridge.h>
 #include <ws/rtc.h>
+#endif

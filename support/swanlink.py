@@ -324,12 +324,13 @@ with tempfile.TemporaryDirectory() as temp_dir:
 		hdr_checksum = 0x0000
 		print_verbose('Saving as %s' % output_rom_path.name)
 		with open(output_rom_path, 'wb') as rom_file:
+			hdr_checksum += program_args.rom_empty_fill * rom_size
 			rom_file.write(struct.pack("<B", program_args.rom_empty_fill) * rom_size)
 			for position in rom_layout.keys():
 				data = rom_layout[position]
 				rom_file.seek(position, 0)
 				rom_file.write(data)
-				hdr_checksum += sum(data)
+				hdr_checksum += sum(data) - (program_args.rom_empty_fill * len(data))
 			rom_file.seek(rom_size - 2)
 			rom_file.write(struct.pack("<H", hdr_checksum & 0xFFFF))
 	elif rom_type == "sram_binary":

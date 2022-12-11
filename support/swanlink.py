@@ -42,7 +42,7 @@ MAX_BIN_BANKS = 12 # could be 14 or 15 with special crt0 configuration
 MAX_BANKS = 256
 HEADER_SIZE = 16
 BANK_COUNT_TO_ROM_SIZE = {
-	2: 0x01,
+	2: 0x00,
 	4: 0x01,
 	8: 0x02,
 	16: 0x03,

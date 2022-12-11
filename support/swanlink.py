@@ -129,6 +129,7 @@ arg_parser.add_argument('--load-offset', metavar='OFFSET', type=lambda x: int(x,
 arg_parser.add_argument('--ld-template', metavar='PATH', type=str, help='Linker template', default=None)
 arg_parser.add_argument('--linker-args', action="store_true", required=True, help='ld linker args follow after this argument')
 arg_parser.add_argument('--rom-empty-fill', metavar='VALUE', type=lambda x: int(x, 0), help='ROM empty fill value, 0xFF by default', default=0xFF)
+arg_parser.add_argument('--trim', action='store_true', help='Remove unused space from the beginning of the file.')
 # FIXME: Needs more linkscript/crt0 patches...
 # arg_parser.add_argument('--heap-start', metavar='ADDR', type=lambda x: int(x, 0), help='Link-side heap start address', default=0x0000)
 arg_parser.add_argument('--heap-length', metavar='LEN', type=lambda x: int(x, 0), help='Link-side heap length', default=0x2000)
@@ -324,14 +325,17 @@ with tempfile.TemporaryDirectory() as temp_dir:
 		hdr_checksum = 0x0000
 		print_verbose('Saving as %s' % output_rom_path.name)
 		with open(output_rom_path, 'wb') as rom_file:
-			hdr_checksum += program_args.rom_empty_fill * rom_size
-			rom_file.write(struct.pack("<B", program_args.rom_empty_fill) * rom_size)
+			min_position = 0
+			if program_args.trim:
+				min_position = min(rom_layout.keys())
+			hdr_checksum += program_args.rom_empty_fill * (rom_size - min_position)
+			rom_file.write(struct.pack("<B", program_args.rom_empty_fill) * (rom_size - min_position))
 			for position in rom_layout.keys():
 				data = rom_layout[position]
-				rom_file.seek(position, 0)
+				rom_file.seek(position - min_position, 0)
 				rom_file.write(data)
 				hdr_checksum += sum(data) - (program_args.rom_empty_fill * len(data))
-			rom_file.seek(rom_size - 2)
+			rom_file.seek(rom_size - min_position - 2)
 			rom_file.write(struct.pack("<H", hdr_checksum & 0xFFFF))
 	elif rom_type == "sram_binary":
 		print_verbose('Saving as %s' % output_rom_path.name)

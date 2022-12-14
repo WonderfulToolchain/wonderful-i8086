@@ -25,10 +25,8 @@ memcpy:
 	push	di
 	push	ds
 	push	es
-	push	bp
-	mov	bp, sp
-	mov	si, ax
-	mov	di, dx
+	mov	di, ax
+	mov	si, dx
 	mov	dx, ds
 	mov	es, dx
 	shr	cx, 1
@@ -37,9 +35,8 @@ memcpy:
 	jnc	_nmemcpy_no_byte
 	movsb
 _nmemcpy_no_byte:
-	pop	bp
 	pop	es
 	pop	ds
 	pop	di
 	pop	si
-	ASM_PLATFORM_RET 0x6
+	ASM_PLATFORM_RET

@@ -11,6 +11,8 @@
 
 #include <stddef.h>
 
+#if 0
+
 void* _nmemmove(void* s1, const void* s2, size_t n) {
 	char* dest = (char*) s1;
 	const char* src = (const char*) s2;
@@ -33,4 +35,6 @@ void* _nmemmove(void* s1, const void* s2, size_t n) {
 #ifndef __IA16_CMODEL_IS_FAR_DATA
 __attribute__ ((alias ("_nmemmove")))
 void* memmove(void* s1, const void* s2, size_t n);
+#endif
+
 #endif

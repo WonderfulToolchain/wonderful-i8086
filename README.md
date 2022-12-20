@@ -9,43 +9,9 @@ Experimental C toolchain for the WonderSwan. Early development.
 * The WonderWitch target has compilation issues on non-trivial code, due to the necessary logic to handle DS ≠ SS. This is unlikely to be resolved shortly.
     * tkchia: "Yes, unfortunately support for %ss ≠ .data code is still extremely hacky and involves some not-quite-reliable deep black magic. (GCC was never quite designed in the first place to work with non-flat address spaces. Plus, the libgcc library was definitely not written with a %ss ≠ .data environment in mind.)" ([source](https://github.com/tkchia/gcc-ia16/issues/102))
 
-## Rough build instructions
+## Installation instructions
 
-Only Linux is officially supported at this time. Using WSL2 on Windows is recommended. The scripts have been tested on Arch Linux.
-
-### Base toolchain
-
-    $ export WONDERFUL_TOOLCHAIN=/opt/wonderful
-    # create directory
-    $ mkdir -p "$WONDERFUL_TOOLCHAIN"/i8086
-    # build tools
-    $ cd toolchain
-    $ ./fetch.sh
-    $ ./build.sh all
-    # build base support
-    $ cd ../support
-    $ make install
-
-### WonderSwan target (WIP)
-
-    # build libc
-    $ cd ../libc
-    $ make install
-    # build libws
-    $ cd ../libws
-    $ make install
-    # build liblzsa
-    $ cd ../liblzsa
-    $ make install
-
-### WonderWitch target (WIP)
-
-    # build libc
-    $ cd ../libc
-    $ make WONDERFUL_TARGET=wwitch install
-    # build libww
-    $ cd ../libww
-    $ make install
+Check back later.
 
 ## Licensing information
 

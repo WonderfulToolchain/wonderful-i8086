@@ -178,5 +178,5 @@ with open(header_file_path, 'w') as header_file:
 	for f in files:
 		header_file.write("\n")
 		header_file.write(f"#define {f.header_prefix()} {f.position}\n")
-		header_file.write(f"#define {f.header_prefix()}_BANK BANK_INDEX({f.position >> 16})\n")
+		header_file.write(f"#define {f.header_prefix()}_BANK WF_BANK_INDEX({f.position >> 16})\n")
 		header_file.write(f"#define {f.header_prefix()}_SIZE {f.length}\n")

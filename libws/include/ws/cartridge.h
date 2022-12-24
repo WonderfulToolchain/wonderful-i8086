@@ -32,7 +32,7 @@
 #include "util.h"
 
 extern const void *__rom_bank_offset;
-#define WF_BANK_INDEX(x) (((uint8_t) (uint16_t) (&__rom_bank_offset)) | (x))
+#define WF_BANK_INDEX(x) (((uint8_t) (uint16_t) (&__rom_bank_offset)) + (x))
 
 /**
  * @addtogroup DefinesMemoryLayout Defines - Memory layout

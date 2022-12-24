@@ -102,8 +102,8 @@ def banks_type(arg):
 		raise argparse.ArgumentTypeError("must be an integer")
 	if i < 2 or i > MAX_BANKS:
 		raise argparse.ArgumentTypeError(f"must be between 2 and {MAX_BANKS}")
-	if power_of_two_up_to(i) != i:
-		raise argparse.ArgumentTypeError("must be a power of two")
+	if i not in BANK_COUNT_TO_ROM_SIZE:
+		raise argparse.ArgumentTypeError("must be a valid bank size")
 	return i
 
 arg_parser = argparse.ArgumentParser(description='WonderSwan ROM linker for Wonderful')
@@ -252,7 +252,14 @@ def calc_rom_size(final_rom_offset: int):
 		rom_size = program_args.rom_size * 0x10000
 	else:
 		rom_size = get_rom_layout_size() + (0x100000 - final_rom_offset)
-	return power_of_two_up_to(rom_size, 131072)
+	rom_size_id = 0x09
+	rom_size_size = 256 * 65536
+	for k, v in BANK_COUNT_TO_ROM_SIZE.items():
+		k_size = k * 65536
+		if k_size >= rom_size and k_size < rom_size_size:
+			rom_size_id = v
+			rom_size_size = k_size
+	return rom_size_size
 
 with tempfile.TemporaryDirectory() as temp_dir:
 	temp_path = Path(str(temp_dir)).absolute()

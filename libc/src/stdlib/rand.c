@@ -16,9 +16,7 @@
 uint16_t _rand_seed = 1;
 
 int rand(void) {
-	_rand_seed ^= (_rand_seed << 7);
-	_rand_seed ^= (_rand_seed >> 9);
-	_rand_seed ^= (_rand_seed << 8);
+	_rand_seed = (_rand_seed * 25173) + 13849;
 	return _rand_seed & 0x7FFF;
 }
 

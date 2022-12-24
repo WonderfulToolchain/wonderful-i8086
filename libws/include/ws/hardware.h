@@ -241,14 +241,14 @@
 #define IO_SND_OUT_CTRL 0x91
 #define SND_OUT_HEADPHONES        0x80
 #define SND_OUT_HEADPHONES_ENABLE 0x08
-#define SND_OUT_VOLUME_100        0x06
-#define SND_OUT_VOLUME_50         0x04
-#define SND_OUT_VOLUME_25         0x02
-#define SND_OUT_VOLUME_12_5       0x00
-#define SND_OUT_DIVIDER_1         0x06
-#define SND_OUT_DIVIDER_2         0x04
-#define SND_OUT_DIVIDER_4         0x02
-#define SND_OUT_DIVIDER_8         0x00
+#define SND_OUT_VOLUME_100        0x00
+#define SND_OUT_VOLUME_50         0x02
+#define SND_OUT_VOLUME_25         0x04
+#define SND_OUT_VOLUME_12_5       0x06
+#define SND_OUT_DIVIDER_1         0x00
+#define SND_OUT_DIVIDER_2         0x02
+#define SND_OUT_DIVIDER_4         0x04
+#define SND_OUT_DIVIDER_8         0x06
 #define SND_OUT_SPEAKER_ENABLE    0x01
 
 #define IO_SND_RANDOM 0x92

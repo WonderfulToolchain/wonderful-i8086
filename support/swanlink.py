@@ -317,10 +317,10 @@ with tempfile.TemporaryDirectory() as temp_dir:
 		hdr_flags = 0x0000
 		if program_args.rtc:
 			hdr_flags |= (1 << 8)
-		if program_args.rom_speed == 1:
+		if program_args.rom_speed == 3:
+			hdr_flags |= (1 << 3)
+		if program_args.rom_bus_size == 16:
 			hdr_flags |= (1 << 2)
-		if program_args.rom_bus_size == 8:
-			hdr_flags |= (1 << 1)
 		if program_args.orientation == 'vertical':
 			hdr_flags |= (1 << 0)
 		bin_call_routine = struct.pack("<BHH", 0xEA, 0x0000, rom_load_offset >> 4)

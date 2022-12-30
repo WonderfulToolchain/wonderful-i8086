@@ -130,7 +130,7 @@ static inline ws_mode_t ws_mode_get(void) {
  */
 bool ws_mode_set(ws_mode_t mode);
 
-typedef __attribute__((interrupt)) void (*ws_int_handler_t)(void);
+typedef __attribute__((interrupt)) void __far (*ws_int_handler_t)(void);
 
 /**
  * @brief Register a CPU interrupt handler.

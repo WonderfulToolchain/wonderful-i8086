@@ -195,13 +195,35 @@
 #define SYSTEM_CTRL3_POWEROFF    0x01
 #define SYSTEM_CTRL3_SWANCRYSTAL 0x80
 
-#define IO_HYPERV_LL 0x64
-#define IO_HYPERV_LH 0x65
-#define IO_HYPERV_RL 0x66
-#define IO_HYPERV_RH 0x67
-#define IO_HYPERV_SL 0x68
-#define IO_HYPERV_SH 0x66
-#define IO_HYPERV_CTRL 0x6A
+#define IO_HYPERV_OUT_L    0x64
+#define IO_HYPERV_OUT_R    0x66
+#define IO_HYPERV_SHADOW_L 0x68
+#define IO_HYPERV_SHADOW_R 0x69
+#define IO_HYPERV_CTRL     0x6A
+
+#define HYPERV_ENABLE 0x0080
+#define HYPERV_RESET  0x1000
+
+#define HYPERV_VOLUME_100  (0)
+#define HYPERV_VOLUME_50   (1)
+#define HYPERV_VOLUME_25   (2)
+#define HYPERV_VOLUME_12_5 (3)
+#define HYPERV_MODE_UNSIGNED        (0 << 2)
+#define HYPERV_MODE_UNSIGNED_NEGATE (1 << 2)
+#define HYPERV_MODE_SIGNED          (2 << 2)
+#define HYPERV_MODE_SIGNED_FULL     (3 << 2)
+#define HYPERV_RATE_24000 (0 << 4)
+#define HYPERV_RATE_12000 (1 << 4)
+#define HYPERV_RATE_8000  (2 << 4)
+#define HYPERV_RATE_6000  (3 << 4)
+#define HYPERV_RATE_4800  (4 << 4)
+#define HYPERV_RATE_4000  (5 << 4)
+#define HYPERV_RATE_3000  (6 << 4)
+#define HYPERV_RATE_2000  (7 << 4)
+#define HYPERV_TARGET_STEREO (0 << 13)
+#define HYPERV_TARGET_LEFT   (1 << 13)
+#define HYPERV_TARGET_RIGHT  (2 << 13)
+#define HYPERV_TARGET_MONO   (3 << 13)
 
 #define IO_SND_FREQ_CH1 0x80
 #define IO_SND_FREQ_CH2 0x82
@@ -260,6 +282,12 @@
 #define IO_SND_VOL_CH2_RIGHT_FULL 0x03
 #define IO_SND_VOL_CH2_HALF       0x0A
 #define IO_SND_VOL_CH2_FULL       0x0F
+
+#define IO_SND_CH_OUT_R  0x96
+#define IO_SND_CH_OUT_L  0x98
+#define IO_SND_CH_OUT_LR 0x9A
+
+#define IO_SND_HW_VOL 0x9E
 
 #define IO_SYSTEM_CTRL1 0xA0
 

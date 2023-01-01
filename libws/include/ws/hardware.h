@@ -290,7 +290,6 @@
 #define IO_SND_HW_VOL 0x9E
 
 #define IO_SYSTEM_CTRL1 0xA0
-
 #define SYSTEM_CTRL1_COLOR      0x02
 #define SYSTEM_CTRL1_CART_16BIT 0x04
 #define SYSTEM_CTRL1_CART_FAST  0x08
@@ -313,9 +312,6 @@
 #define IO_HWINT_STATUS 0xB4
 #define IO_HWINT_ACK 0xB6
 
-#define IO_INT_NMI_CTRL 0xB7
-#define NMI_ON_LOW_BATTERY 0x10
-
 #define IO_SERIAL_DATA 0xB1
 #define IO_SERIAL_STATUS 0xB3
 #define SERIAL_ENABLE        0x80
@@ -325,16 +321,6 @@
 #define SERIAL_TX_READY      0x04
 #define SERIAL_OVERRUN       0x02
 #define SERIAL_RX_READY      0x01
-
-#define IO_IEEP_DATA 0xBA
-#define IO_IEEP_CMD  0xBC
-#define IO_IEEP_CTRL 0xBE
-#define IEEP_PROTECT 0x80
-#define EEP_ERASE    0x40
-#define EEP_WRITE    0x20
-#define EEP_READ     0x10
-#define EEP_READY    0x02
-#define EEP_DONE     0x01
 
 #define IO_KEY_SCAN 0xB5
 #define KEY_SCAN_GROUP_BUTTONS 0x40
@@ -352,6 +338,19 @@
 #define KEY_SCAN_X1      0x01
 #define KEY_SCAN_Y1      0x01
 
+#define IO_INT_NMI_CTRL 0xB7
+#define NMI_ON_LOW_BATTERY 0x10
+
+#define IO_IEEP_DATA 0xBA
+#define IO_IEEP_CMD  0xBC
+#define IO_IEEP_CTRL 0xBE
+#define IEEP_PROTECT 0x80
+#define EEP_ERASE    0x40
+#define EEP_WRITE    0x20
+#define EEP_READ     0x10
+#define EEP_READY    0x02
+#define EEP_DONE     0x01
+
 #define IO_BANK_RAM 0xC1
 #define IO_BANK_ROM0 0xC2
 #define IO_BANK_ROM1 0xC3
@@ -361,23 +360,31 @@
 #define IO_CART_EEP_CMD  0xC6
 #define IO_CART_EEP_CTRL 0xC8
 
-#define IO_RTC_CTRL 0xCA
-#define RTC_READY  0x80
-#define RTC_ACTIVE 0x10
-#define RTC_READ   0x00
-#define RTC_WRITE  0x01
-#define RTC_CMD_RESET    0x00
-#define RTC_CMD_STATUS   0x02
-#define RTC_CMD_DATETIME 0x04
-#define RTC_CMD_TIME     0x06
-#define RTC_CMD_INTCFG   0x08
-#define RTC_CMD_NOP      0x0A
+#define IO_CART_RTC_CTRL 0xCA
+#define CART_RTC_READY  0x80
+#define CART_RTC_ACTIVE 0x10
+#define CART_RTC_READ   0x00
+#define CART_RTC_WRITE  0x01
+#define CART_RTC_CMD_RESET    0x00
+#define CART_RTC_CMD_STATUS   0x02
+#define CART_RTC_CMD_DATETIME 0x04
+#define CART_RTC_CMD_TIME     0x06
+#define CART_RTC_CMD_INTCFG   0x08
+#define CART_RTC_CMD_NOP      0x0A
 
-#define IO_RTC_DATA 0xCB
+#define IO_CART_RTC_DATA 0xCB
 
-#define IO_GPO_CTRL 0xCC
-#define IO_GPO_DATA 0xCD
-#define GPO_ENABLE(n) (1 << (n))
-#define GPO_MASK(n)   (1 << (n))
+#define IO_CART_GPO_CTRL 0xCC
+#define IO_CART_GPO_DATA 0xCD
+#define CART_GPO_ENABLE(n) (1 << (n))
+#define CART_GPO_MASK(n)   (1 << (n))
+
+#define IO_CART_FLASH 0xCE
+#define CART_FLASH_ENABLE  0x01
+#define CART_FLASH_DISABLE 0x00
+
+#define IO_BANK_2003_RAM 0xD0
+#define IO_BANK_2003_ROM0 0xD2
+#define IO_BANK_2003_ROM1 0xD4
 
 /**@}*/

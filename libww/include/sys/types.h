@@ -26,7 +26,7 @@
 
 #pragma once
 #include <stdint.h>
-#include <wonderful-asm.h>
+#include <wonderful.h>
 
 typedef uint8_t BYTE;
 typedef uint16_t WORD;

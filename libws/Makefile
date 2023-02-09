@@ -1,12 +1,15 @@
 ifndef WONDERFUL_TOOLCHAIN
 $(error Please define WONDERFUL_TOOLCHAIN to point to the location of the Wonderful toolchain.)
 endif
-include $(WONDERFUL_TOOLCHAIN)/i8086/wswan.mk
 
-TARGET := libws.a
-OBJDIR := obj
+WONDERFUL_TARGET ?= wswan
+include $(WONDERFUL_TOOLCHAIN)/i8086/$(WONDERFUL_TARGET).mk
+
+OBJDIR := obj/$(WONDERFUL_TARGET)
+TARGETDIR := build/$(WONDERFUL_TARGET)
+TARGET := $(TARGETDIR)/libws.a
 SRCDIRS := src src/cartridge src/display src/dma src/eeprom src/keypad src/rtc src/serial src/system src/util
-MKDIRS := $(OBJDIR)
+MKDIRS := $(OBJDIR) build/$(WONDERFUL_TARGET)
 CFLAGS += -O2
 
 CSOURCES := $(foreach dir,$(SRCDIRS),$(notdir $(wildcard $(dir)/*.c)))
@@ -45,7 +48,7 @@ doc:
 	doxygen
 
 install: $(TARGET)
-	cp -r include/* $(WONDERFUL_TOOLCHAIN)/i8086/wswan/include/
-	install -m 644 $(TARGET) $(WONDERFUL_TOOLCHAIN)/i8086/wswan/lib
+	cp -r include/* $(WONDERFUL_TOOLCHAIN)/i8086/$(WONDERFUL_TARGET)/include/
+	install -m 644 $(TARGET) $(WONDERFUL_TOOLCHAIN)/i8086/$(WONDERFUL_TARGET)/lib
 
 -include $(DEPS)

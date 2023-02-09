@@ -49,11 +49,11 @@
 .endm
 #else
 .macro ASM_PLATFORM_CALL tgt:req
-	call tgt
+	call \tgt
 .endm
 
 .macro ASM_PLATFORM_JMP tgt:req
-	jmp tgt
+	jmp \tgt
 .endm
 #endif
 

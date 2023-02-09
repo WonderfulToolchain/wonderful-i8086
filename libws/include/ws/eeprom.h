@@ -43,7 +43,7 @@ typedef struct {
 ws_eeprom_handle_t ws_eeprom_handle_internal(void);
 
 static inline ws_eeprom_handle_t ws_eeprom_handle_cartridge(uint8_t bits) {
-	ws_eeprom_handle_t handle = {0xC6, bits - 2};
+	ws_eeprom_handle_t handle = {0xC4, bits - 2};
 	return handle;
 }
 

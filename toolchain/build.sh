@@ -109,6 +109,7 @@ if component_requested gcc $@; then
 		--with-bugurl="https://github.com/WonderfulToolchain/gcc-ia16/issues" \
 		--without-headers \
 		--enable-languages=c \
+		--enable-lto \
 		--disable-libssp \
 		--disable-libquadmath \
 		--disable-libstdcxx \

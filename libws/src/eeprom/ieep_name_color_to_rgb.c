@@ -20,19 +20,29 @@
  * 3. This notice may not be removed or altered from any source distribution.
 */
 
-#include <wonderful-asm.h>
+#include <stdint.h>
+#include "ws/display.h"
+#include "ws/eeprom.h"
 
-	.arch	i8086
-	.code16
-	.intel_syntax noprefix
+static const uint16_t __far ieep_name_color_to_rgb_map[16] = {
+	RGB(0, 0, 0),
+	RGB(15, 0, 0),
+	RGB(15, 7, 0),
+	RGB(15, 15, 0),
+	RGB(7, 15, 0),
+	RGB(0, 15, 0),
+	RGB(0, 15, 7),
+	RGB(0, 15, 15),
+	RGB(0, 7, 15),
+	RGB(0, 0, 15),
+	RGB(7, 0, 15),
+	RGB(15, 0, 15),
+	RGB(15, 0, 7),
+	RGB(15, 15, 15),
+	RGB(7, 7, 7),
+	RGB(7, 7, 7)
+};
 
-	.global ws_ieep_write_unlock
-ws_ieep_write_unlock:
-	xor ax, ax
-	mov bl, 0x13
-	call ws_ieep_addr_to_command
-	out 0xBC, ax
-	mov al, 0x40
-	out 0xBE, al
-	call ws_ieep_wait_ready
-	ASM_PLATFORM_RET
+uint16_t ws_ieep_name_color_to_rgb(uint8_t value) {
+	return ieep_name_color_to_rgb_map[value & 0x0F];
+}

@@ -20,26 +20,24 @@
  * 3. This notice may not be removed or altered from any source distribution.
 */
 
-#include <wonderful-asm.h>
+#include <stdint.h>
+#include "ws/eeprom.h"
 
-	.arch	i8086
-	.code16
-	.intel_syntax noprefix
+const char __far ieep_owner_to_ascii_map[] = {
+	' ', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E',
+	'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U',
+	'V', 'W', 'X', 'Y', 'Z', 3/* heart */, 13/* music note */, '+', '-', '?', '.'
+};
 
-	.global ws_ieep_write_word
-ws_ieep_write_word:
-	push dx
-	mov bl, 0x14
-	call ws_ieep_addr_to_command
-	pop dx
-	test bl, bl
-	jnz ws_ieep_write_word_skip
-	out 0xBC, ax
-	mov ax, dx
-	out 0xBA, ax
-	mov al, 0x20
-	out 0xBE, al
-	call ws_ieep_wait_ready
-ws_ieep_write_word_skip:
-	xor bl, 1
-	ASM_PLATFORM_RET
+void ws_ieep_read_owner_name_ascii(char *str) {
+	uint8_t i, len;
+
+	ws_ieep_read_owner_name((uint8_t*) str);
+	for (len = 16; len > 0; len--) {
+		if (str[len - 1] != 0x00) break;
+	}
+	for (i = 0; i < len; i++) {
+		str[i] = ieep_owner_to_ascii_map[str[i]];
+	}
+	str[i] = 0;
+}

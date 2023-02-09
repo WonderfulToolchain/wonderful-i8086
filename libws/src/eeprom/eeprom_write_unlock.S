@@ -22,17 +22,19 @@
 
 #include <wonderful-asm.h>
 
-	.arch	i8086
+	.arch	i186
 	.code16
 	.intel_syntax noprefix
 
-	.global ws_ieep_read_byte
-ws_ieep_read_byte:
-	test al, 0x01
-	jz ws_ieep_read_word // Returns with AX = word (incl. low byte)
-	.byte	0x9A
-	.word	ws_ieep_read_word
-	.reloc	., R_386_SEG16, "ws_ieep_read_word!"
-	.word	0
-	mov al, ah
+	.global ws_eeprom_write_unlock
+ws_eeprom_write_unlock:
+	mov dx, ax
+	mov bl, 0x13
+	call ws_eeprom_internal_addr_to_command
+	add dl, 2
+	out dx, ax
+	mov al, 0x40
+	add dl, 2
+	out dx, al
+	call ws_eeprom_internal_wait_ready
 	ASM_PLATFORM_RET

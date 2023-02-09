@@ -20,8 +20,8 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-/** \file ieep.h
-	* Functionality related to the internal EEPROM.
+/** \file eeprom.h
+	* Functionality related to EEPROM.
  */
 
 #pragma once
@@ -31,69 +31,81 @@
 #include "util.h"
 
 /**
- * @addtogroup IEEP Functions - Internal EEPROM
+ * @addtogroup EEPROM Functions - EEPROM
  * @{
  */
 
-/**
- * @brief The internal EEPROM size in "mono" WonderSwan mode.
- */
-#define WS_IEEP_SIZE_MONO 0x80
-/**
- * @brief The internal EEPROM size in color WonderSwan mode.
- */
-#define WS_IEEP_SIZE_COLOR 0x800
+typedef struct {
+	uint8_t port;
+	uint8_t dwords; // bits - 2
+} ws_eeprom_handle_t;
+
+ws_eeprom_handle_t ws_eeprom_handle_internal(void);
+
+static inline ws_eeprom_handle_t ws_eeprom_handle_cartridge(uint8_t bits) {
+	ws_eeprom_handle_t handle = {0xC6, bits - 2};
+	return handle;
+}
 
 /**
- * @brief Read an aligned word from the internal EEPROM.
+ * @brief Read an aligned word from the EEPROM.
  * 
  * @param address The address to read from. The lowest bit is ignored.
  * @return uint16_t The value read.
  */
-uint16_t ws_ieep_read_word(uint16_t address);
+uint16_t ws_eeprom_read_word(ws_eeprom_handle_t handle, uint16_t address);
 
 /**
- * @brief Read a byte from the internal EEPROM.
+ * @brief Read a byte from the EEPROM.
  * 
  * @param address The address to read from.
  * @return uint8_t The value read.
  */
-uint8_t ws_ieep_read_byte(uint16_t address);
+uint8_t ws_eeprom_read_byte(ws_eeprom_handle_t handle, uint16_t address);
 
 /**
- * @brief Read bytes from the internal EEPROM.
+ * @brief Read bytes from the EEPROM.
  * 
  * @param address The address to read from.
  * @param data The pointer to write to.
  * @param length The number of bytes to read.
  */
-void ws_ieep_read_data(uint16_t address, uint8_t *data, uint16_t length);
+void ws_eeprom_read_data(ws_eeprom_handle_t handle, uint16_t address, uint8_t *data, uint16_t length);
 
 /**
- * @brief Write a word to the internal EEPROM.
+ * @brief Write a word to the EEPROM.
  * 
  * @param address The address to write to. The lowest bit is ignored.
  * @param value The word to write.
  */
-bool ws_ieep_write_word(uint16_t address, uint16_t value);
-// void ws_ieep_write_byte(uint16_t address, uint8_t value);
-// void ws_ieep_write_data(uint16_t address, const uint8_t __far *data, uint16_t length);
+bool ws_eeprom_write_word(ws_eeprom_handle_t handle, uint16_t address, uint16_t value);
 
 /**
- * @brief Erase a word from the internal EEPROM, setting it to 0xFFFF.
+ * @brief Erase a word from the EEPROM, setting it to 0xFFFF.
  * 
  * @param address The address to erase.
  */
-void ws_ieep_erase_word(uint16_t address);
+void ws_eeprom_erase_word(ws_eeprom_handle_t handle, uint16_t address);
 
 /**
- * @brief Lock the internal EEPROM, preventing writes and erases.
+ * @brief Lock the EEPROM, preventing writes and erases.
  */
-void ws_ieep_write_lock(void);
+void ws_eeprom_write_lock(ws_eeprom_handle_t handle);
+
 /**
- * @brief Unlock the internal EEPROM, allowing writes and erases.
+ * @brief Unlock the EEPROM, allowing writes and erases.
  */
-void ws_ieep_write_unlock(void);
+void ws_eeprom_write_unlock(ws_eeprom_handle_t handle);
+
+/**@}*/
+
+/**
+ * @addtogroup IEEP Functions - Internal EEPROM
+ * @{
+ */
+
+#define WS_IEEP_SIZE_MONO  0x80
+#define WS_IEEP_SIZE_COLOR 0x800
 
 #define IEEP_ADDR_OWNER_NAME                0x60 /* 16 bytes */
 #define IEEP_ADDR_OWNER_BIRTHDAY_YEAR       0x70 /* word */
@@ -136,9 +148,7 @@ void ws_ieep_write_unlock(void);
  *
  * @param data Target data area - must be at least 16 bytes.
  */
-static inline void ws_ieep_read_owner_name(uint8_t *data) {
-	ws_ieep_read_data(IEEP_ADDR_OWNER_NAME, data, 16);
-}
+void ws_ieep_read_owner_name(uint8_t *data);
 
 /**
  * @brief Read the owner name, as an ASCII string.

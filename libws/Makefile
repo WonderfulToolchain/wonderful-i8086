@@ -5,7 +5,7 @@ include $(WONDERFUL_TOOLCHAIN)/i8086/wswan.mk
 
 TARGET := libws.a
 OBJDIR := obj
-SRCDIRS := src src/cartridge src/display src/dma src/ieep src/keypad src/rtc src/serial src/system src/util
+SRCDIRS := src src/cartridge src/display src/dma src/eeprom src/keypad src/rtc src/serial src/system src/util
 MKDIRS := $(OBJDIR)
 CFLAGS += -O2
 

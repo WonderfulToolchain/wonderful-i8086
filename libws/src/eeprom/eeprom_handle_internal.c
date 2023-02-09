@@ -20,22 +20,12 @@
  * 3. This notice may not be removed or altered from any source distribution.
 */
 
-#include <wonderful-asm.h>
+#include <stdint.h>
+#include "ws/util.h"
+#include "ws/hardware.h"
+#include "ws/eeprom.h"
 
-	.arch	i186
-	.code16
-	.intel_syntax noprefix
-	.global ws_hwint_set_default_handler_hblank_timer
-
-__ws_hwint_default_handler7:
-	push ax
-	mov al, 0x80
-	out 0xB6, al
-	pop ax
-	iret
-
-ws_hwint_set_default_handler_hblank_timer:
-	mov ax, 7
-	mov dx, offset "__ws_hwint_default_handler7"
-	mov cx, cs
-	ASM_PLATFORM_JMP ws_hwint_set_handler
+ws_eeprom_handle_t ws_eeprom_handle_internal(void) {
+	ws_eeprom_handle_t handle = {0xBA, inportb(IO_SYSTEM_CTRL2) ? (10 - 2) : (6 - 2)};
+	return handle;
+}

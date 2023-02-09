@@ -24,7 +24,4 @@
 
 #define __WONDERFUL_WSWAN__
 
-/** Memory model helpers. */
-#define ASM_PLATFORM_RET retf
-
 #include "wonderful-asm-common.h"

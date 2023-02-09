@@ -20,7 +20,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
 */
 
-	.arch	i8086
+	.arch	i186
 	.code16
 	.intel_syntax noprefix
 

@@ -26,61 +26,57 @@
 	.code16
 	.intel_syntax noprefix
 
+	// DL = port, DH = qwords (bits - 3)
 	// BL = SB/opcode/subop
 	// AX = address, in bytes
-	// returns AX = command, BL = 1 if out of range
-	// trashes BX, DX
-	.global ws_ieep_addr_to_command
-ws_ieep_addr_to_command:
+	// returns AX = command
+	// trashes BX, CL + clears DH
+	.global ws_eeprom_internal_addr_to_command
+ws_eeprom_internal_addr_to_command:
 	shr ax, 1
-	mov dx, ax
-	in al, 0x60
-	test al, al
-	mov ax, dx
-	js ws_ieep_addr_to_command_wsc
-	cmp ax, 0x40
-	jae ws_ieep_addr_to_command_out_of_range
+	mov cl, dh
+	xor dh, dh
 	xor bh, bh
-	shl bx, 4
+	cmp bl, 0x14 // 0x10-0x13 => address-free commands
+	jb ws_eeprom_internal_addr_to_command_address
+	push dx
+	mov dx, 0xFFFF
+	shl bx, cl
+	shl dx, cl
+	and bx, dx
+	pop dx
 	or ax, bx
-	xor bl, bl
 	ret
-ws_ieep_addr_to_command_wsc:
-	cmp ax, 0x400
-	jae ws_ieep_addr_to_command_out_of_range
-	xor bh, bh
-	or ah, bl
-	xor bl, bl
-	ret
-ws_ieep_addr_to_command_out_of_range:
-	mov bl, 0x1
+ws_eeprom_internal_addr_to_command_address:
+	shl bx, cl
+	mov ax, bx
 	ret
 
 	// AL = 1 if IEEP ready, 0 otherwise
-	// trashes CX
-	.global ws_ieep_wait_ready
-ws_ieep_wait_ready:
+	// trashes CX, DX
+	.global ws_eeprom_internal_wait_ready
+ws_eeprom_internal_wait_ready:
 	mov cx, 3413 // 10 ms / 9 cycles at 3 MHz
-ws_ieep_wait_ready_l1:
-	in al, 0xBE // 6
+ws_eeprom_internal_wait_ready_l1:
+	in al, dx // 6
 	test al, 0x02 // 1
-	jnz ws_ieep_wait_ready_ok // 1
-	loop ws_ieep_wait_ready_l1 // 1
-	xor al, al
-	ret
-ws_ieep_wait_ready_ok:
+	jnz ws_eeprom_internal_wait_ready_ok // 1
+	loop ws_eeprom_internal_wait_ready_l1 // 1
 	mov al, 1
+	ret
+ws_eeprom_internal_wait_ready_ok:
+	xor al, al
 	ret
 
 	// AL = 1 if IEEP done, 0 otherwise
-	// trashes CX
-	.global ws_ieep_wait_done
-ws_ieep_wait_done:
+	// trashes CX, DX
+	.global ws_eeprom_internal_wait_done
+ws_eeprom_internal_wait_done:
 	mov cx, 50
-ws_ieep_wait_done_l1:
-	in al, 0xBE // 6
+ws_eeprom_internal_wait_done_l1:
+	in al, dx // 6
 	and al, 0x01 // 1
-	jnz ws_ieep_wait_done_ok // 1
-	loop ws_ieep_wait_done_l1 // 1
-ws_ieep_wait_done_ok:
+	jnz ws_eeprom_internal_wait_done_ok // 1
+	loop ws_eeprom_internal_wait_done_l1 // 1
+ws_eeprom_internal_wait_done_ok:
 	ret

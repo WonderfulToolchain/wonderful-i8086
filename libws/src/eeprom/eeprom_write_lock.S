@@ -20,19 +20,21 @@
  * 3. This notice may not be removed or altered from any source distribution.
 */
 
-#include <stdint.h>
-#include "ws/ieep.h"
+#include <wonderful-asm.h>
 
-void ws_ieep_read_data(uint16_t address, uint8_t *data, uint16_t length) {
-	uint16_t address_last = address + length;
-	uint16_t i = 0;
-	if (address & 1) {
-		data[i++] = ws_ieep_read_byte(address++);
-	}
-	for (; address < (address_last & (~1)); i += 2, address += 2) {
-		*((uint16_t*) (data + i)) = ws_ieep_read_word(address);
-	}
-	if (address_last & 1) {
-		data[i] = ws_ieep_read_byte(address);
-	}
-}
+	.arch	i186
+	.code16
+	.intel_syntax noprefix
+
+	.global ws_eeprom_write_lock
+ws_eeprom_write_lock:
+	mov dx, ax
+	mov bl, 0x13
+	call ws_eeprom_internal_addr_to_command
+	add dl, 2
+	out dx, ax
+	mov al, 0x40
+	add dl, 2
+	out dx, al
+	call ws_eeprom_internal_wait_ready
+	ASM_PLATFORM_RET

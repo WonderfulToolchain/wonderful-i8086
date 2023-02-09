@@ -20,29 +20,24 @@
  * 3. This notice may not be removed or altered from any source distribution.
 */
 
-#include <stdint.h>
-#include "ws/display.h"
-#include "ws/ieep.h"
+#include <wonderful-asm.h>
 
-static const uint16_t __far ieep_name_color_to_rgb_map[16] = {
-	RGB(0, 0, 0),
-	RGB(15, 0, 0),
-	RGB(15, 7, 0),
-	RGB(15, 15, 0),
-	RGB(7, 15, 0),
-	RGB(0, 15, 0),
-	RGB(0, 15, 7),
-	RGB(0, 15, 15),
-	RGB(0, 7, 15),
-	RGB(0, 0, 15),
-	RGB(7, 0, 15),
-	RGB(15, 0, 15),
-	RGB(15, 0, 7),
-	RGB(15, 15, 15),
-	RGB(7, 7, 7),
-	RGB(7, 7, 7)
-};
+	.arch	i186
+	.code16
+	.intel_syntax noprefix
 
-uint16_t ws_ieep_name_color_to_rgb(uint8_t value) {
-	return ieep_name_color_to_rgb_map[value & 0x0F];
-}
+	.global ws_eeprom_read_word
+ws_eeprom_read_word:
+	xchg ax, dx // AX = address, DL = port, DH = dwords
+
+	mov bl, 0x18
+	call ws_eeprom_internal_addr_to_command
+	add dl, 2
+	out dx, ax // 0xBC
+	mov al, 0x10
+	add dl, 2
+	out dx, al // 0xBE
+	call ws_eeprom_internal_wait_done
+	sub dl, 4
+	in ax, dx // 0xBA
+	ASM_PLATFORM_RET

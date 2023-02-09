@@ -22,19 +22,14 @@
 
 #include <wonderful-asm.h>
 
-	.arch	i8086
+	.arch	i186
 	.code16
 	.intel_syntax noprefix
 
-	.global ws_ieep_erase_word
-ws_ieep_erase_word:
-	mov bl, 0x1C
-	call ws_ieep_addr_to_command
-	test bl, bl
-	jnz ws_ieep_erase_word_skip
-	out 0xBC, ax
-	mov al, 0x40
-	out 0xBE, al
-	call ws_ieep_wait_ready
-ws_ieep_erase_word_skip:
+	.global ws_eeprom_read_byte
+ws_eeprom_read_byte:
+	test dl, 0x01
+	jz ws_eeprom_read_word // Returns with AX = word (incl. low byte)
+	ASM_PLATFORM_CALL ws_eeprom_read_word
+	mov al, ah
 	ASM_PLATFORM_RET

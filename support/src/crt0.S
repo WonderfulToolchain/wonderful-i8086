@@ -20,7 +20,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
 */
 
-	.arch	i8086
+	.arch	i186
 	.code16
 	.intel_syntax noprefix
 
@@ -34,18 +34,29 @@ _ivt:
 _start:
 	cli
 
-	// copy rodata/data from ROM to RAM
-	//mov	ax, offset "__erom!"
+#ifdef __IA16_CMODEL_IS_FAR_TEXT
+	// set DS to the location of rodata
 	.byte	0xB8
 	.reloc	., R_386_SEG16, "__erom!"
 	.word	0
 	mov	ds, ax
+#endif
+
+	// configure sp
+	mov	sp, offset "__eheap"
+
+	// copy rodata/data from ROM to RAM
 	xor	ax, ax
 	mov	es, ax
 	mov	ss, ax
 	mov	si, offset "__erom&"
 	mov	di, offset "__sdata"
 	mov	cx, offset "__ldata_words"
+#ifndef __IA16_CMODEL_IS_FAR_TEXT
+	// set DS to the location of rodata
+	push cs
+	pop ds
+#endif
 	cld
 	rep	movsw
 
@@ -62,20 +73,17 @@ _start:
 	mov	cx, offset "__lbss_words"
 	rep	stosw
 
-	// configure sp
-	mov	sp, offset "__eheap"
-
 	// configure default interrupt base
 	mov	al, 0x08
 	out	0xB0, al
 
-	// jmp main
+#ifdef __IA16_CMODEL_IS_FAR_TEXT
 	//.reloc	.+3, R_386_SEG16, main
 	//jmp 0:main
 	.byte	0xEA
 	.word	main
 	.reloc	., R_386_SEG16, "main!"
 	.word	0
-
-loop:
-	jmp loop
+#else
+	jmp main
+#endif

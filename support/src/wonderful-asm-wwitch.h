@@ -24,7 +24,4 @@
 
 #define __WONDERFUL_WWITCH__
 
-/** Memory model helpers. */
-#define ASM_PLATFORM_RET ret
-
 #include "wonderful-asm-common.h"

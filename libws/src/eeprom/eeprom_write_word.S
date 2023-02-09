@@ -22,17 +22,25 @@
 
 #include <wonderful-asm.h>
 
-	.arch	i8086
+	.arch	i186
 	.code16
 	.intel_syntax noprefix
 
-	.global ws_ieep_write_lock
-ws_ieep_write_lock:
-	xor ax, ax
-	mov bl, 0x10
-	call ws_ieep_addr_to_command
-	out 0xBC, ax
-	mov al, 0x40
-	out 0xBE, al
-	call ws_ieep_wait_ready
+	.global ws_eeprom_write_word
+ws_eeprom_write_word:
+	xchg ax, dx // AX = address, DL = port, DH = dwords
+
+	push cx
+	mov bl, 0x14
+	call ws_eeprom_internal_addr_to_command
+	pop cx
+	add dl, 2
+	out dx, ax // 0xBC
+	mov ax, cx
+	sub dl, 2
+	out dx, ax // 0xBA
+	mov al, 0x20
+	add dl, 4
+	out dx, al // 0xBE
+	call ws_eeprom_internal_wait_ready
 	ASM_PLATFORM_RET

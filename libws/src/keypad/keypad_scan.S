@@ -20,7 +20,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
 */
 
-	.arch	i8086
+	.arch	i186
 	.code16
 	.intel_syntax noprefix
 
@@ -39,8 +39,7 @@ ws_keypad_scan:
 	out	dx, al
 	daa
 	in	al, dx
-	mov	cl, 4
-	shl	al, cl
+	shl	al, 4
 	mov	cl, al
 
 	mov	al, 0x40

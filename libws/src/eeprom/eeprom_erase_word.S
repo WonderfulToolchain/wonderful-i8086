@@ -20,24 +20,23 @@
  * 3. This notice may not be removed or altered from any source distribution.
 */
 
-#include <stdint.h>
-#include "ws/ieep.h"
+#include <wonderful-asm.h>
 
-const char __far ieep_owner_to_ascii_map[] = {
-	' ', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E',
-	'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U',
-	'V', 'W', 'X', 'Y', 'Z', 3/* heart */, 13/* music note */, '+', '-', '?', '.'
-};
+	.arch	i186
+	.code16
+	.intel_syntax noprefix
 
-void ws_ieep_read_owner_name_ascii(char *str) {
-	uint8_t i, len;
+	.global ws_eeprom_erase_word
+ws_eeprom_erase_word:
+	xchg ax, dx // AX = address, DL = port, DH = dwords
 
-	ws_ieep_read_owner_name((uint8_t*) str);
-	for (len = 16; len > 0; len--) {
-		if (str[len - 1] != 0x00) break;
-	}
-	for (i = 0; i < len; i++) {
-		str[i] = ieep_owner_to_ascii_map[str[i]];
-	}
-	str[i] = 0;
-}
+	mov bl, 0x1C
+	call ws_eeprom_internal_addr_to_command
+
+	add dl, 2 // 0xBC
+	out dx, ax
+	mov al, 0x40
+	add dl, 2 // 0xBE
+	out dx, al
+	call ws_eeprom_internal_wait_ready
+	ASM_PLATFORM_RET

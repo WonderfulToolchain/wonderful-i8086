@@ -24,6 +24,41 @@
 
 #define __WONDERFUL__
 
+/** Memory model helpers. */
+#ifdef __ASSEMBLER__
+
+#ifdef __IA16_CMODEL_IS_FAR_TEXT
+#define ASM_PLATFORM_RET retf
+#else
+#define ASM_PLATFORM_RET ret
+#endif
+
+#ifdef __IA16_CMODEL_IS_FAR_TEXT
+.macro ASM_PLATFORM_CALL tgt:req
+	.byte	0x9A
+	.word	\tgt
+	.reloc	., R_386_SEG16, "\tgt\()!"
+	.word	0
+.endm
+
+.macro ASM_PLATFORM_JMP tgt:req
+	.byte	0xEA
+	.word	\tgt
+	.reloc	., R_386_SEG16, "\tgt\()!"
+	.word	0
+.endm
+#else
+.macro ASM_PLATFORM_CALL tgt:req
+	call tgt
+.endm
+
+.macro ASM_PLATFORM_JMP tgt:req
+	jmp tgt
+.endm
+#endif
+
+#endif
+
 #ifndef __ASSEMBLER__
 #include <stdint.h>
 

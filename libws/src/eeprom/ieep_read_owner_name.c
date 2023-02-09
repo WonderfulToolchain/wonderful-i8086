@@ -20,24 +20,9 @@
  * 3. This notice may not be removed or altered from any source distribution.
 */
 
-#include <wonderful-asm.h>
+#include <stdint.h>
+#include "ws/eeprom.h"
 
-	.arch	i8086
-	.code16
-	.intel_syntax noprefix
-
-	.global ws_ieep_read_word
-ws_ieep_read_word:
-	mov bl, 0x18
-	call ws_ieep_addr_to_command
-	test bl, bl
-	jnz ws_ieep_read_word_skip
-	out 0xBC, ax
-	mov al, 0x10
-	out 0xBE, al
-	call ws_ieep_wait_done
-	in ax, 0xBA
-	ASM_PLATFORM_RET
-ws_ieep_read_word_skip:
-	mov ax, 0xFFFF
-	ASM_PLATFORM_RET
+void ws_ieep_read_owner_name(uint8_t *data) {
+	ws_eeprom_read_data(ws_eeprom_handle_internal(), IEEP_ADDR_OWNER_NAME, data, 16);
+}

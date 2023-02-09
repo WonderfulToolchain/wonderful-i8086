@@ -41,7 +41,4 @@ ws_hwint_set_default_handler_serial_rx:
 	mov ax, 3
 	mov dx, offset "__ws_hwint_default_handler3"
 	mov cx, cs
-	.byte	0xEA
-	.word	ws_hwint_set_handler
-	.reloc	., R_386_SEG16, "ws_hwint_set_handler!"
-	.word	0
+	ASM_PLATFORM_JMP ws_hwint_set_handler

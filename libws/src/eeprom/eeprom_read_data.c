@@ -20,22 +20,19 @@
  * 3. This notice may not be removed or altered from any source distribution.
 */
 
-#include <wonderful-asm.h>
+#include <stdint.h>
+#include "ws/eeprom.h"
 
-	.arch	i186
-	.code16
-	.intel_syntax noprefix
-	.global ws_hwint_set_default_handler_hblank_timer
-
-__ws_hwint_default_handler7:
-	push ax
-	mov al, 0x80
-	out 0xB6, al
-	pop ax
-	iret
-
-ws_hwint_set_default_handler_hblank_timer:
-	mov ax, 7
-	mov dx, offset "__ws_hwint_default_handler7"
-	mov cx, cs
-	ASM_PLATFORM_JMP ws_hwint_set_handler
+void ws_eeprom_read_data(ws_eeprom_handle_t handle, uint16_t address, uint8_t *data, uint16_t length) {
+	uint16_t address_last = address + length;
+	uint16_t i = 0;
+	if (address & 1) {
+		data[i++] = ws_eeprom_read_byte(handle, address++);
+	}
+	for (; address < (address_last & (~1)); i += 2, address += 2) {
+		*((uint16_t*) (data + i)) = ws_eeprom_read_word(handle, address);
+	}
+	if (address_last & 1) {
+		data[i] = ws_eeprom_read_byte(handle, address);
+	}
+}

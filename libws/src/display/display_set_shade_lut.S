@@ -26,11 +26,7 @@
 
 	.global ws_display_set_shade_lut
 ws_display_set_shade_lut:
-	out	0x1C, al
-	mov	al, ah
-	out	0x1D, al
-	mov	al, dl
-	out	0x1E, al
-	mov	al, dh
-	out	0x1F, al
+	out	0x1C, ax
+	mov	ax, dx
+	out	0x1E, ax
 	retf

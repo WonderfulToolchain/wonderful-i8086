@@ -69,8 +69,8 @@ typedef struct {
 #define RTC_STATUS_INT_MINUTE_STEADY (RTC_STATUS_INTME | RTC_STATUS_INTFE)
 #define RTC_STATUS_INT_ALARM (RTC_STATUS_INTAE)
 
-int16_t ws_rtc_low_read_data(uint16_t timeout);
-bool ws_rtc_low_write_data(uint8_t value, uint16_t timeout);
+int16_t ws_rtc_low_read_byte(uint16_t timeout);
+bool ws_rtc_low_write_byte(uint8_t value, uint16_t timeout);
 bool ws_rtc_low_write_ctrl(uint8_t value, uint16_t timeout);
 
 // TODO: high-level commands

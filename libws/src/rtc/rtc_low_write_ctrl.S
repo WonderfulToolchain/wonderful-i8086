@@ -27,10 +27,12 @@
 	.intel_syntax noprefix
 
 	.global ws_rtc_low_write_ctrl
+	.global ws_rtc_internal_low_write_ctrl
 ws_rtc_low_write_ctrl:
 	mov cx, dx
+ws_rtc_internal_low_write_ctrl:
 	call __ws_rtc_wait_ready_timeout
-	cmp cx, 0
+	and cx, cx
 	jz ws_rtc_low_write_data_fail
 	out 0xCA, al
 ws_rtc_low_write_data_fail:

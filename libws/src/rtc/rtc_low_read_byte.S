@@ -26,14 +26,17 @@
 	.code16
 	.intel_syntax noprefix
 
-	.global ws_rtc_low_read_data
-ws_rtc_low_read_data:
-	mov cx, dx
+	.global ws_rtc_low_read_byte
+	.global ws_rtc_internal_low_read_byte
+ws_rtc_low_read_byte:
+	mov cx, ax
+ws_rtc_internal_low_read_byte:
+	xor ah, ah
 	call __ws_rtc_wait_ready_timeout
-	cmp cx, 0
-	jz ws_rtc_low_read_data_fail
+	and cx, cx
+	jz ws_rtc_low_read_byte_fail
 	in al, 0xCB
 	ASM_PLATFORM_RET
-ws_rtc_low_read_data_fail:
+ws_rtc_low_read_byte_fail:
 	mov ax, 0xFFFF
 	ASM_PLATFORM_RET

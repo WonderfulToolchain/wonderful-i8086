@@ -26,12 +26,14 @@
 	.code16
 	.intel_syntax noprefix
 
-	.global ws_rtc_low_write_data
-ws_rtc_low_write_data:
+	.global ws_rtc_low_write_byte
+	.global ws_rtc_internal_low_write_byte
+ws_rtc_low_write_byte:
 	mov cx, dx
+ws_rtc_internal_low_write_byte:
 	call __ws_rtc_wait_ready_timeout
-	cmp cx, 0
-	jz ws_rtc_low_write_data_fail
+	and cx, cx
+	jz ws_rtc_low_write_byte_fail
 	out 0xCB, al
-ws_rtc_low_write_data_fail:
+ws_rtc_low_write_byte_fail:
 	ASM_PLATFORM_RET

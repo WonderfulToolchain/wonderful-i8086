@@ -27,7 +27,7 @@
 	.intel_syntax noprefix
 	.global ws_hwint_set_default_handler_serial_tx
 
-__ws_hwint_default_handler0:
+ws_hwint_internal_default_handler0:
 	push ax
 	in al, 0xB2
 	and al, 0xFE
@@ -39,6 +39,6 @@ __ws_hwint_default_handler0:
 
 ws_hwint_set_default_handler_serial_tx:
 	mov ax, 0
-	mov dx, offset "__ws_hwint_default_handler0"
+	mov dx, offset "ws_hwint_internal_default_handler0"
 	mov cx, cs
 	ASM_PLATFORM_JMP ws_hwint_set_handler

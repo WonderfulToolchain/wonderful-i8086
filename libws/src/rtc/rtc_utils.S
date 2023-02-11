@@ -29,19 +29,19 @@
 // CX = timeout value
 // preserves AX
 // if CX = 0, timeout occured
-	.global __ws_rtc_wait_ready_timeout
-__ws_rtc_wait_ready_timeout:
+	.global ws_rtc_wait_ready_timeout
+ws_rtc_internal_wait_ready_timeout:
 	push ax
 	shr cx, 2 // 3 cycles ~= 1 us
-__ws_rtc_wait_ready_loop:
+ws_rtc_internal_wait_ready_loop:
 	// 15 cycles per iteration, or so
 	dec cx // 1 cycle
-	jz __ws_rtc_wait_ready_done // 1 cycle (branch not taken)
+	jz ws_rtc_internal_wait_ready_done // 1 cycle (branch not taken)
 	in al, 0xCA // 6 cycles
 	test al, 0x10 // 1 cycle
-	jz __ws_rtc_wait_ready_done // 1-4 cycles
+	jz ws_rtc_internal_wait_ready_done // 1-4 cycles
 	test al, 0x80 // 1 cycle
-	jz __ws_rtc_wait_ready_loop // 1-4 cycles
-__ws_rtc_wait_ready_done:
+	jz ws_rtc_internal_wait_ready_loop // 1-4 cycles
+ws_rtc_internal_wait_ready_done:
 	pop ax
 	ret

@@ -32,7 +32,7 @@ ws_rtc_low_read_byte:
 	mov cx, ax
 ws_rtc_internal_low_read_byte:
 	xor ah, ah
-	call __ws_rtc_wait_ready_timeout
+	call ws_rtc_internal_wait_ready_timeout
 	and cx, cx
 	jz ws_rtc_low_read_byte_fail
 	in al, 0xCB

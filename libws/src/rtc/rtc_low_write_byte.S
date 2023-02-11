@@ -31,7 +31,7 @@
 ws_rtc_low_write_byte:
 	mov cx, dx
 ws_rtc_internal_low_write_byte:
-	call __ws_rtc_wait_ready_timeout
+	call ws_rtc_internal_wait_ready_timeout
 	and cx, cx
 	jz ws_rtc_low_write_byte_fail
 	out 0xCB, al

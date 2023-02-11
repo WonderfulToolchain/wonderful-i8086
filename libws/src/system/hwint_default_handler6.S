@@ -27,7 +27,7 @@
 	.intel_syntax noprefix
 	.global ws_hwint_set_default_handler_vblank
 
-__ws_hwint_default_handler6:
+ws_hwint_internal_hwint_default_handler6:
 	push ax
 	mov al, 0x40
 	out 0xB6, al
@@ -36,6 +36,6 @@ __ws_hwint_default_handler6:
 
 ws_hwint_set_default_handler_vblank:
 	mov ax, 6
-	mov dx, offset "__ws_hwint_default_handler6"
+	mov dx, offset "ws_hwint_internal_hwint_default_handler6"
 	mov cx, cs
 	ASM_PLATFORM_JMP ws_hwint_set_handler

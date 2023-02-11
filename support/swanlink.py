@@ -154,7 +154,8 @@ if program_args.output_elf:
 ld_template_path = toolchain_prefix / 'wswan/lib/wswan.ld.template'
 if program_args.ld_template is not None:
 	ld_template_path = Path(ld_template).absolute()
-ld_path = toolchain_prefix / ("../toolchain/gcc-ia16-elf/bin/ia16-elf-ld%s" % executable_extension)
+#ld_path = toolchain_prefix / ("../toolchain/gcc-ia16-elf/bin/ia16-elf-ld%s" % executable_extension)
+gcc_path = toolchain_prefix / ("../toolchain/gcc-ia16-elf/bin/ia16-elf-gcc%s" % executable_extension)
 objcopy_path = toolchain_prefix / ("../toolchain/gcc-ia16-elf/bin/ia16-elf-objcopy%s" % executable_extension)
 size_path = toolchain_prefix / ("../toolchain/gcc-ia16-elf/bin/ia16-elf-size%s" % executable_extension)
 
@@ -215,7 +216,9 @@ def call_linker(temp_dir: Path, template_file: Path, output_elf: Path, output_fi
 			str(template_file.absolute())], stdout=outf)
 		if result.returncode != 0:
 			raise Exception(f'sed exited with error code {result.returncode}')
-	ld_args = [str(ld_path), "-T", str(template_out_file), "-o", str(output_elf.absolute())]
+	#ld_args = [str(ld_path), "-T", str(template_out_file), "-o", str(output_elf.absolute())]
+	#ld_args.extend(args)
+	ld_args = [str(gcc_path), "-T", str(template_out_file), "-o", str(output_elf.absolute())]
 	ld_args.extend(args)
 	result = subprocess.run(ld_args)
 	if result.returncode != 0:

@@ -10,6 +10,7 @@ TARGETDIR := build/$(WONDERFUL_TARGET)
 TARGET := $(TARGETDIR)/libc.a
 SRCDIRS := src src/ctype src/errno src/stdlib src/string
 MKDIRS := $(OBJDIR) build/$(WONDERFUL_TARGET)
+CFLAGS += -ffunction-sections
 
 ifeq ($(WONDERFUL_TARGET), wwitch)
 CFLAGS += -Os -DLIBC_LOCALE_SJIS

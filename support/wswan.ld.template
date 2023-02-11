@@ -11,7 +11,7 @@ SECTIONS
 	".text!" %ROM_AREA_START% (NOLOAD) :
 	{
 		"__stext!" = .;
-		*(".start!")
+		KEEP(*(".start!"))
 		*(".text!*" ".text.*!")
 		"__etext!" = .;
 	} >ROM
@@ -20,7 +20,7 @@ SECTIONS
 	.text . :
 	{
 		__stext = .;
-		*(".start")
+		KEEP(*(".start"))
 		*(.text ".text.*[^&]")
 		__etext = .;
 		. = ALIGN (16);
@@ -33,7 +33,7 @@ SECTIONS
 	".text&" . (NOLOAD) :
 	{
 		"__stext&" = .;
-		*(".start&")
+		KEEP(*(".start&"))
 		*(".text&*" ".text.*&")
 		"__etext&" = .;
 	}
@@ -78,7 +78,7 @@ SECTIONS
 	/* IVT header - we don't want to store it in ROM. */
 	.ivt %RAM_HEAP_START% (NOLOAD) :
 	{
-		*(.ivt)
+		KEEP(*(.ivt))
 	}
 
 	/* Target data section. */

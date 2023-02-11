@@ -10,7 +10,7 @@ TARGETDIR := build/$(WONDERFUL_TARGET)
 TARGET := $(TARGETDIR)/libws.a
 SRCDIRS := src src/cartridge src/display src/dma src/eeprom src/keypad src/rtc src/serial src/system src/util
 MKDIRS := $(OBJDIR) build/$(WONDERFUL_TARGET)
-CFLAGS += -O2
+CFLAGS += -O2 -ffunction-sections
 
 CSOURCES := $(foreach dir,$(SRCDIRS),$(notdir $(wildcard $(dir)/*.c)))
 ASMSOURCES := $(foreach dir,$(SRCDIRS),$(notdir $(wildcard $(dir)/*.S)))

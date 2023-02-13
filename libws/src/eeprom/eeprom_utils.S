@@ -26,7 +26,7 @@
 	.code16
 	.intel_syntax noprefix
 
-	// DL = port, DH = qwords (bits - 3)
+	// DL = port, DH = dwords (bits - 2)
 	// BL = SB/opcode/subop
 	// AX = address, in bytes
 	// returns AX = command
@@ -38,18 +38,11 @@ ws_eeprom_internal_addr_to_command:
 	xor dh, dh
 	xor bh, bh
 	cmp bl, 0x14 // 0x10-0x13 => address-free commands
-	jb ws_eeprom_internal_addr_to_command_address
-	push dx
-	mov dx, 0xFFFF
-	shl bx, cl
-	shl dx, cl
-	and bx, dx
-	pop dx
-	or ax, bx
-	ret
+	jae ws_eeprom_internal_addr_to_command_address
+	xor ax, ax
 ws_eeprom_internal_addr_to_command_address:
 	shl bx, cl
-	mov ax, bx
+	or ax, bx
 	ret
 
 	// AL = 1 if IEEP ready, 0 otherwise

@@ -20,6 +20,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
 */
 
+#include <wonderful-asm.h>
 	.arch	i8086
 	.code16
 	.intel_syntax noprefix
@@ -29,4 +30,4 @@ inportw:
 	xor	ah, ah
 	mov	dx, ax
 	in	ax, dx
-	retf
+	ASM_PLATFORM_RET

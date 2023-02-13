@@ -20,6 +20,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
 */
 
+#include <wonderful-asm.h>
 	.arch	i186
 	.code16
 	.intel_syntax noprefix
@@ -50,4 +51,4 @@ ws_keypad_scan:
 	or	cl, al
 
 	mov	ax, cx
-	retf
+	ASM_PLATFORM_RET

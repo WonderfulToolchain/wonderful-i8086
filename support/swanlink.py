@@ -110,7 +110,7 @@ arg_parser = argparse.ArgumentParser(description='WonderSwan ROM linker for Wond
 arg_parser.add_argument('-o', metavar='output.ws', help='Output ROM file', type=str, required=True)
 arg_parser.add_argument('-a', action='append', metavar='[b0:]file.bin', type=str, help='Attach file. Optionally, specify bank (bX) or raw position (X)')
 arg_parser.add_argument('-v', action='store_true', help='Enable verbose logging')
-arg_parser.add_argument('-t', type=str, default='ws_rom', help='Output type: ws_rom, sram_binary')
+arg_parser.add_argument('-t', type=str, default='ws_rom', help='Output type: ws_rom, sram_binary, bootfriend_binary')
 arg_parser.add_argument('--output-elf', metavar='out.elf', help='Output ELF file', type=str)
 arg_parser.add_argument('--tools-path', metavar='PATH', type=str, help='Toolchain location', default=str(executable_location.parent.absolute()))
 arg_parser.add_argument('--color', action='store_true', help='Mark ROM as WSC-compatible')
@@ -163,12 +163,17 @@ rom_layout = {}
 
 rom_type = program_args.t
 rom_area_length = 0xC0000
+rom_area_end = 0x100000 - HEADER_SIZE
 rom_load_offset = program_args.load_offset
 if rom_type == "ws_rom":
 	pass
 elif rom_type == "sram_binary":
 	rom_load_offset = 0x10000
 	rom_area_length = 0x10000
+elif rom_type == "bootfriend_binary":
+#	rom_area_end = 0xFD70
+	rom_load_offset = 0x6810
+	rom_area_length = 0xFD80 - 0x6810
 else:
 	raise Exception(f'unknown rom type: {rom_type}')
 
@@ -275,7 +280,7 @@ with tempfile.TemporaryDirectory() as temp_dir:
 		bin_size = align_up_to(temporary_bin.stat().st_size, 0x10)
 		# Use the measured ELF size to calculate the minimum ROM size.
 		# Use that to calculate the new ELF location.
-		rom_load_offset = 0x100000 - HEADER_SIZE - bin_size
+		rom_load_offset = rom_area_end - bin_size
 		print_verbose("Program size is %d bytes, load at %04X:0000" % (bin_size, rom_load_offset >> 4))
 	rom_size = calc_rom_size(rom_load_offset)
 	# Step 3: Create ELF and BIN at final ROM location.
@@ -350,4 +355,12 @@ with tempfile.TemporaryDirectory() as temp_dir:
 	elif rom_type == "sram_binary":
 		print_verbose('Saving as %s' % output_rom_path.name)
 		with open(output_rom_path, 'wb') as rom_file:
+			rom_file.write(bin_data)
+	elif rom_type == "bootfriend_binary":
+		print_verbose('Saving as %s' % output_rom_path.name)
+		with open(output_rom_path, 'wb') as rom_file:
+			rom_file.write(struct.pack("<BB", ord('b'), ord('F'))) # Header
+			rom_file.write(struct.pack("<H", rom_load_offset - 0x5)) # Start location
+			bin_call_routine = struct.pack("<BHH", 0xEA, 0x0000, rom_load_offset >> 4)
+			rom_file.write(bin_call_routine)
 			rom_file.write(bin_data)

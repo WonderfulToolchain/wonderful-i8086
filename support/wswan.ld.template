@@ -67,7 +67,7 @@ SECTIONS
 	".data!" %RAM_HEAP_START% (NOLOAD) : AT(ADDR(".erom") + SIZEOF(".erom"))
 	{
 		"__sdata!" = .;
-		*(".ivt!")
+		KEEP(*(".ivt!"))
 		*(".rodata!*" ".rodata.*!")
 		*(".data!*" ".data.*!")
 		*(".bss!*" ".bss.*!")
@@ -110,7 +110,7 @@ SECTIONS
 	".data&" . (NOLOAD) :
 	{
 		"__sdata&" = .;
-		*(".ivt&")
+		KEEP(*(".ivt&"))
 		*(".rodata&*" ".rodata.*&")
 		*(".data&*" ".data.*&")
 		*(".bss&*" ".bss.*&")

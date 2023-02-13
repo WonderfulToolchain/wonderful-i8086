@@ -133,7 +133,7 @@ if output_fent_info is None:
 
 output_fent_mode = mode_to_int(getattr(cf_args, "mode", "7"))
 
-objcopy_path = toolchain_prefix / ("bin/ia16-elf-objcopy%s" % executable_extension)
+objcopy_path = toolchain_prefix / ("../toolchain/gcc-ia16-elf/bin/ia16-elf-objcopy%s" % executable_extension)
 
 def print_verbose(*args, **kwargs):
 	if program_args.v:

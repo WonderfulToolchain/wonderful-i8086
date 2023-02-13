@@ -1,7 +1,8 @@
 ifndef WONDERFUL_TOOLCHAIN
 $(error Please define WONDERFUL_TOOLCHAIN to point to the location of the Wonderful toolchain.)
 endif
-include wswan.mk
+WONDERFUL_TARGET := wswan
+include $(WONDERFUL_TOOLCHAIN)/i8086/wonderful-i8086.mk
 
 OBJDIR := obj
 SRCDIRS := src
@@ -21,22 +22,22 @@ vpath %.S $(SRCDIRS)
 all: $(OBJECTS)
 
 $(OBJDIR)/%.o: %.c $(OBJDIR)
-	$(CC) $(CFLAGS) -c -o $@ $<
+	$(CC) $(CFLAGS) -mcmodel=medium -c -o $@ $<
 
 $(OBJDIR)/%.o: %.S $(OBJDIR)
-	$(CC) $(CFLAGS) -c -o $@ $<
+	$(CC) $(CFLAGS) -mcmodel=medium -c -o $@ $<
 
 $(OBJDIR)/crt0_ww_asc1.o: crt0_ww.S $(OBJDIR)
-	$(CC) $(CFLAGS) -DDISPLAY_MODE_ASCII1 -c -o $@ $<
+	$(CC) $(CFLAGS) -mcmodel=small -DDISPLAY_MODE_ASCII1 -c -o $@ $<
 
 $(OBJDIR)/crt0_ww_asc2.o: crt0_ww.S $(OBJDIR)
-	$(CC) $(CFLAGS) -DDISPLAY_MODE_ASCII2 -c -o $@ $<
+	$(CC) $(CFLAGS) -mcmodel=small -DDISPLAY_MODE_ASCII2 -c -o $@ $<
 
 $(OBJDIR)/crt0_ww_jpn1.o: crt0_ww.S $(OBJDIR)
-	$(CC) $(CFLAGS) -DDISPLAY_MODE_JAPANESE1 -c -o $@ $<
+	$(CC) $(CFLAGS) -mcmodel=small -DDISPLAY_MODE_JAPANESE1 -c -o $@ $<
 
 $(OBJDIR)/crt0_ww_jpn2.o: crt0_ww.S $(OBJDIR)
-	$(CC) $(CFLAGS) -DDISPLAY_MODE_JAPANESE2 -c -o $@ $<
+	$(CC) $(CFLAGS) -mcmodel=small -DDISPLAY_MODE_JAPANESE2 -c -o $@ $<
 
 $(OBJDIR):
 	$(info $(shell mkdir -p $(MKDIRS)))

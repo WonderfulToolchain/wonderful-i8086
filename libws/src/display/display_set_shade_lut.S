@@ -20,6 +20,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
 */
 
+#include <wonderful-asm.h>
 	.arch	i186
 	.code16
 	.intel_syntax noprefix
@@ -29,4 +30,4 @@ ws_display_set_shade_lut:
 	out	0x1C, ax
 	mov	ax, dx
 	out	0x1E, ax
-	retf
+	ASM_PLATFORM_RET

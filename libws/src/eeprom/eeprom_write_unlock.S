@@ -33,8 +33,8 @@ ws_eeprom_write_unlock:
 	call ws_eeprom_internal_addr_to_command
 	add dl, 2
 	out dx, ax
-	mov al, 0x40
+	mov ax, 0x40
 	add dl, 2
-	out dx, al
+	out dx, ax
 	call ws_eeprom_internal_wait_ready
 	ASM_PLATFORM_RET

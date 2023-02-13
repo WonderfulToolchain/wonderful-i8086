@@ -34,7 +34,7 @@ ws_eeprom_read_word:
 	call ws_eeprom_internal_addr_to_command
 	add dl, 2
 	out dx, ax // 0xBC
-	mov al, 0x10
+	mov ax, 0x10
 	add dl, 2
 	out dx, ax // 0xBE
 	call ws_eeprom_internal_wait_done

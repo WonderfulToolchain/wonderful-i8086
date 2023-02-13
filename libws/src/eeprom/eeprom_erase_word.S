@@ -35,7 +35,7 @@ ws_eeprom_erase_word:
 
 	add dl, 2 // 0xBC
 	out dx, ax
-	mov al, 0x40
+	mov ax, 0x40
 	add dl, 2 // 0xBE
 	out dx, ax
 	call ws_eeprom_internal_wait_ready

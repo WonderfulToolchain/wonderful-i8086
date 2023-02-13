@@ -37,6 +37,6 @@ ws_eeprom_erase_word:
 	out dx, ax
 	mov al, 0x40
 	add dl, 2 // 0xBE
-	out dx, al
+	out dx, ax
 	call ws_eeprom_internal_wait_ready
 	ASM_PLATFORM_RET

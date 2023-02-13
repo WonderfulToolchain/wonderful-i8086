@@ -41,6 +41,6 @@ ws_eeprom_write_word:
 	out dx, ax // 0xBA
 	mov al, 0x20
 	add dl, 4
-	out dx, al // 0xBE
+	out dx, ax // 0xBE
 	call ws_eeprom_internal_wait_ready
 	ASM_PLATFORM_RET

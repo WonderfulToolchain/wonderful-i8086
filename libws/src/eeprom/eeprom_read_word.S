@@ -36,7 +36,7 @@ ws_eeprom_read_word:
 	out dx, ax // 0xBC
 	mov al, 0x10
 	add dl, 2
-	out dx, al // 0xBE
+	out dx, ax // 0xBE
 	call ws_eeprom_internal_wait_done
 	sub dl, 4
 	in ax, dx // 0xBA

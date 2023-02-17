@@ -26,6 +26,9 @@
 #include "ws/serial.h"
 
 int16_t ws_serial_getc_nonblock(void) {
+	if (ws_serial_is_overrun()) {
+		ws_serial_ack_overrun();
+	}
 	if (!ws_serial_is_readable()) return -1;
 	return inportb(IO_SERIAL_DATA);
 }

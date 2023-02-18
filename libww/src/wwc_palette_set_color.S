@@ -31,5 +31,5 @@ wwc_palette_set_color:
 	add	al, dl
 	shl	ax, 1
 	mov	bx, ax
-	mov	word ptr [bx], cx
+	mov	word ptr ss:[bx], cx
 	ret

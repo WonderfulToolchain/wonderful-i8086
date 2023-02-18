@@ -31,5 +31,5 @@ wwc_palette_get_color:
 	add	al, dl
 	shl	ax, 1
 	mov	bx, ax
-	mov	ax, word ptr [bx]
+	mov	ax, word ptr ss:[bx]
 	ret

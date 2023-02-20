@@ -39,7 +39,11 @@ wwc_font_set_colordata:
 	shl	ax, 4
 	mov	di, ax
 	// DS:SI - source pointer
+#ifdef __IA16_CMODEL_IS_FAR_TEXT
 	lds	si, [bp + 14]
+#else
+	lds	si, [bp + 12]
+#endif
 	// CX - length
 	mov	cx, dx
 	shl	cx, 4

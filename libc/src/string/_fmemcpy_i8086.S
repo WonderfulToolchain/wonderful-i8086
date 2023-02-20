@@ -29,8 +29,13 @@ memcpy:
 	mov	bp, sp
 	mov	es, dx
 	mov	di, ax
+#ifdef __IA16_CMODEL_IS_FAR_TEXT
 	lds	si, [bp + 14]
 	mov	cx, [bp + 18]
+#else
+	lds	si, [bp + 12]
+	mov	cx, [bp + 16]
+#endif
 	shr	cx, 1
 	cld
 	rep	movsw

@@ -6,7 +6,7 @@ SECTIONS
 	".text!" . (NOLOAD) :
 	{
 		"__stext!" = .;
-		*(".crt0!")
+		KEEP(*(".crt0!"))
 		*(".text!*" ".text.*!")
 		*(".fartext!*" ".fartext.*!")
 		*(".farrodata!*" ".farrodata.*!")
@@ -17,7 +17,7 @@ SECTIONS
 	.text . :
 	{
 		__stext = .;
-		*(".crt0")
+		KEEP(*(".crt0"))
 		*(.text ".text.*[^&]")
 		*(".fartext.*[^&]")
 		*(".farrodata.*[^&]")
@@ -28,7 +28,7 @@ SECTIONS
 	".text&" . (NOLOAD) :
 	{
 		"__stext&" = .;
-		*(".crt0&")
+		KEEP(*(".crt0&"))
 		*(".text&*" ".text.*&")
 		*(".fartext&*" ".fartext.*&")
 		*(".farrodata&*" ".farrodata.*&")
@@ -49,7 +49,7 @@ SECTIONS
 	".data!" 0x10000 (NOLOAD) : AT(ADDR(".erom") + SIZEOF(".erom"))
 	{
 		"__sdata!" = .;
-		*(".crt0_data!")
+		KEEP(*(".crt0_data!"))
 		*(".rodata!*" ".rodata.*!")
 		*(".data!*" ".data.*!")
 		*(".bss!*" ".bss.*!")
@@ -61,7 +61,7 @@ SECTIONS
 	".data" 0x10000: AT(ADDR(".erom") + SIZEOF(".erom"))
 	{
 		__sdata = .;
-		*(".crt0_data")
+		KEEP(*(".crt0_data"))
 		*(.rodata ".rodata.*[^&]")
 		*(.data ".data.*[^&]")
 		. = ALIGN (4);
@@ -89,7 +89,7 @@ SECTIONS
 	".data&" . (NOLOAD) :
 	{
 		"__sdata&" = .;
-		*(".crt0_data&")
+		KEEP(*(".crt0_data&"))
 		*(".rodata&*" ".rodata.*&")
 		*(".data&*" ".data.*&")
 		*(".bss&*" ".bss.*&")
